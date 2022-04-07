@@ -224,7 +224,7 @@ jobs:
           
       - name: Create Release Asset
         run: |
-          cd v8_bin/ && tar cvfz ../v8_bin_${{env.VERSION}}.tgz v8 && cd -
+          cd v8_bin/ && mv -r v8 v8_9.6 && tar cvfz ../v8_bin_${{env.VERSION}}.tgz v8 && cd -
           
       - name: Create Release
         id: create_release
