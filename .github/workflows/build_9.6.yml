@@ -23,6 +23,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv8.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -37,6 +38,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv7.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -51,6 +53,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_x64.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -65,6 +68,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./linux.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -80,6 +84,10 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64.cmd ${{env.VERSION}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -100,6 +108,10 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64MD.cmd ${{env.VERSION}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -115,6 +127,10 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64MD_DLL.cmd ${{env.VERSION}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -146,6 +162,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -160,6 +177,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos_arm64.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -176,6 +194,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos_DLL.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -192,6 +211,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./ios.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -224,7 +244,7 @@ jobs:
           
       - name: Create Release Asset
         run: |
-          cd v8_bin/ && mv v8 v8_9.6 && tar cvfz ../v8_bin_${{env.VERSION}}.tgz v8_9.6 && cd -
+          cd v8_bin/ && tar cvfz ../v8_bin_${{env.VERSION}}.tgz v8_9.6 && cd -
           
       - name: Create Release
         id: create_release
