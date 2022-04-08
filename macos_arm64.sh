@@ -41,7 +41,7 @@ ninja -C out.gn/arm64.release wee8
 
 node $GITHUB_WORKSPACE/genBlobHeader.js "osx 64" out.gn/arm64.release/snapshot_blob.bin
 
-mkdir -p output/v8/Lib/macOS
-cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/macOS/
-mkdir -p output/v8/Inc/Blob/macOS
-cp SnapshotBlob.h output/v8/Inc/Blob/macOS/
+mkdir -p output/v8/Lib/macOS_arm64
+cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/macOS_arm64/
+mkdir -p output/v8/Inc/Blob/macOS_arm64
+cp SnapshotBlob.h output/v8/Inc/Blob/macOS_arm64/
