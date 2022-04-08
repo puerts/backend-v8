@@ -87,7 +87,7 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv v8/v8/output/v8 v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -111,7 +111,7 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv v8/v8/output/v8 v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -130,7 +130,7 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv v8/v8/output/v8 v8/v8/output/v8_9.6
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
