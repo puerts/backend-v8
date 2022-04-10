@@ -1,4 +1,4 @@
-name: build v8(deprecated)
+name: build v8 (deprecated)
 
 on: 
   workflow_dispatch:
