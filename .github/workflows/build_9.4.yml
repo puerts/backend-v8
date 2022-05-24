@@ -1,4 +1,4 @@
-name: build v8 9.6 (preview)
+name: build v8 9.4 (preview)
 
 on: 
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
 #libwee8按设计只支持wasm，不支持js，但8.4.371.19版本尚未移除js功能，还能用，如果升级v8版本要注意
 #libmonolith会稳妥一些，但静态库大小会大些
 env:
-  VERSION: 9.6.180.15
+  VERSION: 9.4.146.24
 
 jobs:
   build_android_arm_v8:
@@ -23,7 +23,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv8.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -38,7 +38,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv7.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -53,7 +53,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_x64.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -68,7 +68,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./linux.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -87,7 +87,7 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv v8/v8/output/v8 v8/v8/output/v8_9.6
+        mv v8/v8/output/v8 v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -111,7 +111,7 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv v8/v8/output/v8 v8/v8/output/v8_9.6
+        mv v8/v8/output/v8 v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -130,7 +130,7 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv v8/v8/output/v8 v8/v8/output/v8_9.6
+        mv v8/v8/output/v8 v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -162,7 +162,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -177,7 +177,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos_arm64.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -194,7 +194,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos_DLL.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -211,7 +211,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./ios.sh ${{env.VERSION}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.6
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -244,7 +244,7 @@ jobs:
           
       - name: Create Release Asset
         run: |
-          cd v8_bin/ && tar cvfz ../v8_bin_${{env.VERSION}}.tgz v8_9.6 && cd -
+          cd v8_bin/ && tar cvfz ../v8_bin_${{env.VERSION}}.tgz v8_9.4 && cd -
           
       - name: Create Release
         id: create_release
