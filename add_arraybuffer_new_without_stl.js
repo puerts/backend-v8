@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-let v8_h_path = process.argv[2] + '/v8/include/v8.h';
+let v8_h_path = process.argv[2] + '/include/v8.h';
 let v8_h_context = fs.readFileSync(v8_h_path, 'utf-8');
 
 let v8_h_insert_pos = v8_h_context.lastIndexOf('#endif');
@@ -21,7 +21,7 @@ V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
 fs.writeFileSync(v8_h_path, v8_h_context.slice(0, v8_h_insert_pos) + v8_h_insert_code + v8_h_context.slice(v8_h_insert_pos));
 
 
-let api_cc_path = process.argv[2] + '/v8/src/api/api.cc';
+let api_cc_path = process.argv[2] + '/src/api/api.cc';
 
 let api_cc_insert_code = `
 namespace v8
