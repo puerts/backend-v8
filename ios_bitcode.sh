@@ -24,6 +24,9 @@ echo "=====[ Patching V8 ]====="
 git apply --cached $GITHUB_WORKSPACE/patch/bitcode.patch
 git checkout -- .
 
+echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
+node $GITHUB_WORKSPACE/add_arraybuffer_new_without_stl.js .
+
 echo "=====[ Building V8 ]====="
 python ./tools/dev/v8gen.py arm64.release -vv -- '
 v8_use_external_startup_data = true
