@@ -14,6 +14,7 @@ namespace v8
 V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate, 
       void* data, size_t byte_length, v8::BackingStore::DeleterCallback deleter,
       void* deleter_data);
+V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length);
 }
 
 `;
@@ -34,6 +35,12 @@ Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
             data, byte_length,deleter,
             deleter_data);
     return ArrayBuffer::New(isolate, std::move(Backing));
+}
+
+void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length)
+{
+    byte_length = array_buffer->GetBackingStore()->ByteLength();
+    return array_buffer->GetBackingStore()->Data();
 }
 }
 `
