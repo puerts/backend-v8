@@ -11,9 +11,12 @@ let v8_h_insert_code = `
 
 namespace v8
 {
+// do not new two ArrayBuffer with the same data and length
 V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate, 
       void* data, size_t byte_length, v8::BackingStore::DeleterCallback deleter,
       void* deleter_data);
+V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate, 
+      void* data, size_t byte_length);
 V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length);
 }
 
@@ -35,6 +38,18 @@ Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
             data, byte_length,deleter,
             deleter_data);
     return ArrayBuffer::New(isolate, std::move(Backing));
+}
+
+V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate, 
+      void* data, size_t byte_length)
+{
+#if V8_MAJOR_VERSION < 9
+    return ArrayBuffer::New(isolate, data, byte_length);
+#else
+    auto Backing = ArrayBuffer::NewBackingStore(
+            data, byte_length, BackingStore::EmptyDeleter, nullptr);
+    return ArrayBuffer::New(isolate, std::move(Backing));
+#endif
 }
 
 void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length)
