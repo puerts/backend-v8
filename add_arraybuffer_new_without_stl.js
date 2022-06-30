@@ -47,7 +47,6 @@ V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
   CHECK_IMPLIES(byte_length != 0, data != nullptr);
   CHECK_LE(byte_length, i::JSArrayBuffer::kMaxByteLength);
   i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(isolate);
-  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);
 
   std::shared_ptr<i::BackingStore> backing_store = LookupOrCreateBackingStore(
       i_isolate, data, byte_length, i::SharedFlag::kNotShared, ArrayBufferCreationMode::kExternalized);
