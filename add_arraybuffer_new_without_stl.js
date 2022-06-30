@@ -44,11 +44,23 @@ V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
       void* data, size_t byte_length)
 {
 #if V8_MAJOR_VERSION < 9
-    return ArrayBuffer::New(isolate, data, byte_length);
+  CHECK_IMPLIES(byte_length != 0, data != nullptr);
+  CHECK_LE(byte_length, i::JSArrayBuffer::kMaxByteLength);
+  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(isolate);
+  LOG_API(i_isolate, ArrayBuffer, New);
+  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);
+
+  std::shared_ptr<i::BackingStore> backing_store = LookupOrCreateBackingStore(
+      i_isolate, data, byte_length, i::SharedFlag::kNotShared, ArrayBufferCreationMode::kExternalized);
+
+  i::Handle<i::JSArrayBuffer> obj =
+      i_isolate->factory()->NewJSArrayBuffer(std::move(backing_store));
+  obj->set_is_external(true);
+  return Utils::ToLocal(obj);
 #else
-    auto Backing = ArrayBuffer::NewBackingStore(
-            data, byte_length, BackingStore::EmptyDeleter, nullptr);
-    return ArrayBuffer::New(isolate, std::move(Backing));
+  auto Backing = ArrayBuffer::NewBackingStore(
+          data, byte_length, BackingStore::EmptyDeleter, nullptr);
+  return ArrayBuffer::New(isolate, std::move(Backing));
 #endif
 }
 
