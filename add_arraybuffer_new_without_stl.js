@@ -7,7 +7,7 @@ let v8_h_insert_pos = v8_h_context.lastIndexOf('#endif');
 
 let v8_h_insert_code = `
 
-//#define HAS_ARRAYBUFFER_NEW_WITHOUT_STL 1
+#define HAS_ARRAYBUFFER_NEW_WITHOUT_STL 1
 
 namespace v8
 {
@@ -18,6 +18,7 @@ V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
 V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate, 
       void* data, size_t byte_length);
 V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length);
+V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer);
 }
 
 `;
@@ -65,6 +66,10 @@ V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
 void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length)
 {
     byte_length = array_buffer->GetBackingStore()->ByteLength();
+    return array_buffer->GetBackingStore()->Data();
+}
+void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer)
+{
     return array_buffer->GetBackingStore()->Data();
 }
 }
