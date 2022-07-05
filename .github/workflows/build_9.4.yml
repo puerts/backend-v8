@@ -126,7 +126,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
-        call .\windows_64MD_DLL.cmd ${{env.VERSION}}
+        call .\windows_64MD_DLL_94.cmd ${{env.VERSION}}
     - name: Rename
       shell: bash
       run: |
