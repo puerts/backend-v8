@@ -25,6 +25,8 @@ gclient sync
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/add_arraybuffer_new_without_stl.js .
 
+python build/linux/sysroot_scripts/install-sysroot.py --arch=arm64
+
 echo "=====[ Building V8 ]====="
 python ./tools/dev/v8gen.py arm64.release -vv -- '
 is_debug = false
