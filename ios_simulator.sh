@@ -20,11 +20,11 @@ gclient sync
 
 
 # echo "=====[ Patching V8 ]====="
-# git apply --cached $GITHUB_WORKSPACE/patch/builtins-puerts.patch
+# git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches
 # git checkout -- .
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
-node $GITHUB_WORKSPACE/add_arraybuffer_new_without_stl.js .
+node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
 echo "=====[ Building V8 ]====="
 python ./tools/dev/v8gen.py x64.release -vv -- '
@@ -43,7 +43,7 @@ ninja -C out.gn/x64.release -t clean
 ninja -C out.gn/x64.release wee8
 strip -S out.gn/x64.release/obj/libwee8.a
 
-node $GITHUB_WORKSPACE/genBlobHeader.js "ios x64" out.gn/x64.release/snapshot_blob.bin
+node $GITHUB_WORKSPACE/node-script/genBlobHeader.js "ios x64" out.gn/x64.release/snapshot_blob.bin
 
 mkdir -p output/v8/Lib/iOS/x64
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/iOS/x64/

@@ -24,12 +24,12 @@ cd ..\..\..\
 call gclient sync
 
 @REM echo =====[ Patching V8 ]=====
-@REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patch\builtins-puerts.patch
-@REM call git apply --cached --reject %GITHUB_WORKSPACE%\patch\builtins-puerts.patch
+@REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
+@REM call git apply --cached --reject %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git checkout -- .
 
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
-node %~dp0\add_arraybuffer_new_without_stl.js .
+node %~dp0\node-script\add_arraybuffer_new_without_stl.js .
 
 echo =====[ Building V8 ]=====
 call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=true v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false"
@@ -37,7 +37,7 @@ call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_us
 call ninja -C out.gn\x86.release -t clean
 call ninja -C out.gn\x86.release wee8
 
-node %~dp0\genBlobHeader.js "window x86" out.gn\x86.release\snapshot_blob.bin
+node %~dp0\node-script\genBlobHeader.js "window x86" out.gn\x86.release\snapshot_blob.bin
 
 md output\v8\Lib\Win32
 copy /Y out.gn\x86.release\obj\wee8.lib output\v8\Lib\Win32\

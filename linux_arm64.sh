@@ -19,11 +19,11 @@ git checkout refs/tags/$VERSION
 gclient sync
 
 # echo "=====[ Patching V8 ]====="
-# git apply --cached $GITHUB_WORKSPACE/patch/builtins-puerts.patch
+# git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches
 # git checkout -- .
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
-node $GITHUB_WORKSPACE/add_arraybuffer_new_without_stl.js .
+node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
 python build/linux/sysroot_scripts/install-sysroot.py --arch=arm64
 
@@ -45,7 +45,7 @@ v8_enable_pointer_compression=false
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release wee8
 
-node $GITHUB_WORKSPACE/genBlobHeader.js "Linux_arm64" out.gn/arm64.release/snapshot_blob.bin
+node $GITHUB_WORKSPACE/node-script/genBlobHeader.js "Linux_arm64" out.gn/arm64.release/snapshot_blob.bin
 
 mkdir -p output/v8/Lib/Linux_arm64
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/Linux_arm64/

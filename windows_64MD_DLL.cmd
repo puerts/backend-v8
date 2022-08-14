@@ -24,15 +24,15 @@ cd ..\..\..\
 call gclient sync
 
 @REM echo =====[ Patching V8 ]=====
-@REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patch\builtins-puerts.patch
-@REM call git apply --cached --reject %GITHUB_WORKSPACE%\patch\builtins-puerts.patch
+@REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
+@REM call git apply --cached --reject %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git checkout -- .
 
 echo =====[ Make dynamic_crt ]=====
-node %~dp0\rep.js  build\config\win\BUILD.gn
+node %~dp0\node-script\rep.js  build\config\win\BUILD.gn
 
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
-node %~dp0\add_arraybuffer_new_without_stl.js .
+node %~dp0\node-script\add_arraybuffer_new_without_stl.js .
 
 echo =====[ Building V8 ]=====
 call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=true v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true"
