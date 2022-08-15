@@ -22,6 +22,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./android_armv8.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -37,6 +38,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./android_armv7.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -52,6 +54,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./android_x64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -67,6 +70,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./linux.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -159,6 +163,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./macos.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -174,6 +179,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./macos_arm64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -189,6 +195,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./macos_DLL.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -204,6 +211,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         sh ./ios.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
@@ -219,6 +227,7 @@ jobs:
   #  - name: Run build script
   #    run: |
   #      cd $GITHUB_WORKSPACE
+  #      npm i
   #      sh ./ios_simulator.sh ${{env.VERSION}}
   #  - uses: actions/upload-artifact@v2
   #    with:
