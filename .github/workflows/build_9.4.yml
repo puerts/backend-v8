@@ -111,6 +111,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
+        npm i;
         call .\windows_64MD.cmd ${{env.VERSION}}
     - name: Rename
       shell: bash
@@ -130,6 +131,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
+        npm i;
         call .\windows_64MD_DLL_94.cmd ${{env.VERSION}}
     - name: Rename
       shell: bash
@@ -149,7 +151,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
-        npm i
+        npm i;
         call .\windows_32.cmd ${{env.VERSION}}
     - name: Rename
       shell: bash
