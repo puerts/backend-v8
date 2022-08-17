@@ -1,0 +1,16 @@
+diff --git a/src/base/platform/platform.h b/src/base/platform/platform.h
+index 6ad724db08..bebb6a4d01 100644
+--- a/src/base/platform/platform.h
++++ b/src/base/platform/platform.h
+@@ -47,7 +47,10 @@
+ // And, intrin.h is a very expensive header that we want to avoid here, and
+ // the cheaper intrin0.h is not available for all build configurations. That is
+ // why we declare this intrinsic.
+-unsigned long __readfsdword(unsigned long);  // NOLINT(runtime/int)
++// unsigned long __readfsdword(unsigned long);  // NOLINT(runtime/int)
++
++#include <intrin.h>
++
+ #endif                                       // V8_CC_MSVC && V8_HOST_ARCH_IA32
+ #endif                                       // V8_NO_FAST_TLS
+ 
