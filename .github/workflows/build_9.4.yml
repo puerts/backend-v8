@@ -149,6 +149,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
+        npm i
         call .\windows_32.cmd ${{env.VERSION}}
     - name: Rename
       shell: bash
