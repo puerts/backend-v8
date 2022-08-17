@@ -140,20 +140,24 @@ jobs:
         name: v8_bin
         path: v8/v8/output/**/*
         
-  # build_windows_32:
-  #   name: Windows-32
-  #   runs-on: windows-2019
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Run build script
-  #     shell: cmd
-  #     run: |
-  #       cd %GITHUB_WORKSPACE%
-  #       call .\windows_32.cmd ${{env.VERSION}}
-  #   - uses: actions/upload-artifact@v2
-  #     with:
-  #       name: v8_bin
-  #       path: v8/v8/output/**/*
+  build_windows_32:
+    name: Windows-32
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call .\windows_32.cmd ${{env.VERSION}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv v8/v8/output/v8 v8/v8/output/v8_9.4
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: v8/v8/output/**/*
           
   build_macos:
     name: macOS
@@ -236,7 +240,7 @@ jobs:
         
   publish:
     runs-on: ubuntu-latest
-    needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_windows,build_windows_md,build_macos_arm64,build_macos,build_ios,build_windows_md_dll,build_macos_dll]
+    needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos,build_ios,build_windows_md_dll,build_macos_dll]
     steps:
       - uses: actions/download-artifact@v1
         with:
