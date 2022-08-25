@@ -181,9 +181,13 @@ jobs:
     name: macOS
     runs-on: macos-11
     steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         sh ./macos.sh ${{env.VERSION}}
@@ -197,9 +201,13 @@ jobs:
     name: macOS with apple m1
     runs-on: macos-11
     steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         sh ./macos_arm64.sh ${{env.VERSION}}
@@ -213,9 +221,13 @@ jobs:
     name: macOS-DLL
     runs-on: macos-11
     steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         sh ./macos_DLL.sh ${{env.VERSION}}
@@ -229,9 +241,13 @@ jobs:
     name: iOS
     runs-on: macos-11
     steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         sh ./ios.sh ${{env.VERSION}}
@@ -241,20 +257,24 @@ jobs:
         name: v8_bin
         path: ~/v8/v8/output/**/*
   
-  #build_ios_simulator:
-  #  name: iOS simulator
-  #  runs-on: macos-11
-  #  steps:
-  #  - uses: actions/checkout@v2
-  #  - name: Run build script
-  #    run: |
-  #      cd $GITHUB_WORKSPACE
-  #      npm i
-  #      sh ./ios_simulator.sh ${{env.VERSION}}
-  #  - uses: actions/upload-artifact@v2
-  #    with:
-  #      name: v8_bin
-  #      path: ~/v8/v8/output/**/*
+  build_ios_simulator:
+    name: iOS simulator
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./ios_simulator.sh ${{env.VERSION}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
         
   publish:
     runs-on: ubuntu-latest
