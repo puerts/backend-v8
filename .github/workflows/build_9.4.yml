@@ -88,6 +88,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         sh ./linux_arm64.sh ${{env.VERSION}}
         cp ./puer-build.json ~/v8/v8/output/
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
@@ -272,6 +273,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         npm i
         sh ./ios_simulator.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
