@@ -5,11 +5,6 @@
             "ia32": ["/Lib/Win32/wee8.lib"],
             "x64": ["/Lib/Win64/wee8.lib"]
         },
-        "android": {
-            "armv7": ["/Lib/Android/armeabi-v7a/libwee8.a"],
-            "arm64": ["/Lib/Android/arm64-v8a/libwee8.a"],
-            "x64": ["/Lib/Android/x64/libwee8.a"]
-        },
         "osx": {
             "x64": ["/Lib/macOS/libwee8.a"],
             "arm64": ["/Lib/macOS_arm64/libwee8.a"]
@@ -19,6 +14,11 @@
         }
     },
     "copy-libraries": {
+        "android": {
+            "armv7": ["/Lib/Android/armeabi-v7a/libwee8.a"],
+            "arm64": ["/Lib/Android/arm64-v8a/libwee8.a"],
+            "x64": ["/Lib/Android/x64/libwee8.a"]
+        },
         "ios": {
             "arm64": ["/Lib/iOS/arm64/libwee8.a"]
         }
