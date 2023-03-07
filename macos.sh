@@ -4,6 +4,10 @@ VERSION=$1
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
+cd depot_tools
+git reset --hard 8d16d4a
+cd ..
+export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
 
