@@ -3,7 +3,7 @@ VERSION=$1
 
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
-git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
+git clone -b chrome/4147 -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
 
