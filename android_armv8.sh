@@ -15,6 +15,7 @@ sudo apt-get install -y \
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -b chrome/4147 -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
+export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
 
