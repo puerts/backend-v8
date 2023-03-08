@@ -87,7 +87,6 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./linux_arm64.sh ${{env.VERSION}}
-        cp ./puer-build.json ~/v8/v8/output/v8/
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
