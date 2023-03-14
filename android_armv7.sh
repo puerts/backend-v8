@@ -10,7 +10,6 @@ sudo apt-get install -y \
     build-essential \
     python \
     xz-utils \
-    libatomic1 \
     zip
 
 cd ~
@@ -43,9 +42,6 @@ gclient sync
 # echo "=====[ Patching V8 ]====="
 # git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches
 # git checkout -- .
-echo "=====[ Patching V8 ]====="
-node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patchs/jitless_optimization_v$VERSION.patch
-git diff src/execution/runtime-profiler.cc
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .

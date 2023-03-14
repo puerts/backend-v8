@@ -19,9 +19,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -36,9 +33,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -53,9 +47,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -70,9 +61,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -87,9 +75,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -104,9 +89,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -127,9 +109,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -145,9 +124,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -163,9 +139,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -181,9 +154,6 @@ jobs:
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Use Xcode 12.0 to use SDK 10.15
       run: sudo xcode-select -switch "/Applications/Xcode_12.app"
     - name: Run build script
@@ -200,9 +170,6 @@ jobs:
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Use Xcode 12.0 to use SDK 10.15
       run: sudo xcode-select -switch "/Applications/Xcode_12.app"
     - name: Run build script
@@ -219,9 +186,6 @@ jobs:
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Use Xcode 12.0 to use SDK 10.15
       run: sudo xcode-select -switch "/Applications/Xcode_12.app"
     - name: Run build script

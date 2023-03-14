@@ -19,9 +19,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -38,9 +35,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -57,9 +51,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -76,9 +67,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -95,9 +83,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -113,9 +98,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -141,9 +123,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -164,9 +143,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -187,9 +163,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       shell: cmd
       run: |
@@ -213,9 +186,6 @@ jobs:
       run: |
         brew install python@3.9
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
@@ -236,9 +206,6 @@ jobs:
       run: |
         brew install python@3.9
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
@@ -259,9 +226,6 @@ jobs:
       run: |
         brew install python@3.9
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
@@ -282,9 +246,6 @@ jobs:
       run: |
         brew install python@3.9
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
@@ -305,9 +266,6 @@ jobs:
       run: |
         brew install python@3.9
     - uses: actions/checkout@v2
-    - name: npm install
-      shell: bash
-      run: npm install
     - name: Run build script
       run: |
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH

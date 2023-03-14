@@ -32,9 +32,6 @@ call gclient sync
 @REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git apply --cached --reject %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git checkout -- .
-echo =====[ Patching V8 ]=====
-node %GITHUB_WORKSPACE%\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patchs\jitless_optimization_v$VERSION.patch
-git diff src/execution/runtime-profiler.cc
 
 echo =====[ Make dynamic_crt ]=====
 node %~dp0\node-script\rep.js  build\config\win\BUILD.gn
