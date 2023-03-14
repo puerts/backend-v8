@@ -1,0 +1,15 @@
+diff --git a/src/execution/runtime-profiler.cc b/src/execution/runtime-profiler.cc
+index 7459f59ae1..86d2cea6a9 100644
+--- a/src/execution/runtime-profiler.cc
++++ b/src/execution/runtime-profiler.cc
+@@ -204,9 +204,8 @@ OptimizationReason RuntimeProfiler::ShouldOptimize(JSFunction function,
+ }
+ 
+ void RuntimeProfiler::MarkCandidatesForOptimization() {
+-  HandleScope scope(isolate_);
+-
+   if (!isolate_->use_optimizer()) return;
++  HandleScope scope(isolate_);
+ 
+   DisallowHeapAllocation no_gc;
+   TRACE_EVENT0(TRACE_DISABLED_BY_DEFAULT("v8.compile"),
