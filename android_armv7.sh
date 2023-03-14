@@ -10,6 +10,7 @@ sudo apt-get install -y \
     build-essential \
     python \
     xz-utils \
+    libatomic1 \
     zip
 
 cd ~
