@@ -13,7 +13,7 @@ sudo apt-get install -y \
     zip
 
 sudo apt-get update
-sudo apt-get install -y libatomic1
+sudo apt-get install -y libatomic1-i386-cross
 sudo rm -rf /var/lib/apt/lists/*
 
 cd ~
