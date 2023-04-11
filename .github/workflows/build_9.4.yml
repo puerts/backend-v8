@@ -16,14 +16,39 @@ env:
 jobs:
   build_android_arm_v8:
     name: Android (arm64-v8a)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:18.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        apt-get update
+        apt-get install -y \
+            lsb-core \
+            lib32stdc++6 \
+            git \
+            curl 	\
+            lbzip2 \
+            pkg-config \
+            git \
+            subversion \
+            curl \
+            wget \
+            build-essential \
+            python \
+            python3 \
+            xz-utils \
+            libatomic1 \
+            zip 
+        cd ~
+        wget https://nodejs.org/dist/latest-v16.x/node-v16.20.0-linux-x64.tar.gz
+        tar xzf node-v16.20.0-linux-x64.tar.gz
+        export PATH=$(pwd)/node-v16.20.0-linux-x64/bin/:$PATH
+        
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./android_armv8.sh ${{env.VERSION}}
+        python3 ./build.py ${{env.VERSION}} android arm64
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
@@ -32,14 +57,39 @@ jobs:
 
   build_android_arm_v7:
     name: Android (armeabi-v7a)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:18.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        apt-get update
+        apt-get install -y \
+            lsb-core \
+            lib32stdc++6 \
+            git \
+            curl 	\
+            lbzip2 \
+            pkg-config \
+            git \
+            subversion \
+            curl \
+            wget \
+            build-essential \
+            python \
+            python3 \
+            xz-utils \
+            libatomic1 \
+            zip 
+        cd ~
+        wget https://nodejs.org/dist/latest-v16.x/node-v16.20.0-linux-x64.tar.gz
+        tar xzf node-v16.20.0-linux-x64.tar.gz
+        export PATH=$(pwd)/node-v16.20.0-linux-x64/bin/:$PATH
+
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./android_armv7.sh ${{env.VERSION}}
+        python3 ./build.py ${{env.VERSION}} android armv7
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
@@ -48,14 +98,39 @@ jobs:
         
   build_android_x86_64:
     name: Android (x86_64)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:18.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        apt-get update
+        apt-get install -y \
+            lsb-core \
+            lib32stdc++6 \
+            git \
+            curl 	\
+            lbzip2 \
+            pkg-config \
+            git \
+            subversion \
+            curl \
+            wget \
+            build-essential \
+            python \
+            python3 \
+            xz-utils \
+            libatomic1 \
+            zip 
+        cd ~
+        wget https://nodejs.org/dist/latest-v16.x/node-v16.20.0-linux-x64.tar.gz
+        tar xzf node-v16.20.0-linux-x64.tar.gz
+        export PATH=$(pwd)/node-v16.20.0-linux-x64/bin/:$PATH
+        
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./android_x64.sh ${{env.VERSION}}
+        python3 ./build.py ${{env.VERSION}} android x64
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
@@ -64,14 +139,38 @@ jobs:
         
   build_linux:
     name: Linux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:18.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        apt-get update
+        apt-get install -y \
+            lsb-core \
+            git \
+            curl 	\
+            lbzip2 \
+            pkg-config \
+            git \
+            subversion \
+            curl \
+            wget \
+            build-essential \
+            nodejs \
+            python \
+            python3 \
+            xz-utils \
+            zip 
+        cd ~
+        wget https://nodejs.org/dist/latest-v16.x/node-v16.20.0-linux-x64.tar.gz
+        tar xzf node-v16.20.0-linux-x64.tar.gz
+        export PATH=$(pwd)/node-v16.20.0-linux-x64/bin/:$PATH
+
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./linux.sh ${{env.VERSION}}
+        python3 ./build.py ${{env.VERSION}} linux x64
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
@@ -80,13 +179,37 @@ jobs:
         
   build_linux_arm64:
     name: Linux_arm64
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:18.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
+        apt-get update
+        apt-get install -y \
+            lsb-core \
+            git \
+            curl 	\
+            lbzip2 \
+            pkg-config \
+            git \
+            subversion \
+            curl \
+            wget \
+            build-essential \
+            nodejs \
+            python \
+            python3 \
+            xz-utils \
+            zip 
+        cd ~
+        wget https://nodejs.org/dist/latest-v16.x/node-v16.20.0-linux-x64.tar.gz
+        tar xzf node-v16.20.0-linux-x64.tar.gz
+        export PATH=$(pwd)/node-v16.20.0-linux-x64/bin/:$PATH
+
         cd $GITHUB_WORKSPACE
-        sh ./linux_arm64.sh ${{env.VERSION}}
+        python3 ./build.py ${{env.VERSION}} linux arm64
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
     - uses: actions/upload-artifact@v2
       with:
