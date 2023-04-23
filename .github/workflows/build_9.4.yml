@@ -237,6 +237,26 @@ jobs:
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
+        
+  build_macos_arm64_dll:
+    name: macOS-DLL
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./macos_arm64_DLL.sh ${{env.VERSION}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
 
   build_ios:
     name: iOS
