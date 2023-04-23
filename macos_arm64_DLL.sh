@@ -46,7 +46,7 @@ v8_enable_pointer_compression=false
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release v8
 
-mkdir -p output/v8/Lib/macOSdylib
+mkdir -p output/v8/Lib/macOSArm64dylib
 cp out.gn/arm64.release/libv8.dylib output/v8/Lib/macOSArm64dylib/
 cp out.gn/arm64.release/libv8_libplatform.dylib output/v8/Lib/macOSArm64dylib/
 cp out.gn/arm64.release/libv8_libbase.dylib output/v8/Lib/macOSArm64dylib/
