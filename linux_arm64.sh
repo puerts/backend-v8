@@ -8,7 +8,7 @@ cd depot_tools
 git reset --hard 8d16d4a
 cd ..
 export DEPOT_TOOLS_UPDATE=0
-export PATH=$(pwd)/depot_tools:$PATH
+export PATH=$(pwd)/depot_tools:$(pwd)/depot_tools/.cipd_bin/2.7/bin:$PATH
 gclient
 
 
