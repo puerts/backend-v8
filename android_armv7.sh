@@ -13,8 +13,9 @@ sudo apt-get install -y \
     zip
 
 sudo apt-get update
-sudo apt-get install -y libatomic1-i386-cross
+#sudo apt-get install -y libatomic1-i386-cross
 sudo rm -rf /var/lib/apt/lists/*
+export LD_LIBRARY_PATH=”LD_LIBRARY_PATH:/usr/i686-linux-gnu/lib/”
 
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
