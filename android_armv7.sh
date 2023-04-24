@@ -15,7 +15,10 @@ sudo apt-get install -y \
 sudo apt-get update
 #sudo apt-get install -y libatomic1-i386-cross
 sudo rm -rf /var/lib/apt/lists/*
-export LD_LIBRARY_PATH=”LD_LIBRARY_PATH:/usr/i686-linux-gnu/lib/”
+#export LD_LIBRARY_PATH=”LD_LIBRARY_PATH:/usr/i686-linux-gnu/lib/”
+echo "/usr/i686-linux-gnu/lib" > i686.conf
+sudo mv i686.conf /etc/ld.so.conf.d/
+sudo ldconfig
 
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
