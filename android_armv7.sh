@@ -67,8 +67,6 @@ symbol_level=1
 use_custom_libcxx=false
 use_custom_libcxx_for_host=true
 '
-
-export LD_LIBRARY_PATH= /usr/lib32/:$LD_LIBRARY_PATH
 ninja -C out.gn/arm.release -t clean
 ninja -C out.gn/arm.release wee8
 third_party/android_ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/arm-linux-androideabi/bin/strip -g -S -d --strip-debug --verbose out.gn/arm.release/obj/libwee8.a
