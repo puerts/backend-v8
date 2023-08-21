@@ -36,7 +36,7 @@ target_cpu = "arm64"
 v8_target_cpu = "arm64"
 v8_enable_i18n_support= false
 v8_use_snapshot = true
-v8_use_external_startup_data = true
+v8_use_external_startup_data = false
 v8_static_library = true
 strip_debug_info = true
 symbol_level=0
@@ -45,8 +45,6 @@ v8_enable_pointer_compression=false
 '
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release wee8
-
-node $GITHUB_WORKSPACE/node-script/genBlobHeader.js "osx 64" out.gn/arm64.release/snapshot_blob.bin
 
 mkdir -p output/v8/Lib/macOS_arm64
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/macOS_arm64/
