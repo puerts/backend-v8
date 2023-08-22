@@ -48,4 +48,3 @@ strip -S out.gn/arm64.release/obj/libwee8.a
 mkdir -p output/v8/Lib/iOS/arm64
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/iOS/arm64/
 mkdir -p output/v8/Inc/Blob/iOS/arm64
-cp SnapshotBlob.h output/v8/Inc/Blob/iOS/arm64/

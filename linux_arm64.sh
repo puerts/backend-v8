@@ -52,5 +52,4 @@ ninja -C out.gn/arm64.release wee8
 mkdir -p output/v8/Lib/Linux_arm64
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/Linux_arm64/
 mkdir -p output/v8/Inc/Blob/Linux_arm64
-cp SnapshotBlob.h output/v8/Inc/Blob/Linux_arm64/
 

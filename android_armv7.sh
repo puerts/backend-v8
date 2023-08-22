@@ -78,4 +78,3 @@ third_party/android_ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_
 mkdir -p output/v8/Lib/Android/armeabi-v7a
 cp out.gn/arm.release/obj/libwee8.a output/v8/Lib/Android/armeabi-v7a/
 mkdir -p output/v8/Inc/Blob/Android/armv7a
-cp SnapshotBlob.h output/v8/Inc/Blob/Android/armv7a/

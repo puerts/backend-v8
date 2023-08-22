@@ -70,4 +70,3 @@ third_party/android_ndk/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux
 mkdir -p output/v8/Lib/Android/x64
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/Android/x64/
 mkdir -p output/v8/Inc/Blob/Android/x64
-cp SnapshotBlob.h output/v8/Inc/Blob/Android/x64/
