@@ -1,16 +1,34 @@
+#!/bin/bash
+
 VERSION=$1
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
-sudo apt-get install -y \
-    pkg-config \
-    git \
-    subversion \
-    curl \
-    wget \
-    build-essential \
-    python \
-    xz-utils \
-    zip
+if [ "$VERSION" == "10.6.194" ]; then 
+    sudo apt-get install -y \
+        pkg-config \
+        git \
+        subversion \
+        curl \
+        wget \
+        build-essential \
+        python3 \
+        ninja-build \
+        xz-utils \
+        zip
+        
+    pip install virtualenv
+else
+    sudo apt-get install -y \
+        pkg-config \
+        git \
+        subversion \
+        curl \
+        wget \
+        build-essential \
+        python \
+        xz-utils \
+        zip
+fi
 
 sudo apt-get update
 sudo apt-get install -y libatomic1-i386-cross
@@ -70,6 +88,7 @@ strip_debug_info = false
 symbol_level=1
 use_custom_libcxx=false
 use_custom_libcxx_for_host=true
+v8_enable_sandbox = false
 '
 ninja -C out.gn/arm.release -t clean
 ninja -C out.gn/arm.release wee8

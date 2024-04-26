@@ -1,0 +1,13 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index ee7483e..25b1ba4 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -121,7 +121,7 @@ if (use_arm_neon_optimizations) {
+       defines = [ "CRC32_ARMV8_CRC32" ]
+       if (is_android) {
+         defines += [ "ARMV8_OS_ANDROID" ]
+-      } else if (is_linux || is_chromeos) {
++      } else if (is_linux || is_chromeos || is_ohos) {
+         defines += [ "ARMV8_OS_LINUX" ]
+       } else if (is_mac) {
+         defines += [ "ARMV8_OS_MACOS" ]

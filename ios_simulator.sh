@@ -42,6 +42,7 @@ target_os = "ios"
 target_cpu = "x64"
 v8_enable_pointer_compression = false
 libcxx_abi_unstable = false
+v8_enable_sandbox = false
 '
 ninja -C out.gn/x64.release -t clean
 ninja -C out.gn/x64.release wee8

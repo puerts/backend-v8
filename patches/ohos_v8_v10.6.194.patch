@@ -1,0 +1,143 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index a91d61c8c26..9201ee5a63b 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -1578,7 +1578,7 @@ config("always_turbofanimize") {
+ 
+   # TODO(crbug.com/621335) Rework this so that we don't have the confusion
+   # between "optimize_speed" and "optimize_max".
+-  if (((is_posix && !is_android) || is_fuchsia) && !using_sanitizer) {
++  if (((is_posix && !is_android && !is_ohos) || is_fuchsia) && !using_sanitizer) {
+     configs += [ "//build/config/compiler:optimize_speed" ]
+   } else {
+     configs += [ "//build/config/compiler:optimize_max" ]
+@@ -2050,6 +2050,7 @@ run_torque("") {
+ }
+ 
+ if (v8_verify_torque_generation_invariance) {
++  print("v8_verify_torque_generation_invariance")
+   run_torque("x86") {
+     toolchain = "//build/toolchain/linux:clang_x86"
+   }
+@@ -3852,7 +3853,7 @@ v8_header_set("v8_internal_headers") {
+       # iOS Xcode simulator builds run on an x64 target. iOS and macOS are both
+       # based on Darwin and thus POSIX-compliant to a similar degree.
+       if (is_linux || is_chromeos || is_mac || is_ios ||
+-          target_os == "freebsd") {
++          target_os == "freebsd" || is_ohos) {
+         sources += [ "src/trap-handler/handler-inside-posix.h" ]
+       } else if (is_win) {
+         sources += [ "src/trap-handler/handler-inside-win.h" ]
+@@ -5584,8 +5585,11 @@ v8_component("v8_libbase") {
+     ]
+ 
+     libs = [ "dl" ]
+-  } else if (is_android) {
++  } else if (is_android || is_ohos) {
++    print("current_toolchain:$current_toolchain")
++    print("host_toolchain:$host_toolchain")
+     if (current_toolchain == host_toolchain) {
++      print("current_toolchain == host_toolchain")
+       libs = [
+         "dl",
+         "rt",
+@@ -6142,6 +6146,23 @@ if (v8_enable_webassembly) {
+   }
+ }
+ 
++v8_loadable_module("libv8android") {
++  defines = [ "BUILDING_V8_SHARED" ]
++
++  sources = [
++    "src/utils/v8dll-main.cc",
++  ]
++
++  deps = [
++    ":v8",
++    ":v8_libbase",
++    ":v8_libplatform",
++    ":v8_snapshot",
++  ]
++
++  configs = [ ":internal_config" ]
++}
++
+ ###############################################################################
+ # Executables
+ #
+diff --git a/gni/snapshot_toolchain.gni b/gni/snapshot_toolchain.gni
+index 637dcd39c45..7ad3fde014b 100644
+--- a/gni/snapshot_toolchain.gni
++++ b/gni/snapshot_toolchain.gni
+@@ -124,5 +124,6 @@ assert(v8_snapshot_toolchain != "",
+ v8_generator_toolchain = v8_snapshot_toolchain
+ if (host_cpu == "x64" &&
+     (v8_current_cpu == "mips" || v8_current_cpu == "mips64")) {
++  print("v8_generator_toolchain")
+   v8_generator_toolchain = "//build/toolchain/linux:clang_x64"
+ }
+diff --git a/gni/v8.gni b/gni/v8.gni
+index 403890733bf..d02563f778c 100644
+--- a/gni/v8.gni
++++ b/gni/v8.gni
+@@ -318,3 +318,12 @@ template("v8_static_library") {
+     configs += invoker.configs
+   }
+ }
++
++template("v8_loadable_module") {
++  loadable_module(target_name) {
++    forward_variables_from(invoker, "*", [ "configs" ])
++    configs -= v8_remove_configs
++    configs += v8_add_configs
++    configs += invoker.configs
++  }
++}
+diff --git a/tools/clusterfuzz/foozzie/toolchain/BUILD.gn b/tools/clusterfuzz/foozzie/toolchain/BUILD.gn
+index ddcb4e1ad2c..ec038b08461 100644
+--- a/tools/clusterfuzz/foozzie/toolchain/BUILD.gn
++++ b/tools/clusterfuzz/foozzie/toolchain/BUILD.gn
+@@ -8,6 +8,7 @@ import("//build/toolchain/gcc_toolchain.gni")
+ # build in a nested build sub-directory. We toggle pointer compression when
+ # this toolchain is used in v8/BUILD.gn.
+ clang_toolchain("clang_x64_pointer_compression") {
++  print("clang_x64_pointer_compression in")
+   toolchain_args = {
+     current_cpu = "x64"
+     current_os = "linux"
+diff --git a/tools/toolchain/BUILD.gn b/tools/toolchain/BUILD.gn
+index b252c5eed53..887f8b6be94 100644
+--- a/tools/toolchain/BUILD.gn
++++ b/tools/toolchain/BUILD.gn
+@@ -5,6 +5,7 @@
+ import("//build/toolchain/gcc_toolchain.gni")
+ 
+ gcc_toolchain("mips-bundled") {
++  print("mips-bundled in")
+   toolprefix = rebase_path("//tools/mips_toolchain/bin/mips-mti-linux-gnu-",
+                            root_build_dir)
+   cc = "${toolprefix}gcc"
+@@ -27,6 +28,7 @@ gcc_toolchain("mips-bundled") {
+ }
+ 
+ gcc_toolchain("mips64-bundled") {
++  print("mips64-bundled in")
+   toolprefix = rebase_path("//tools/mips_toolchain/bin/mips-mti-linux-gnu-",
+                            root_build_dir)
+   cc = "${toolprefix}gcc"
+@@ -49,6 +51,7 @@ gcc_toolchain("mips64-bundled") {
+ }
+ 
+ gcc_toolchain("mipsel-bundled") {
++  print("mipsel-bundled in")
+   toolprefix = rebase_path("//tools/mips_toolchain/bin/mips-mti-linux-gnu-",
+                            root_build_dir)
+   cc = "${toolprefix}gcc"
+@@ -71,6 +74,7 @@ gcc_toolchain("mipsel-bundled") {
+ }
+ 
+ gcc_toolchain("mips64el-bundled") {
++  print("mips64el-bundled in")
+   toolprefix = rebase_path("//tools/mips_toolchain/bin/mips-mti-linux-gnu-",
+                            root_build_dir)
+   cc = "${toolprefix}gcc"

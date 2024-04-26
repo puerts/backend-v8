@@ -40,6 +40,7 @@ target_os = "ios"
 target_cpu = "arm64"
 v8_enable_pointer_compression = false
 libcxx_abi_unstable = false
+v8_enable_sandbox = false
 '
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release wee8

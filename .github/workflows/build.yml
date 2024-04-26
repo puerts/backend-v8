@@ -1,0 +1,427 @@
+name: build v8
+
+on: 
+  workflow_dispatch:
+    inputs:
+      tag_date:
+        description: 'tag date'     
+        required: true
+      v8_revision:
+        description: 'V8 TAG(Branch) to build'
+        type: choice
+        options:
+        - "8.4.371.19"
+        - "9.4.146.24"
+        - "10.6.194"
+        default: '10.6.194'
+        required: true
+  
+
+jobs:
+  build_android_arm_v8:
+    name: Android (arm64-v8a)
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        bash ./android_armv8.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+
+  build_android_arm_v7:
+    name: Android (armeabi-v7a)
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        bash ./android_armv7.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_android_x86_64:
+    name: Android (x86_64)
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        bash ./android_x64.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_ohos_arm_v8:
+    if: github.event.inputs.v8_revision == '10.6.194'
+    name: OHOS (arm64-v8a)
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install NDK
+      run: |
+        cd ~
+        curl -O https://repo.huaweicloud.com/harmonyos/os/4.1-Release/ohos-sdk-windows_linux-public.tar.gz
+        tar xvfz ohos-sdk-windows_linux-public.tar.gz
+        rm ohos-sdk-windows_linux-public.tar.gz
+        cd ohos-sdk/linux
+        unzip -o -d ./ native-linux-x64-4.1.7.5-Release.zip
+        rm *.zip
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_armv8.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+
+  build_ohos_arm_v7:
+    if: github.event.inputs.v8_revision == '10.6.194'
+    name: OHOS (armeabi-v7a)
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install NDK
+      run: |
+        cd ~
+        curl -O https://repo.huaweicloud.com/harmonyos/os/4.1-Release/ohos-sdk-windows_linux-public.tar.gz
+        tar xvfz ohos-sdk-windows_linux-public.tar.gz
+        rm ohos-sdk-windows_linux-public.tar.gz
+        cd ohos-sdk/linux
+        unzip -o -d ./ native-linux-x64-4.1.7.5-Release.zip
+        rm *.zip
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_armv7.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_ohos_x86_64:
+    if: github.event.inputs.v8_revision == '10.6.194'
+    name: OHOS (x86_64)
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install NDK
+      run: |
+        cd ~
+        curl -O https://repo.huaweicloud.com/harmonyos/os/4.1-Release/ohos-sdk-windows_linux-public.tar.gz
+        tar xvfz ohos-sdk-windows_linux-public.tar.gz
+        rm ohos-sdk-windows_linux-public.tar.gz
+        cd ohos-sdk/linux
+        unzip -o -d ./ native-linux-x64-4.1.7.5-Release.zip
+        rm *.zip
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_x64.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_linux:
+    name: Linux
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        bash ./linux.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_linux_arm64:
+    name: Linux_arm64
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        bash ./linux_arm64.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+
+  build_windows:
+    name: Windows
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call npm i
+        call .\windows_64.cmd ${{github.event.inputs.v8_revision}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: v8/v8/output/**/*
+        
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin_win64
+        path: v8/v8/output/**/*
+        
+  build_windows_md:
+    name: Windows-MD
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call npm i
+        call .\windows_64MD.cmd ${{github.event.inputs.v8_revision}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: v8/v8/output/**/*
+        
+  build_windows_md_dll:
+    name: Windows-MD-DLL
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call npm i
+        call .\windows_64MD_DLL_94.cmd ${{github.event.inputs.v8_revision}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: v8/v8/output/**/*
+        
+  build_windows_32:
+    name: Windows-32
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call npm i
+        call .\windows_32.cmd ${{github.event.inputs.v8_revision}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: v8/v8/output/**/*
+          
+  build_macos:
+    name: macOS
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+        pip install virtualenv
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./macos.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+          
+  build_macos_arm64:
+    name: macOS with apple m1
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+        pip install virtualenv
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./macos_arm64.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_macos_dll:
+    name: macOS-DLL
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+        pip install virtualenv
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./macos_DLL.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_macos_arm64_dll:
+    name: macOS-DLL with apple m1
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+        pip install virtualenv
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./macos_arm64_DLL.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+
+  build_ios:
+    name: iOS
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+        pip install virtualenv
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./ios.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+  
+  build_ios_simulator:
+    name: iOS simulator
+    runs-on: macos-11
+    steps:
+    - name: use python3.9
+      run: |
+        brew install python@3.9
+        pip install virtualenv
+    - uses: actions/checkout@v2
+    - name: Run build script
+      run: |
+        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+        cd $GITHUB_WORKSPACE
+        npm i
+        sh ./ios_simulator.sh ${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  publish:
+    runs-on: ubuntu-20.04
+    needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll]
+    steps:
+      - uses: actions/download-artifact@v1
+        with:
+          name: v8_bin
+          path: v8_bin/
+          
+      - name: Create Release Asset
+        run: |
+          cd v8_bin/ && tar cvfz ../v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_${{github.event.inputs.v8_revision}} && cd -
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
+          release_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
+          draft: false
+          prerelease: false
+          
+      - name: Upload V8
+        #id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
+          asset_name: v8_bin_${{github.event.inputs.v8_revision}}.tgz
+          asset_content_type: application/tgz
+          
+
+
+
+  

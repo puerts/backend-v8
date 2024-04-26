@@ -1,23 +1,43 @@
+#!/bin/bash
+
 VERSION=$1
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
-sudo apt-get install -y \
-    pkg-config \
-    git \
-    subversion \
-    curl \
-    wget \
-    build-essential \
-    python \
-    xz-utils \
-    zip
+if [ "$VERSION" == "10.6.194" ]; then 
+    sudo apt-get install -y \
+        pkg-config \
+        git \
+        subversion \
+        curl \
+        wget \
+        build-essential \
+        python3 \
+        ninja-build \
+        xz-utils \
+        zip
+        
+    pip install virtualenv
+else
+    sudo apt-get install -y \
+        pkg-config \
+        git \
+        subversion \
+        curl \
+        wget \
+        build-essential \
+        python \
+        xz-utils \
+        zip
+fi
 
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
-cd depot_tools
-git reset --hard 8d16d4a
-cd ..
+if [ "$VERSION" != "10.6.194" ]; then 
+    cd depot_tools
+    git reset --hard 8d16d4a
+    cd ..
+fi
 export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
@@ -62,6 +82,7 @@ symbol_level=1
 use_custom_libcxx=false
 use_custom_libcxx_for_host=true
 v8_enable_pointer_compression=false
+v8_enable_sandbox = false
 '
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release wee8

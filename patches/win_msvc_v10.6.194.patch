@@ -1,0 +1,26 @@
+diff --git a/include/v8-cppgc.h b/include/v8-cppgc.h
+index 412154930f7..e4aca177ced 100644
+--- a/include/v8-cppgc.h
++++ b/include/v8-cppgc.h
+@@ -77,6 +77,8 @@ struct WrapperDescriptor final {
+ };
+ 
+ struct V8_EXPORT CppHeapCreateParams {
++  CppHeapCreateParams(const CppHeapCreateParams&) = delete;
++  CppHeapCreateParams& operator=(const CppHeapCreateParams&) = delete;
+   std::vector<std::unique_ptr<cppgc::CustomSpaceBase>> custom_spaces;
+   WrapperDescriptor wrapper_descriptor;
+ };
+diff --git a/src/wasm/function-body-decoder-impl.h b/src/wasm/function-body-decoder-impl.h
+index b1445dd6a97..98194062d4f 100644
+--- a/src/wasm/function-body-decoder-impl.h
++++ b/src/wasm/function-body-decoder-impl.h
+@@ -2146,7 +2146,7 @@ class WasmDecoder : public Decoder {
+   }
+ 
+   // TODO(clemensb): This is only used by the interpreter; move there.
+-  V8_EXPORT_PRIVATE std::pair<uint32_t, uint32_t> StackEffect(const byte* pc) {
++  std::pair<uint32_t, uint32_t> StackEffect(const byte* pc) {
+     WasmOpcode opcode = static_cast<WasmOpcode>(*pc);
+     // Handle "simple" opcodes with a fixed signature first.
+     const FunctionSig* sig = WasmOpcodes::Signature(opcode);

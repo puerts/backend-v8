@@ -1,14 +1,49 @@
+#!/bin/bash
+
 VERSION=$1
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
+
+if [ "$VERSION" == "10.6.194" ]; then 
+    sudo apt-get install -y \
+        pkg-config \
+        git \
+        subversion \
+        curl \
+        wget \
+        build-essential \
+        python3 \
+        ninja-build \
+        xz-utils \
+        zip
+        
+    pip install virtualenv
+else
+    sudo apt-get install -y \
+        pkg-config \
+        git \
+        subversion \
+        curl \
+        wget \
+        build-essential \
+        python \
+        xz-utils \
+        zip
+fi
 
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
-cd depot_tools
-git reset --hard 8d16d4a
-cd ..
+if [ "$VERSION" != "10.6.194" ]; then 
+    cd depot_tools
+    git reset --hard 8d16d4a
+    cd ..
+fi
 export DEPOT_TOOLS_UPDATE=0
-export PATH=$(pwd)/depot_tools:$(pwd)/depot_tools/.cipd_bin/2.7/bin:$PATH
+if [ "$VERSION" == "10.6.194" ]; then 
+    export PATH=$(pwd)/depot_tools:$PATH
+else
+    export PATH=$(pwd)/depot_tools:$(pwd)/depot_tools/.cipd_bin/2.7/bin:$PATH
+fi
 gclient
 
 
@@ -44,6 +79,7 @@ strip_debug_info = true
 symbol_level=0
 libcxx_abi_unstable = false
 v8_enable_pointer_compression=false
+v8_enable_sandbox = false
 '
 
 ninja -C out.gn/arm64.release -t clean

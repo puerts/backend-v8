@@ -1,0 +1,1194 @@
+diff --git a/build_config.h b/build_config.h
+index 19147502b..b10e62666 100644
+--- a/build_config.h
++++ b/build_config.h
+@@ -57,6 +57,8 @@
+ #define OS_NACL 1
+ #elif defined(ANDROID)
+ #define OS_ANDROID 1
++#elif defined(OSOHOS)
++#define OS_OHOS 1
+ #elif defined(__APPLE__)
+ // Only include TargetConditionals after testing ANDROID as some Android builds
+ // on the Mac have this header available and it's not needed unless the target
+@@ -126,7 +128,7 @@
+     defined(OS_FREEBSD) || defined(OS_IOS) || defined(OS_LINUX) ||  \
+     defined(OS_CHROMEOS) || defined(OS_MAC) || defined(OS_NACL) ||  \
+     defined(OS_NETBSD) || defined(OS_OPENBSD) || defined(OS_QNX) || \
+-    defined(OS_SOLARIS) || defined(OS_ZOS)
++    defined(OS_SOLARIS) || defined(OS_ZOS) || defined(OS_OHOS)
+ #define OS_POSIX 1
+ #endif
+ 
+@@ -364,7 +366,7 @@
+ #error Please add support for your compiler in build/build_config.h
+ #endif
+ 
+-#if defined(OS_ANDROID)
++#if defined(OS_ANDROID) || defined(OS_OHOS)
+ // The compiler thinks std::string::const_iterator and "const char*" are
+ // equivalent types.
+ #define STD_STRING_ITERATOR_IS_CHAR_POINTER
+diff --git a/config/BUILD.gn b/config/BUILD.gn
+index 2aa326b70..b7f852c1f 100644
+--- a/config/BUILD.gn
++++ b/config/BUILD.gn
+@@ -19,7 +19,7 @@ import("//build/config/pch.gni")
+ import("//build/config/sanitizers/sanitizers.gni")
+ import("//build/config/ui.gni")
+ import("//build/toolchain/goma.gni")
+-if (is_android) {
++if (is_android || is_ohos) {
+   import("//build/config/android/abi.gni")
+ }
+ 
+@@ -197,7 +197,7 @@ config("default_libs") {
+         "ole32.lib",
+       ]
+     }
+-  } else if (is_android) {
++  } else if (is_android || is_ohos) {
+     libs = [
+       "dl",
+       "m",
+@@ -301,7 +301,7 @@ config("executable_config") {
+       "//build/config/ios:ios_dynamic_flags",
+       "//build/config/ios:ios_executable_flags",
+     ]
+-  } else if (is_linux || is_chromeos || is_android || current_os == "aix") {
++  } else if (is_linux || is_chromeos || is_android || current_os == "aix" || is_ohos) {
+     configs += [ "//build/config/gcc:executable_config" ]
+     if (is_castos || is_cast_android) {
+       configs += [ "//build/config/chromecast:executable_config" ]
+diff --git a/config/BUILDCONFIG.gn b/config/BUILDCONFIG.gn
+index c737e53c2..33c908390 100644
+--- a/config/BUILDCONFIG.gn
++++ b/config/BUILDCONFIG.gn
+@@ -231,6 +231,10 @@ if (target_os == "android") {
+   assert(host_os == "linux" || host_os == "mac",
+          "Android builds are only supported on Linux and Mac hosts.")
+   _default_toolchain = "//build/toolchain/android:android_clang_$target_cpu"
++} else if (target_os == "ohos") {
++  assert(host_os == "linux" || host_os == "mac",
++         "ohos builds are only supported on Linux and Mac hosts.")
++  _default_toolchain = "//build/toolchain/ohos:ohos_clang_$target_cpu"
+ } else if (target_os == "chromeos" || target_os == "linux") {
+   # See comments in build/toolchain/cros/BUILD.gn about board compiles.
+   if (is_clang) {
+@@ -302,6 +306,11 @@ is_linux = current_os == "linux"
+ is_mac = current_os == "mac"
+ is_nacl = current_os == "nacl"
+ is_win = current_os == "win" || current_os == "winuwp"
++is_ohos = current_os == "ohos"
++
++declare_args() {
++  use_musl = false
++}
+ 
+ is_apple = is_ios || is_mac
+ is_posix = !is_win && !is_fuchsia
+@@ -372,7 +381,7 @@ if (is_fuchsia) {
+   default_compiler_configs += [ "//build/config/gcc:symbol_visibility_hidden" ]
+ }
+ 
+-if (is_android) {
++if (is_android || is_ohos) {
+   default_compiler_configs +=
+       [ "//build/config/android:default_orderfile_instrumentation" ]
+ }
+@@ -517,7 +526,7 @@ foreach(_target_type,
+       # On Android, write shared library output file to metadata. We will use
+       # this information to, for instance, collect all shared libraries that
+       # should be packaged into an APK.
+-      if (!defined(invoker.metadata) && is_android &&
++      if (!defined(invoker.metadata) && (is_android || is_ohos) &&
+           (_target_type == "shared_library" ||
+            _target_type == "loadable_module")) {
+         _output_name = _target_name
+diff --git a/config/android/BUILD.gn b/config/android/BUILD.gn
+index ec6988180..8c62725ba 100644
+--- a/config/android/BUILD.gn
++++ b/config/android/BUILD.gn
+@@ -11,7 +11,7 @@ if (current_toolchain == default_toolchain) {
+   import("//build/toolchain/concurrent_links.gni")
+ }
+ 
+-assert(is_android)
++assert(is_android || is_ohos)
+ 
+ # This is included by reference in the //build/config/compiler config that
+ # is applied to all targets. It is here to separate out the logic that is
+diff --git a/config/android/abi.gni b/config/android/abi.gni
+index 9f2f14b30..f47a5ff3f 100644
+--- a/config/android/abi.gni
++++ b/config/android/abi.gni
+@@ -8,7 +8,11 @@
+ # NOTE: Because Chrome OS builds may depend on targets built with the Android
+ # toolchain, this GNI file may be read and processed from within Chrome OS
+ # toolchains. Checking |is_android| here would therefore be too restrictive.
+-assert(is_android || is_chromeos)
++assert(is_android || is_chromeos || is_ohos)
++
++if (is_ohos) {
++  import("//build/config/ohos/abi.gni")
++}
+ 
+ declare_args() {
+   # Adds intrumentation to each function. Writes a file with the order that
+@@ -36,6 +40,7 @@ declare_args() {
+   skip_secondary_abi_for_cq = false
+ }
+ 
++print("build config android abi use_order_profiling:",use_order_profiling)
+ assert(!devtools_instrumentation_dumping || use_order_profiling,
+        "devtools_instrumentation_dumping requires use_order_profiling")
+ assert(!use_call_graph || use_order_profiling,
+diff --git a/config/android/config.gni b/config/android/config.gni
+index 692a3af0b..e137ade95 100644
+--- a/config/android/config.gni
++++ b/config/android/config.gni
+@@ -7,7 +7,7 @@
+ # NOTE: Because Chrome OS builds may depend on targets built with the Android
+ # toolchain, this GNI file may be read and processed from within Chrome OS
+ # toolchains. Checking |is_android| here would therefore be too restrictive.
+-if (is_android || is_chromeos) {
++if (is_android || is_chromeos || is_ohos) {
+   import("//build/config/android/channel.gni")
+   import("//build/config/chromecast_build.gni")
+   import("//build/config/dcheck_always_on.gni")
+diff --git a/config/android/rules.gni b/config/android/rules.gni
+index ef8ac01a6..db523348c 100644
+--- a/config/android/rules.gni
++++ b/config/android/rules.gni
+@@ -16,7 +16,7 @@ import("//build/config/rts.gni")
+ import("//build/config/zip.gni")
+ import("//build/toolchain/toolchain.gni")
+ 
+-assert(is_android)
++assert(is_android || is_ohos)
+ 
+ declare_args() {
+   enable_jni_tracing = false
+diff --git a/config/arm.gni b/config/arm.gni
+index fb21f2b51..aa9536a09 100644
+--- a/config/arm.gni
++++ b/config/arm.gni
+@@ -45,7 +45,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
+     arm_arch = "armv8-a+crc"
+   }
+ 
+-  if (current_os == "android" || target_os == "android") {
++  if (current_os == "android" || target_os == "android" || target_os == "ohos") {
+     arm_float_abi = "softfp"
+   } else {
+     declare_args() {
+diff --git a/config/c++/c++.gni b/config/c++/c++.gni
+index 4d8e4853a..a128cb867 100644
+--- a/config/c++/c++.gni
++++ b/config/c++/c++.gni
+@@ -45,6 +45,11 @@ use_custom_libcxx =
+     use_custom_libcxx || (use_custom_libcxx_for_host && !is_a_target_toolchain)
+ use_custom_libcxx = use_custom_libcxx && !is_nacl
+ 
++if (is_ohos) {
++  use_custom_libcxx = false
++  use_custom_libcxx_for_host = false
++}
++
+ declare_args() {
+   # WARNING: Setting this to a non-default value is highly discouraged.
+   # If true, libc++ will be built as a shared library; otherwise libc++ will be
+diff --git a/config/clang/BUILD.gn b/config/clang/BUILD.gn
+index 68ce4ea4d..2472706fe 100644
+--- a/config/clang/BUILD.gn
++++ b/config/clang/BUILD.gn
+@@ -11,18 +11,18 @@ config("find_bad_constructs") {
+     # The plugin is built directly into clang, so there's no need to load it
+     # dynamically.
+     cflags += [
+-      "-Xclang",
+-      "-add-plugin",
+-      "-Xclang",
+-      "find-bad-constructs",
+-
+-      "-Xclang",
+-      "-plugin-arg-find-bad-constructs",
+-      "-Xclang",
+-      "raw-ref-template-as-trivial-member",
++      # "-Xclang",
++      # "-add-plugin",
++      # "-Xclang",
++      # "find-bad-constructs",
++
++      # "-Xclang",
++      # "-plugin-arg-find-bad-constructs",
++      # "-Xclang",
++      # "raw-ref-template-as-trivial-member",
+     ]
+ 
+-    if (is_linux || is_chromeos || is_android || is_fuchsia) {
++    if (is_linux || is_chromeos || is_android || is_fuchsia || is_ohos) {
+       cflags += [
+         "-Xclang",
+         "-plugin-arg-find-bad-constructs",
+diff --git a/config/clang/clang.gni b/config/clang/clang.gni
+index 1e6621848..298601bd6 100644
+--- a/config/clang/clang.gni
++++ b/config/clang/clang.gni
+@@ -6,6 +6,16 @@ import("//build/toolchain/toolchain.gni")
+ 
+ default_clang_base_path = "//third_party/llvm-build/Release+Asserts"
+ 
++if (is_ohos) {
++  import("//build/config/ohos/config.gni")
++}
++
++if (!is_ohos) {
++  default_clang_base_path = "//third_party/llvm-build/Release+Asserts"
++} else {
++  default_clang_base_path = ohos_toolchain_root
++}
++
+ declare_args() {
+   # Indicates if the build should use the Chrome-specific plugins for enforcing
+   # coding guidelines, etc. Only used when compiling with Chrome's Clang, not
+diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
+index 0272bf80f..6a38d4362 100644
+--- a/config/compiler/BUILD.gn
++++ b/config/compiler/BUILD.gn
+@@ -127,7 +127,7 @@ declare_args() {
+   # optimization settings to better tune the size increase.
+   thin_lto_enable_optimizations =
+       (is_chromeos || is_android || is_win || is_linux || is_mac ||
+-       (is_ios && use_lld)) && is_official_build
++       (is_ios && use_lld) || is_ohos) && is_official_build
+ 
+   # Initialize all local variables with a pattern. This flag will fill
+   # uninitialized floating-point types (and 32-bit pointers) with 0xFF and the
+@@ -137,7 +137,7 @@ declare_args() {
+   #
+   # TODO(crbug.com/1131993): Enabling this when 'is_android' is true breaks
+   # content_shell_test_apk on both ARM and x86.
+-  init_stack_vars = !is_android
++  init_stack_vars = !is_android && !is_ohos
+ 
+   # This argument is to control whether enabling text section splitting in the
+   # final binary. When enabled, the separated text sections with prefix
+@@ -180,12 +180,12 @@ declare_args() {
+   # lld doesn't have the bug.
+   use_icf = (is_posix || is_fuchsia) && !is_debug && !using_sanitizer &&
+             !use_clang_coverage && current_os != "zos" &&
+-            !(is_android && use_order_profiling) &&
++            !((is_android || is_ohos) && use_order_profiling) &&
+             (use_lld || (use_gold && (is_chromeos || !(current_cpu == "x86" ||
+                                                        current_cpu == "x64"))))
+ }
+ 
+-if (is_android || (is_chromeos_ash && is_chromeos_device)) {
++if (is_android || is_ohos || (is_chromeos_ash && is_chromeos_device)) {
+   # Set the path to use orderfile for linking Chrome
+   # Note that this is for using only one orderfile for linking
+   # the Chrome binary/library.
+@@ -223,7 +223,7 @@ config("default_include_dirs") {
+ # the executable they are loaded into, so they are unresolved at link-time.
+ config("no_unresolved_symbols") {
+   if (!using_sanitizer &&
+-      (is_linux || is_chromeos || is_android || is_fuchsia)) {
++      (is_linux || is_chromeos || is_android || is_fuchsia || is_ohos)) {
+     ldflags = [
+       "-Wl,-z,defs",
+       "-Wl,--as-needed",
+@@ -256,6 +256,8 @@ config("compiler") {
+     configs += [ "//build/config/win:compiler" ]
+   } else if (is_android) {
+     configs += [ "//build/config/android:compiler" ]
++  } else if (is_ohos) {
++    configs += [ "//build/config/ohos:compiler" ]
+   } else if (is_linux || is_chromeos) {
+     configs += [ "//build/config/linux:compiler" ]
+   } else if (is_nacl) {
+@@ -324,7 +326,7 @@ config("compiler") {
+       }
+ 
+       # The x86 toolchain currently has problems with stack-protector.
+-      if (is_android && current_cpu == "x86") {
++      if ((is_android || is_ohos) && current_cpu == "x86") {
+         cflags += [ "-fno-stack-protector" ]
+       } else if (current_os != "aix") {
+         # Not available on aix.
+@@ -388,7 +390,7 @@ config("compiler") {
+       ldflags += [ "-Wl,--build-id" ]
+     }
+ 
+-    if (!is_android) {
++    if (!is_android && !is_ohos) {
+       defines += [
+         # _FILE_OFFSET_BITS=64 should not be set on Android in order to maintain
+         # the behavior of the Android NDK from earlier versions.
+@@ -431,7 +433,7 @@ config("compiler") {
+ 
+   # Linux/Android/Fuchsia common flags setup.
+   # ---------------------------------
+-  if (is_linux || is_chromeos || is_android || is_fuchsia) {
++  if (is_linux || is_chromeos || is_android || is_fuchsia || is_ohos) {
+     asmflags += [ "-fPIC" ]
+     cflags += [ "-fPIC" ]
+     ldflags += [ "-fPIC" ]
+@@ -456,7 +458,7 @@ config("compiler") {
+   # ------------------------------------
+   if (use_gold) {
+     ldflags += [ "-fuse-ld=gold" ]
+-    if (!is_android) {
++    if (!is_android && !is_ohos) {
+       # On Android, this isn't needed.  gcc in the NDK knows to look next to
+       # it with -fuse-ld=gold, and clang gets a --gcc-toolchain flag passed
+       # above.
+@@ -533,7 +535,9 @@ config("compiler") {
+     # TODO(hans): Remove this once Clang generates better optimized debug info
+     # by default. https://crbug.com/765793
+     cflags += [
++      "-Xclang",
+       "-mllvm",
++      "-Xclang",
+       "-instcombine-lower-dbg-declare=0",
+     ]
+     if (!is_debug && use_thin_lto && is_a_target_toolchain) {
+@@ -560,7 +564,7 @@ config("compiler") {
+   # C11/C++11 compiler flags setup.
+   # ---------------------------
+   if (is_linux || is_chromeos || is_android || (is_nacl && is_clang) ||
+-      current_os == "aix") {
++      is_ohos || current_os == "aix") {
+     if (is_clang) {
+       standard_prefix = "c"
+ 
+@@ -660,6 +664,10 @@ config("compiler") {
+       # TODO(thakis): Check if '=0' (that is, number of cores, instead
+       # of "all" which means number of hardware threads) is faster.
+       ldflags += [ "-Wl,--thinlto-jobs=all" ]
++      if (is_ohos && !use_musl) {
++        ldflags -= [ "-Wl,--thinlto-jobs=all" ]
++        ldflags += [ "-Wl,--thinlto-jobs=8" ]
++      }
+       if (is_apple) {
+         ldflags += [
+           "-Wl,-cache_path_lto," +
+@@ -723,7 +731,7 @@ config("compiler") {
+ 
+   # Pass flag to LLD so Android builds can allow debuggerd to properly symbolize
+   # stack crashes (http://crbug.com/919499).
+-  if (use_lld && is_android) {
++  if (use_lld && (is_android || is_ohos)) {
+     ldflags += [ "-Wl,--no-rosegment" ]
+   }
+ 
+@@ -891,7 +899,7 @@ config("compiler_cpu_abi") {
+         ]
+       }
+     } else if (current_cpu == "arm") {
+-      if (is_clang && !is_android && !is_nacl &&
++      if (is_clang && !is_android && !is_nacl && !is_ohos &&
+           !(is_chromeos_lacros && is_chromeos_device)) {
+         cflags += [ "--target=arm-linux-gnueabihf" ]
+         ldflags += [ "--target=arm-linux-gnueabihf" ]
+@@ -906,7 +914,7 @@ config("compiler_cpu_abi") {
+         cflags += [ "-mtune=$arm_tune" ]
+       }
+     } else if (current_cpu == "arm64") {
+-      if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
++      if (is_clang && !is_android && !is_nacl && !is_fuchsia && !is_ohos &&
+           !(is_chromeos_lacros && is_chromeos_device)) {
+         cflags += [ "--target=aarch64-linux-gnu" ]
+         ldflags += [ "--target=aarch64-linux-gnu" ]
+@@ -1182,7 +1190,7 @@ config("compiler_codegen") {
+     configs += [ "//build/config/nacl:compiler_codegen" ]
+   }
+ 
+-  if (current_cpu == "arm64" && is_android) {
++  if (current_cpu == "arm64" && (is_android || is_ohos)) {
+     # On arm64 disable outlining for Android. See crbug.com/931297 for more
+     # information.
+     cflags += [ "-mno-outline" ]
+@@ -1190,7 +1198,7 @@ config("compiler_codegen") {
+     # This can be removed once https://bugs.llvm.org/show_bug.cgi?id=40348
+     # has been resolved, and -mno-outline is obeyed by the linker during
+     # ThinLTO.
+-    ldflags += [ "-Wl,-mllvm,-enable-machine-outliner=never" ]
++    # ldflags += [ "-Wl,-mllvm,-enable-machine-outliner=never" ]
+   }
+ 
+   asmflags = cflags
+@@ -1228,7 +1236,8 @@ config("compiler_deterministic") {
+   }
+ 
+   # Makes builds independent of absolute file path.
+-  if (is_clang && strip_absolute_paths_from_debug_symbols) {
++  if (is_clang && strip_absolute_paths_from_debug_symbols && !is_ohos &&
++      !is_linux) {
+     # If debug option is given, clang includes $cwd in debug info by default.
+     # For such build, this flag generates reproducible obj files even we use
+     # different build directory like "out/feature_a" and "out/feature_b" if
+@@ -1388,6 +1397,8 @@ config("runtime_library") {
+     configs += [ "//build/config/mac:runtime_library" ]
+   } else if (is_android) {
+     configs += [ "//build/config/android:runtime_library" ]
++  } else if (is_ohos) {
++    configs += [ "//build/config/ohos:runtime_library" ]
+   }
+ 
+   if (is_component_build) {
+@@ -1868,7 +1879,7 @@ config("no_exceptions") {
+ # See: //docs/static_initializers.md
+ # See: https://groups.google.com/a/chromium.org/d/topic/chromium-dev/B9Q5KTD7iCo/discussion
+ config("wglobal_constructors") {
+-  if (is_clang) {
++  if (is_clang && !is_ohos && !is_linux) {
+     cflags = [ "-Wglobal-constructors" ]
+   }
+ }
+@@ -1877,7 +1888,7 @@ config("wglobal_constructors") {
+ # destructors, which will slow down closing the program.
+ # TODO(thakis): Make this a blocklist instead, http://crbug.com/101600
+ config("wexit_time_destructors") {
+-  if (is_clang) {
++  if (is_clang && !is_ohos) {
+     cflags = [ "-Wexit-time-destructors" ]
+   }
+ }
+@@ -1944,7 +1955,7 @@ if (is_win) {
+   common_optimize_on_cflags = []
+   common_optimize_on_ldflags = []
+ 
+-  if (is_android) {
++  if (is_android || is_ohos) {
+     # TODO(jdduke) Re-enable on mips after resolving linking
+     # issues with libc++ (crbug.com/456380).
+     if (current_cpu != "mipsel" && current_cpu != "mips64el") {
+@@ -2068,7 +2079,7 @@ config("no_optimize") {
+       # traces on Windows ARM64 rely on it.
+       cflags += [ "/Oy-" ]
+     }
+-  } else if (is_android && !android_full_debug) {
++  } else if ((is_android || is_ohos) && !android_full_debug) {
+     # On Android we kind of optimize some things that don't affect debugging
+     # much even when optimization is disabled to get the binary size down.
+     if (is_clang) {
+@@ -2191,9 +2202,9 @@ if (is_clang && is_a_target_toolchain) {
+   } else if (clang_use_default_sample_profile) {
+     assert(build_with_chromium,
+            "Our default profiles currently only apply to Chromium")
+-    assert(is_android || is_chromeos || is_castos,
++    assert(is_android || is_chromeos || is_castos || is_ohos,
+            "The current platform has no default profile")
+-    if (is_android || is_castos) {
++    if (is_android || is_castos || is_ohos) {
+       _clang_sample_profile = "//chrome/android/profiles/afdo.prof"
+     } else {
+       assert(chromeos_afdo_platform == "atom" ||
+@@ -2452,7 +2463,7 @@ config("minimal_symbols") {
+     }
+ 
+     ldflags = []
+-    if (is_android && is_clang) {
++    if ((is_android || is_ohos) && is_clang) {
+       # Android defaults to symbol_level=1 builds, but clang, unlike gcc,
+       # doesn't emit DW_AT_linkage_name in -g1 builds.
+       # -fdebug-info-for-profiling enables that (and a bunch of other things we
+@@ -2495,7 +2506,7 @@ config("default_symbols") {
+   }
+ 
+   # This config is removed by base unittests apk.
+-  if (is_android && is_clang && strip_debug_info) {
++  if ((is_android || is_ohos) && is_clang && strip_debug_info) {
+     configs += [ ":strip_debug" ]
+   }
+ }
+@@ -2529,7 +2540,7 @@ if (is_chromeos_ash && is_chromeos_device) {
+   }
+ }
+ 
+-if (is_android || (is_chromeos_ash && is_chromeos_device)) {
++if (is_android || is_ohos || (is_chromeos_ash && is_chromeos_device)) {
+   # Use orderfile for linking Chrome on Android and Chrome OS.
+   # This config enables using an orderfile for linking in LLD.
+   # TODO: Consider using call graph sort instead, at least on Android.
+diff --git a/config/compiler/compiler.gni b/config/compiler/compiler.gni
+index 5550eecf1..c81ce2257 100644
+--- a/config/compiler/compiler.gni
++++ b/config/compiler/compiler.gni
+@@ -13,7 +13,7 @@ import("//build/toolchain/goma.gni")
+ import("//build/toolchain/toolchain.gni")
+ import("//build_overrides/build.gni")
+ 
+-if (is_android) {
++if (is_android || is_ohos) {
+   import("//build/config/android/abi.gni")
+ }
+ if (current_cpu == "arm" || current_cpu == "arm64") {
+@@ -89,7 +89,7 @@ declare_args() {
+   # have the same LLVM revisions as us, making bitcode useless to them.
+   use_thin_lto =
+       is_cfi || (is_clang && is_official_build && chrome_pgo_phase != 1 &&
+-                 (is_linux || is_win || is_mac ||
++                 (is_linux || is_win || is_mac || is_ohos ||
+                   (is_ios && use_lld && !is_cronet_build) ||
+                   (is_android && target_os != "chromeos") ||
+                   (is_chromeos && is_chromeos_device)))
+@@ -135,7 +135,7 @@ declare_args() {
+ 
+   # If true, optimize for size.
+   # Default to favoring speed over size for platforms not listed below.
+-  optimize_for_size = is_android || is_ios || is_fuchsia || is_castos
++  optimize_for_size = is_android || is_ios || is_fuchsia || is_castos || is_ohos
+ }
+ 
+ assert(!is_cfi || use_thin_lto, "CFI requires ThinLTO")
+@@ -167,7 +167,7 @@ if (is_chromeos) {
+   } else {
+     enable_frame_pointers = true
+   }
+-} else if (is_android) {
++} else if (is_android || is_ohos) {
+   enable_frame_pointers =
+       enable_profiling ||
+       # Ensure that stacks from arm64 crash dumps are usable (crbug.com/391706).
+@@ -215,7 +215,7 @@ can_unwind_with_cfi_table = is_android && !is_component_build &&
+ # Whether or not cfi table should be enabled on arm.
+ # TODO(crbug.com/1090409): Replace can_unwind_with_cfi_table with this once
+ # sampling profiler is enabled on android.
+-enable_arm_cfi_table = is_android && !is_component_build && current_cpu == "arm"
++enable_arm_cfi_table = (is_android || is_ohos) && !is_component_build && current_cpu == "arm"
+ 
+ declare_args() {
+   # Whether to use the gold linker from binutils instead of lld or bfd.
+@@ -225,7 +225,7 @@ declare_args() {
+                (current_cpu == "x64" || current_cpu == "x86" ||
+                 current_cpu == "arm" || current_cpu == "arm64" ||
+                 current_cpu == "mipsel" || current_cpu == "mips64el")) ||
+-              (is_android && (current_cpu == "x86" || current_cpu == "x64" ||
++              ((is_android || is_ohos) && (current_cpu == "x86" || current_cpu == "x64" ||
+                               current_cpu == "arm" || current_cpu == "arm64")))
+ }
+ 
+@@ -240,7 +240,7 @@ declare_args() {
+ # official builders.
+ strip_absolute_paths_from_debug_symbols_default =
+     is_android || is_fuchsia || is_nacl || (is_win && use_lld) || is_linux ||
+-    is_chromeos || (is_apple && !enable_dsyms)
++    is_chromeos || (is_apple && !enable_dsyms) || is_ohos
+ 
+ # If the platform uses stripped absolute paths by default, then we don't expose
+ # it as a configuration option. If this is causing problems, please file a bug.
+@@ -258,13 +258,13 @@ assert(
+     "Invalid use_debug_fission.")
+ if (use_debug_fission == "default") {
+   use_debug_fission = is_debug && !is_android && !is_fuchsia && !is_apple &&
+-                      !is_win && (use_gold || use_lld) && cc_wrapper == ""
++                      !is_win && (use_gold || use_lld) && cc_wrapper == "" && !is_ohos
+ }
+ 
+ # If it wasn't manually set, set to an appropriate default.
+ assert(symbol_level >= -1 && symbol_level <= 2, "Invalid symbol_level")
+ if (symbol_level == -1) {
+-  if (is_android && !is_component_build && !use_debug_fission) {
++  if ((is_android || is_ohos) && !is_component_build && !use_debug_fission) {
+     # Prefer faster & smaller release builds.
+     symbol_level = 1
+   } else if (is_chromeos_device) {
+diff --git a/config/ohos/BUILD.gn b/config/ohos/BUILD.gn
+new file mode 100644
+index 000000000..1f63ffd5a
+--- /dev/null
++++ b/config/ohos/BUILD.gn
+@@ -0,0 +1,303 @@
++# Copyright 2022 The Huawei Authors. All rights reserved.
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++
++import("//build/config/c++/c++.gni")
++import("//build/config/compiler/compiler.gni")
++import("//build/config/ohos/config.gni")
++import("//build/config/sanitizers/sanitizers.gni")
++
++assert(is_ohos)
++
++# This is included by reference in the //build/config/compiler config that
++# is applied to all targets. It is here to separate out the logic that is
++# ohos-only.
++config("compiler") {
++  cflags = [
++    "-ffunction-sections",
++    "-fno-short-enums",
++  ]
++  defines = [
++    "OSOHOS",
++
++    # The NDK has these things, but doesn't define the constants to say that it
++    # does. Define them here instead.
++    "HAVE_SYS_UIO_H",
++  ]
++
++  if (use_musl) {
++    defines += [
++      "__MUSL__",
++      "_LIBCPP_HAS_MUSL_LIBC",
++      "__BUILD_LINUX_WITH_CLANG",
++    ]
++    if (current_cpu == "x64") {
++      defines += [ "PTRACE_GET_THREAD_AREA=25" ]
++    }
++  } else {
++    defines += [ "__BUILD_LINUX_WITH_CLANG" ]
++  }
++
++  ldflags = [
++    "-Wl,--exclude-libs=libgcc.a",
++    "-Wl,--no-undefined",
++    "-Wl,--exclude-libs=libunwind_llvm.a",
++    "-Wl,--exclude-libs=libc++_static.a",
++
++    # Don't allow visible symbols from libraries that contain
++    # assembly code with symbols that aren't hidden properly.
++    # http://crbug.com/448386
++    "-Wl,--exclude-libs=libvpx_assembly_arm.a",
++  ]
++
++  # TODO(crbug.com/1184398): Move to compiler-rt when we are ready.
++  if (use_musl) {
++    if (current_cpu == "arm") {
++    } else {
++      # ldflags += [ "--rtlib=libgcc" ]
++    }
++  }
++
++  if (current_cpu == "arm64") {
++    # For outline atomics on AArch64 (can't pass this unconditionally
++    # due to unused flag warning on other targets).
++    # cflags += [ "--rtlib=libgcc" ]
++  }
++
++  # $compile_api_level corresponds to the API level used for the sysroot path
++  # calculation in //build/config/ohos/config.gni
++  if (current_cpu == "arm") {
++    abi_target = "arm-linux-androideabi"
++    if (use_musl) {
++      abi_target = "arm-linux-ohosmusl"
++    } else {
++      compile_api_level = arm32_ndk_api_level
++    }
++  } else if (current_cpu == "x86") {
++    abi_target = ""
++    compile_api_level = ""
++  } else if (current_cpu == "arm64") {
++    abi_target = "aarch64-linux-ohos"
++    if (!use_musl) {
++      abi_target = "aarch64-linux-android"
++      compile_api_level = arm64_ndk_api_level
++    }
++  } else if (current_cpu == "x64") {
++    abi_target = "x86_64-linux-ohos"
++  } else {
++    assert(false, "Architecture not supported")
++  }
++
++  if (use_musl) {
++    cflags += [ "--target=$abi_target" ]
++    include_dirs = [ "$ohos_toolchain_root/include/libcxx-ohos/include/c++/v1" ]
++    if (current_cpu == "x64") {
++      include_dirs += [ "$ohos_sysroot/usr/include/x86_64-linux-ohos/asm-x86" ]
++    }
++    include_dirs += [ "$ohos_sysroot/usr/include" ]
++    ldflags += [ "--target=$abi_target" ]
++  } else {
++    cflags += [
++      "--target=$abi_target",
++      "-D__ANDROID_API__=$compile_api_level",
++    ]
++    ldflags += [ "--target=$abi_target" ]
++    include_dirs = [
++      "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/sysroot/usr/include",
++      "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/sysroot/usr/include/$abi_target",
++    ]
++  }
++
++  # Assign any flags set for the C compiler to asmflags so that they are sent
++  # to the assembler.
++  asmflags = cflags
++}
++
++# This is included by reference in the //build/config/compiler:runtime_library
++# config that is applied to all targets. It is here to separate out the logic
++# that is Android-only. Please see that target for advice on what should go in
++# :runtime_library vs. :compiler.
++config("runtime_library") {
++  libs = []
++  ldflags = []
++
++  if (use_musl) {
++    defines = [
++      "__MUSL__",
++      "_LIBCPP_HAS_MUSL_LIBC",
++      "__BUILD_LINUX_WITH_CLANG",
++    ]
++  } else {
++    defines = [ "__BUILD_LINUX_WITH_CLANG" ]
++  }
++  if (use_musl) {
++    ldflags += [ "-Wl,--dynamic-linker,/lib/ld-musl-arm.so.1" ]
++
++    if (current_cpu == "arm") {
++      ldflags += [ "-L" + rebase_path("$ohos_sysroot/usr/lib/arm-linux-ohos",
++                                      root_build_dir) ]
++      ldflags +=
++          [ "-L" + rebase_path("$ohos_toolchain_root/lib/arm-linux-ohos/c++",
++                               root_build_dir) ]
++      ldflags +=
++          [ "-L" + rebase_path(
++                "$ohos_toolchain_root/lib/clang/15.0.4/lib/arm-linux-ohos",
++                root_build_dir) ]
++      libclang_rt_file = "$ohos_toolchain_root/lib/clang/15.0.4/lib/arm-linux-ohos/libclang_rt.builtins.a"
++    }
++
++    if (current_cpu == "arm64") {
++      ldflags += [ "-Wl,-z,max-page-size=4096" ]
++      ldflags += [ "-Wl,--hash-style=gnu" ]
++      ldflags +=
++          [ "-L" + rebase_path("$ohos_sysroot/usr/lib/aarch64-linux-ohos",
++                               root_build_dir) ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_toolchain_root/lib/aarch64-linux-ohos/c++",
++                       root_build_dir) ]
++      ldflags +=
++          [ "-L" + rebase_path(
++                "$ohos_toolchain_root/lib/clang/15.0.4/lib/aarch64-linux-ohos",
++                root_build_dir) ]
++      libclang_rt_file = "$ohos_toolchain_root/lib/clang/15.0.4/lib/aarch64-linux-ohos/libclang_rt.builtins.a"
++
++      if (is_asan) {
++        libasan_file = "$ohos_toolchain_root/lib/clang/15.0.4/lib/aarch64-linux-ohos/libclang_rt.asan.so"
++        libs += [ rebase_path(libasan_file) ]
++      }
++    }
++
++    if (current_cpu == "x64") {
++      ldflags += [ "-Wl,-z,max-page-size=4096" ]
++      ldflags += [ "-Wl,--hash-style=gnu" ]
++      ldflags += [ "-L" + rebase_path("$ohos_sysroot/usr/lib/x86_64-linux-ohos",
++                                      root_build_dir) ]
++      ldflags +=
++          [ "-L" + rebase_path("$ohos_toolchain_root/lib/x86_64-linux-ohos/c++",
++                               root_build_dir) ]
++      ldflags +=
++          [ "-L" + rebase_path(
++                "$ohos_toolchain_root/lib/clang/15.0.4/lib/x86_64-linux-ohos",
++                root_build_dir) ]
++      libclang_rt_file = "$ohos_toolchain_root/lib/clang/15.0.4/lib/x86_64-linux-ohos/libclang_rt.builtins.a"
++    }
++
++    libs += [
++      rebase_path(libclang_rt_file),
++      "c",
++      "c++",
++      "c++abi",
++    ]
++  } else {
++    cflags = [
++      "-isystem" + rebase_path(
++              "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/libcxx/include",
++              root_build_dir),
++      "-isystem" + rebase_path(
++              "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/libcxxabi/include",
++              root_build_dir),
++      "-isystem" + rebase_path("$ohos_toolchain_root/lib64/clang/9.0.3/include",
++                               root_build_dir),
++      "-isystem" + rebase_path(
++              "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/sysroot/usr/include",
++              root_build_dir),
++      "-isystem" + rebase_path(
++              "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/sysroot/usr/include/arm-linux-androideabi",
++              root_build_dir),
++    ]
++
++    cflags_cc = [
++      "-isystem" + rebase_path(
++              "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/libcxx/include",
++              root_build_dir),
++      "-isystem" + rebase_path(
++              "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/libcxxabi/include",
++              root_build_dir),
++    ]
++
++    if (current_cpu == "arm") {
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_ndk_root/gcc/linux-x86/arm/gcc-linaro-7.5.0-arm-linux-gnueabi/arm-linux-gnueabi/lib",
++                       root_build_dir) ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_ndk_root/gcc/linux-x86/arm/gcc-linaro-7.5.0-arm-linux-gnueabi/lib/gcc/arm-linux-gnueabi/7.5.0",
++                       root_build_dir) ]
++      ldflags += [ "-l:libgcc.a" ]
++      ldflags +=
++          [ "-L" + rebase_path(
++                "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/libcxx/arm",
++                root_build_dir) ]
++      ldflags += [ "-l:libc++_static.a" ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_toolchain_root/lib64/clang/9.0.3/lib/linux",
++                       root_build_dir) ]
++      ldflags += [ "-l:libclang_rt.builtins-arm-android.a" ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/sdk/shared_library/arm",
++                       root_build_dir) ]
++      ldflags += [ "-l:liblog.so" ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/platforms/current/arch-arm/usr/lib",
++                       root_build_dir) ]
++    }
++
++    if (current_cpu == "arm64") {
++      ldflags += [ "-Wl,-z,max-page-size=4096" ]
++      ldflags += [ "-Wl,--hash-style=gnu" ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_ndk_root/gcc/linux-x86/arm/gcc-linaro-7.5.0-arm-linux-gnueabi/arm-linux-gnueabi/lib",
++                       root_build_dir) ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_ndk_root/gcc/linux-x86/arm/gcc-linaro-7.5.0-arm-linux-gnueabi/lib/gcc/arm-linux-gnueabi/7.5.0",
++                       root_build_dir) ]
++      ldflags += [ "-l:libgcc.a" ]
++      ldflags +=
++          [ "-L" + rebase_path(
++                "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/libcxx/arm64",
++                root_build_dir) ]
++      ldflags += [ "-l:libc++_static.a" ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_toolchain_root/lib64/clang/9.0.3/lib/linux",
++                       root_build_dir) ]
++      ldflags += [ "-l:libclang_rt.builtins-aarch64-android.a" ]
++      ldflags += [ "-L" + rebase_path(
++                       "//ohos_ndk_aosp/aosp_prebuilt_libs/asdk_libs/sdk/shared_library/arm64",
++                       root_build_dir) ]
++      ldflags += [ "-l:liblog.so" ]
++      ldflags += [ "-L" + rebase_path(
++                       "$ohos_ndk_root/aosp_prebuilt_libs/asdk_libs/ndk/platforms/current/arch-arm64/usr/lib",
++                       root_build_dir) ]
++    }
++
++    libs += [ "unwind_llvm" ]
++  }
++
++  # arm builds of libc++ starting in NDK r12 depend on unwind.
++  if (current_cpu == "arm") {
++    libs += [ "unwind" ]
++  }
++
++  # TODO(jdduke) Re-enable on mips after resolving linking
++  # issues with libc++ (crbug.com/456380).
++  if (current_cpu != "mipsel" && current_cpu != "mips64el") {
++    ldflags += [ "-Wl,--warn-shared-textrel" ]
++  }
++}
++
++config("lld_pack_relocations") {
++  if (use_musl) {
++    ldflags = [ "-Wl,--pack-dyn-relocs=relr" ]
++  } else {
++    ldflags = [ "-Wl,--pack-dyn-relocs=android" ]
++  }
++}
++
++# Used for instrumented build to generate the orderfile.
++config("default_orderfile_instrumentation") {
++  if (use_order_profiling) {
++    cflags = [ "-finstrument-function-entry-bare" ]
++    if (use_thin_lto) {
++      ldflags = [ "-Wl,-u,__cyg_profile_func_enter_bare" ]
++    }
++  }
++}
+diff --git a/config/ohos/abi.gni b/config/ohos/abi.gni
+new file mode 100644
+index 000000000..146e38562
+--- /dev/null
++++ b/config/ohos/abi.gni
+@@ -0,0 +1,48 @@
++# Copyright 2022 The Huawei Authors. All rights reserved.
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++
++# Logic separated out from config.gni so that it can be used by compiler.gni
++# without introducing a circular dependency.
++
++assert(is_ohos)
++
++if (current_cpu == "x86") {
++  ohos_app_abi = "x86"
++} else if (current_cpu == "arm") {
++  import("//build/config/arm.gni")
++  if (arm_version < 7) {
++    ohos_app_abi = "armeabi"
++  } else {
++    ohos_app_abi = "armeabi-v7a"
++  }
++} else if (current_cpu == "x64") {
++  ohos_app_abi = "x86_64"
++} else if (current_cpu == "arm64") {
++  ohos_app_abi = "arm64-v8a"
++} else {
++  assert(false, "Unknown ABI: " + current_cpu)
++}
++
++if (target_cpu == "arm64" || target_cpu == "x64") {
++  ohos_64bit_target_cpu = true
++} else if (target_cpu == "arm" || target_cpu == "x86") {
++  ohos_64bit_target_cpu = false
++} else {
++  assert(false, "Unknown target CPU: $target_cpu")
++}
++
++# Intentionally do not define ohos_app_secondary_abi_cpu and
++# ohos_app_secondary_abi for 32-bit target_cpu, since they are not used.
++if (target_cpu == "arm64") {
++  ohos_secondary_abi_cpu = "arm"
++  ohos_app_secondary_abi = "armeabi-v7a"
++} else if (target_cpu == "x64") {
++  ohos_secondary_abi_cpu = "x86"
++  ohos_app_secondary_abi = "x86"
++}
++
++if (defined(ohos_secondary_abi_cpu)) {
++  ohos_secondary_abi_cpu =
++      "//build/toolchain/ohos:ohos_clang_${ohos_secondary_abi_cpu}"
++}
+diff --git a/config/ohos/config.gni b/config/ohos/config.gni
+new file mode 100644
+index 000000000..14c592038
+--- /dev/null
++++ b/config/ohos/config.gni
+@@ -0,0 +1,139 @@
++# Copyright 2022 The Huawei Authors. All rights reserved.
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++
++if (is_ohos) {
++  import("//build/config/dcheck_always_on.gni")
++  import("//build_overrides/build.gni")
++  import("abi.gni")
++
++  OHOS_NDK_HOME = getenv("OHOS_NDK_HOME")
++  declare_args() {
++    use_ohos_sdk_sysroot = false
++
++    # enable ohos bytrace, false by default
++    enable_ohos_bytrace = true
++
++    # Enable ohos_nweb_hap build target.
++    enable_ohos_nweb_hap = false
++  }
++
++  declare_args() {
++    arm32_ndk_api_level = 21
++    arm64_ndk_api_level = 21
++  }
++
++  declare_args() {
++    build_chromium_with_ohos_src = true
++    product_name = ""
++    gpu_switch = "on"
++  }
++
++  # Defines the name the ohos build gives to the current host CPU
++  # architecture, which is different than the names GN uses.
++  if (host_cpu == "x64") {
++    ohos_host_arch = "x86_64"
++  } else if (host_cpu == "x86") {
++    ohos_host_arch = "x86"
++  } else {
++    assert(false, "Need ohos toolchain support for your build CPU arch.")
++  }
++
++  # Defines the name the ohos build gives to the current host CPU
++  # architecture, which is different than the names GN uses.
++  if (host_os == "linux") {
++    ohos_host_os = "linux"
++  } else if (host_os == "mac") {
++    ohos_host_os = "darwin"
++  } else {
++    assert(false, "Need ohos toolchain support for your build OS.")
++  }
++
++  # config dependent paths
++  if (build_chromium_with_ohos_src) {
++    ohos_ndk_root = "//../../../prebuilts"
++    ohos_build_root = "//../../.."
++    if (use_musl) {
++      if (current_cpu == "x64") {
++        ohos_toolchain_root = "$ohos_ndk_root/clang/ohos/windows-x86_64/llvm"
++        ohos_sysroot = "$ohos_build_root/out/arm64/obj/third_party/musl"
++        ohos_libs_root = "$ohos_build_root/out/arm64/packages/phone/system/lib64"
++      } else {
++        ohos_toolchain_root = "$ohos_ndk_root/clang/ohos/linux-x86_64/llvm"
++        if (product_name == "rk3568") {
++          ohos_sysroot = "$ohos_build_root/out/rk3568/obj/third_party/musl"
++          if (current_cpu == "arm") {
++            ohos_libs_root = "$ohos_build_root/out/rk3568/packages/phone/system/lib"
++          } else {
++            ohos_libs_root = "$ohos_build_root/out/rk3568/packages/phone/system/lib64"
++          }
++        } else {
++          ohos_sysroot = "$ohos_build_root/out/generic_generic_arm_64only/hisi_newbaltimore_newphone_standard/obj/third_party/musl"
++          ohos_libs_root = "$ohos_build_root/out/generic_generic_arm_64only/hisi_newbaltimore_newphone_standard/packages/phone/system/lib64"
++        }
++      }
++      ohos_ndk_root = "${OHOS_NDK_HOME}"
++      ohos_toolchain_root = "$ohos_ndk_root/llvm"
++      ohos_sysroot = "$ohos_ndk_root/sysroot"
++
++      print("build config ohos config ohos_toolchain_root",ohos_toolchain_root)
++    } else {
++      assert(false, "Unsupport Non-musl target!")
++    }
++
++    # ohos include and libs dependencies
++    ohos_src_includes = [
++      "$ohos_build_root/base/hiviewdfx/hilog/interfaces/native/innerkits/include",
++      "$ohos_build_root/base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include/",
++      "$ohos_build_root/base/hiviewdfx/hitrace/interfaces/native/innerkits/include/hitrace_meter",
++      "$ohos_build_root/base/web/webview/ohos_adapter/interfaces",
++      "$ohos_build_root/commonlibrary/c_utils/base/include",
++      "$ohos_build_root/foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
++    ]
++
++    ohos_libs_dir = [
++      "$ohos_libs_root",
++      "$ohos_libs_root/chipset-pub-sdk",
++      "$ohos_libs_root/platformsdk",
++    ]
++  } else {
++    if (use_musl) {
++      if (current_cpu == "x64") {
++        ohos_build_root = "${OHOS_NDK_HOME}"
++        ohos_ndk_root = "${OHOS_NDK_HOME}"
++      } else {
++        ohos_build_root = "${OHOS_NDK_HOME}"
++        ohos_ndk_root = "${OHOS_NDK_HOME}"
++      }
++      ohos_toolchain_root = "$ohos_ndk_root/toolchains/llvm"
++      print("build config ohos config ohos_toolchain_root 2",ohos_toolchain_root)
++      ohos_sysroot = "$ohos_ndk_root/sysroot"
++    } else {
++      assert(false, "Unsupport Non-musl target!")
++    }
++
++    if (use_ohos_sdk_sysroot) {
++      import("//ohos_sdk/ohos_sdk.gni")
++      ohos_sdk_root = "//ohos_sdk"
++      ohos_sysroot = "$ohos_sdk_root/native/$ohos_sdk_version/sysroot/"
++    }
++
++    # ohos include and libs dependencies, corresponding to gen_ohos_ndk.sh
++    ohos_src_includes = [
++      "$ohos_build_root/includes",
++      "$ohos_build_root/includes/hisysevent",
++      "$ohos_build_root/includes/hitrace_meter",
++      "$ohos_build_root/includes/multimodalinput",
++      "$ohos_build_root/includes/ohos_adapter",
++      "$ohos_build_root/includes/utils",
++    ]
++
++    if (current_cpu == "arm") {
++      ohos_libs_dir = [ "$ohos_build_root/libs" ]
++    } else if (current_cpu == "arm64") {
++      ohos_libs_dir = [ "$ohos_build_root/libs64" ]
++    } else if (current_cpu == "x64") {
++      ohos_libs_dir = [ "$ohos_build_root/libs64" ]
++    }
++  }
++}
+diff --git a/config/sysroot.gni b/config/sysroot.gni
+index cbcf0a3f0..2fdda7578 100644
+--- a/config/sysroot.gni
++++ b/config/sysroot.gni
+@@ -35,6 +35,9 @@ if (sysroot == "") {
+ 
+     # Android uses unified headers, and thus a single compile time sysroot
+     sysroot = "$android_toolchain_root/sysroot"
++  } else if (is_ohos) {
++    import("//build/config/ohos/config.gni")
++    sysroot = "$ohos_sysroot"
+   } else if ((is_linux || is_chromeos) && use_sysroot) {
+     # By default build against a sysroot image downloaded from Cloud Storage
+     # during gclient runhooks.
+diff --git a/toolchain/ohos/BUILD.gn b/toolchain/ohos/BUILD.gn
+new file mode 100644
+index 000000000..b5572e699
+--- /dev/null
++++ b/toolchain/ohos/BUILD.gn
+@@ -0,0 +1,69 @@
++# Copyright 2022 The Huawei Authors. All rights reserved.
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++
++import("//build/config/clang/clang.gni")
++import("//build/config/compiler/compiler.gni")
++import("//build/config/ohos/config.gni")
++import("//build/config/ozone.gni")
++import("//build/config/sysroot.gni")
++import("//build/toolchain/gcc_toolchain.gni")
++
++declare_args() {
++  # Whether unstripped binaries, i.e. compiled with debug symbols, should be
++  # considered runtime_deps rather than stripped ones.
++  ohos_unstripped_runtime_outputs = true
++}
++
++# The ohos clang toolchains share most of the same parameters, so we have this
++# wrapper around gcc_toolchain to avoid duplication of logic.
++#
++# Parameters:
++#  - binary_prefix
++#      Prefix of compiler executables.
++template("ohos_clang_toolchain") {
++  gcc_toolchain(target_name) {
++    assert(defined(invoker.toolchain_args),
++           "toolchain_args must be defined for ohos_clang_toolchain()")
++
++    toolchain_args = {
++      forward_variables_from(invoker.toolchain_args, "*")
++      current_os = target_os
++    }
++
++    # Output linker map files for binary size analysis.
++    enable_linker_map = true
++
++    _prefix = rebase_path("$clang_base_path/bin", root_build_dir)
++    cc = "$_prefix/clang"
++    cxx = "$_prefix/clang++"
++    ar = "$_prefix/llvm-ar"
++    ld = cxx
++    readelf = "$_prefix/llvm-readobj"
++    nm = "$_prefix/llvm-nm"
++    strip = rebase_path("$clang_base_path/bin/llvm-strip", root_build_dir)
++    use_unstripped_as_runtime_outputs = ohos_unstripped_runtime_outputs
++
++    # Don't use .cr.so for loadable_modules since they are always loaded via
++    # absolute path.
++    loadable_module_extension = ".so"
++  }
++}
++
++ohos_clang_toolchain("ohos_clang_arm") {
++  toolchain_args = {
++    current_cpu = "arm"
++  }
++}
++
++ohos_clang_toolchain("ohos_clang_arm64") {
++  toolchain_args = {
++    current_cpu = "arm64"
++  }
++}
++
++ohos_clang_toolchain("ohos_clang_x64") {
++  toolchain_args = {
++    current_cpu = "x64"
++  }
++}
