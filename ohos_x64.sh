@@ -70,6 +70,6 @@ gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_
 ninja -C out.gn/x64.release -t clean
 ninja -C out.gn/x64.release wee8
 
-mkdir -p output/v8/Lib/Android/x64
-cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/Android/x64/
-mkdir -p output/v8/Inc/Blob/Android/x64
+mkdir -p output/v8/Lib/OHOS/x64
+cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/OHOS/x64/
+mkdir -p output/v8/Inc/Blob/OHOS/x64
