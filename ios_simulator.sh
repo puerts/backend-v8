@@ -43,6 +43,7 @@ target_cpu = "x64"
 v8_enable_pointer_compression = false
 libcxx_abi_unstable = false
 v8_enable_sandbox = false
+use_custom_libcxx=false
 '
 ninja -C out.gn/x64.release -t clean
 ninja -C out.gn/x64.release wee8

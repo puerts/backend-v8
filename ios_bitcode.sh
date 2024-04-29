@@ -46,6 +46,7 @@ enable_ios_bitcode = true
 symbol_level = 0
 libcxx_abi_unstable = false
 v8_enable_sandbox = false
+use_custom_libcxx=false
 '
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release wee8

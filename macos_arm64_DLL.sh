@@ -43,6 +43,7 @@ symbol_level=0
 libcxx_abi_unstable = false
 v8_enable_pointer_compression=false
 v8_enable_sandbox = false
+use_custom_libcxx=false
 '
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release v8
