@@ -1,0 +1,31 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index 3e48fb11bff..4da4e130150 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -1255,7 +1255,7 @@ config("always_optimize") {
+ 
+   # TODO(crbug.com/621335) Rework this so that we don't have the confusion
+   # between "optimize_speed" and "optimize_max".
+-  if (((is_posix && !is_android) || is_fuchsia) && !using_sanitizer) {
++  if (((is_posix && !is_android && !is_ohos) || is_fuchsia) && !using_sanitizer) {
+     configs += [ "//build/config/compiler:optimize_speed" ]
+   } else {
+     configs += [ "//build/config/compiler:optimize_max" ]
+@@ -3349,7 +3349,7 @@ v8_header_set("v8_internal_headers") {
+       # iOS Xcode simulator builds run on an x64 target. iOS and macOS are both
+       # based on Darwin and thus POSIX-compliant to a similar degree.
+       if (is_linux || is_chromeos || is_mac || is_ios ||
+-          target_os == "freebsd") {
++          target_os == "freebsd" || is_ohos) {
+         sources += [ "src/trap-handler/handler-inside-posix.h" ]
+       } else if (is_win) {
+         sources += [ "src/trap-handler/handler-inside-win.h" ]
+@@ -4821,7 +4821,7 @@ v8_component("v8_libbase") {
+     ]
+ 
+     libs = [ "dl" ]
+-  } else if (is_android) {
++  } else if (is_android || is_ohos) {
+     if (current_toolchain == host_toolchain) {
+       libs = [
+         "dl",
