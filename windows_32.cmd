@@ -1,7 +1,5 @@
 set VERSION=%1
 
-pip install virtualenv
-
 cd %HOMEPATH%
 echo =====[ Getting Depot Tools ]=====
 powershell -command "Invoke-WebRequest https://storage.googleapis.com/chrome-infra/depot_tools.zip -O depot_tools.zip"
