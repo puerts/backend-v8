@@ -67,23 +67,42 @@ echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
 echo "=====[ Building V8 ]====="
-python ./tools/dev/v8gen.py arm64.release -vv -- '
-target_os = "android"
-target_cpu = "arm64"
-is_debug = false
-v8_enable_i18n_support= false
-v8_target_cpu = "arm64"
-use_goma = false
-v8_use_snapshot = true
-v8_use_external_startup_data = false
-v8_static_library = true
-strip_debug_info = false
-symbol_level=1
-use_custom_libcxx=false
-use_custom_libcxx_for_host=true
-v8_enable_pointer_compression=false
-v8_enable_sandbox = false
-'
+if [ "$VERSION" == "10.6.194" ]; then 
+    python ./tools/dev/v8gen.py arm64.release -vv -- '
+    target_os = "android"
+    target_cpu = "arm64"
+    is_debug = false
+    v8_enable_i18n_support= false
+    v8_target_cpu = "arm64"
+    use_goma = false
+    v8_use_snapshot = true
+    v8_use_external_startup_data = false
+    v8_static_library = true
+    strip_debug_info = false
+    symbol_level=1
+    use_custom_libcxx=false
+    use_custom_libcxx_for_host=true
+    v8_enable_pointer_compression=false
+    v8_enable_sandbox = false
+    '
+else
+    python ./tools/dev/v8gen.py arm64.release -vv -- '
+    target_os = "android"
+    target_cpu = "arm64"
+    is_debug = false
+    v8_enable_i18n_support= false
+    v8_target_cpu = "arm64"
+    use_goma = false
+    v8_use_snapshot = true
+    v8_use_external_startup_data = false
+    v8_static_library = true
+    strip_debug_info = false
+    symbol_level=1
+    use_custom_libcxx=false
+    use_custom_libcxx_for_host=true
+    v8_enable_pointer_compression=false
+    '
+fi
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release wee8
 third_party/android_ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/aarch64-linux-android/bin/strip -g -S -d --strip-debug --verbose out.gn/arm64.release/obj/libwee8.a

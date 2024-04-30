@@ -30,21 +30,37 @@ echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
 echo "=====[ Building V8 ]====="
-python ./tools/dev/v8gen.py arm64.release -vv -- '
-is_debug = false
-target_cpu = "arm64"
-v8_target_cpu = "arm64"
-v8_enable_i18n_support= false
-v8_use_snapshot = true
-v8_use_external_startup_data = false
-is_component_build = true
-strip_debug_info = true
-symbol_level=0
-libcxx_abi_unstable = false
-v8_enable_pointer_compression=false
-v8_enable_sandbox = false
-use_custom_libcxx=false
-'
+if [ "$VERSION" == "10.6.194" ]; then 
+    python ./tools/dev/v8gen.py arm64.release -vv -- '
+    is_debug = false
+    target_cpu = "arm64"
+    v8_target_cpu = "arm64"
+    v8_enable_i18n_support= false
+    v8_use_snapshot = true
+    v8_use_external_startup_data = false
+    is_component_build = true
+    strip_debug_info = true
+    symbol_level=0
+    libcxx_abi_unstable = false
+    v8_enable_pointer_compression=false
+    v8_enable_sandbox = false
+    use_custom_libcxx=false
+    '
+else
+    python ./tools/dev/v8gen.py arm64.release -vv -- '
+    is_debug = false
+    target_cpu = "arm64"
+    v8_target_cpu = "arm64"
+    v8_enable_i18n_support= false
+    v8_use_snapshot = true
+    v8_use_external_startup_data = false
+    is_component_build = true
+    strip_debug_info = true
+    symbol_level=0
+    libcxx_abi_unstable = false
+    v8_enable_pointer_compression=false
+    '
+fi
 ninja -C out.gn/arm64.release -t clean
 ninja -C out.gn/arm64.release v8
 

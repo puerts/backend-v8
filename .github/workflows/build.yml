@@ -274,7 +274,7 @@ jobs:
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./macos.sh ${{github.event.inputs.v8_revision}}
+        bash ./macos.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
@@ -295,7 +295,7 @@ jobs:
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./macos_arm64.sh ${{github.event.inputs.v8_revision}}
+        bash ./macos_arm64.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
@@ -316,7 +316,7 @@ jobs:
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./macos_DLL.sh ${{github.event.inputs.v8_revision}}
+        bash ./macos_DLL.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
@@ -337,7 +337,7 @@ jobs:
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./macos_arm64_DLL.sh ${{github.event.inputs.v8_revision}}
+        bash ./macos_arm64_DLL.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
@@ -358,7 +358,7 @@ jobs:
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./ios.sh ${{github.event.inputs.v8_revision}}
+        bash ./ios.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
@@ -379,7 +379,7 @@ jobs:
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
-        sh ./ios_simulator.sh ${{github.event.inputs.v8_revision}}
+        bash ./ios_simulator.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
