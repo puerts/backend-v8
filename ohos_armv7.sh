@@ -59,7 +59,9 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
 if [ "$VERSION" == "9.4.146.24" ]; then 
   echo "=====[ patch jinja for python3.10+ ]====="
+  cd third_party/jinja2
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/jinja_v9.4.146.24.patch
+  cd ../..
 fi
 
 echo "=====[ patch for ohos ]====="

@@ -40,7 +40,9 @@ if "%VERSION%"=="10.6.194" (
 
 if "%VERSION%"=="9.4.146.24" (
     echo =====[ patch jinja for python3.10+ ]=====
+    cd third_party\jinja2
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\jinja_v9.4.146.24.patch
+    cd ..\..
 )
 
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
