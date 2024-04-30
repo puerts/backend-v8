@@ -15,10 +15,46 @@ on:
         - "10.6.194"
         default: '9.4.146.24'
         required: true
+      build_android:
+        description: 'Build for Android platform'
+        type: boolean
+        default: true
+        required: false
+      build_ohos:
+        description: 'Build for Android platform'
+        type: boolean
+        default: true
+        required: false
+      build_ios:
+        description: 'Build for iOS platform'
+        type: boolean
+        default: false
+        required: false
+      build_windows:
+        description: 'Build for Windows platform'
+        type: boolean
+        default: false
+        required: false
+      build_macos:
+        description: 'Build for MacOS platform'
+        type: boolean
+        default: false
+        required: false
+      build_linux:
+        description: 'Build for Linux platform'
+        type: boolean
+        default: false
+        required: false
+      do_publish:
+        description: 'Publish a release'
+        type: boolean
+        default: true
+        required: false
   
 
 jobs:
   build_android_arm_v8:
+    if: github.event.inputs.build_android == 'true'
     name: Android (arm64-v8a)
     runs-on: ubuntu-20.04
     steps:
@@ -35,6 +71,7 @@ jobs:
         path: ~/v8/v8/output/**/*
 
   build_android_arm_v7:
+    if: github.event.inputs.build_android == 'true'
     name: Android (armeabi-v7a)
     runs-on: ubuntu-20.04
     steps:
@@ -51,6 +88,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_android_x86_64:
+    if: github.event.inputs.build_android == 'true'
     name: Android (x86_64)
     runs-on: ubuntu-20.04
     steps:
@@ -67,7 +105,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_ohos_arm_v8:
-    if: github.event.inputs.v8_revision != '8.4.371.19'
+    if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (arm64-v8a)
     runs-on: ubuntu-20.04
     steps:
@@ -93,7 +131,7 @@ jobs:
         path: ~/v8/v8/output/**/*
 
   build_ohos_arm_v7:
-    if: github.event.inputs.v8_revision != '8.4.371.19'
+    if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (armeabi-v7a)
     runs-on: ubuntu-20.04
     steps:
@@ -119,7 +157,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_ohos_x86_64:
-    if: github.event.inputs.v8_revision != '8.4.371.19'
+    if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (x86_64)
     runs-on: ubuntu-20.04
     steps:
@@ -145,6 +183,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_linux:
+    if: github.event.inputs.build_linux == 'true'
     name: Linux
     runs-on: ubuntu-20.04
     steps:
@@ -161,6 +200,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_linux_arm64:
+    if: github.event.inputs.build_linux == 'true'
     name: Linux_arm64
     runs-on: ubuntu-20.04
     steps:
@@ -176,6 +216,7 @@ jobs:
         path: ~/v8/v8/output/**/*
 
   build_windows:
+    if: github.event.inputs.build_windows == 'true'
     name: Windows
     runs-on: windows-2019
     steps:
@@ -201,6 +242,7 @@ jobs:
         path: v8/v8/output/**/*
         
   build_windows_md:
+    if: github.event.inputs.build_windows == 'true'
     name: Windows-MD
     runs-on: windows-2019
     steps:
@@ -221,6 +263,7 @@ jobs:
         path: v8/v8/output/**/*
         
   build_windows_md_dll:
+    if: github.event.inputs.build_windows == 'true'
     name: Windows-MD-DLL
     runs-on: windows-2019
     steps:
@@ -241,6 +284,7 @@ jobs:
         path: v8/v8/output/**/*
         
   build_windows_32:
+    if: github.event.inputs.build_windows == 'true'
     name: Windows-32
     runs-on: windows-2019
     steps:
@@ -261,6 +305,7 @@ jobs:
         path: v8/v8/output/**/*
           
   build_macos:
+    if: github.event.inputs.build_macos == 'true'
     name: macOS
     runs-on: macos-11
     steps:
@@ -282,6 +327,7 @@ jobs:
         path: ~/v8/v8/output/**/*
           
   build_macos_arm64:
+    if: github.event.inputs.build_macos == 'true'
     name: macOS with apple m1
     runs-on: macos-11
     steps:
@@ -303,6 +349,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_macos_dll:
+    if: github.event.inputs.build_macos == 'true'
     name: macOS-DLL
     runs-on: macos-11
     steps:
@@ -324,6 +371,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_macos_arm64_dll:
+    if: github.event.inputs.build_macos == 'true'
     name: macOS-DLL with apple m1
     runs-on: macos-11
     steps:
@@ -345,6 +393,7 @@ jobs:
         path: ~/v8/v8/output/**/*
 
   build_ios:
+    if: github.event.inputs.build_ios == 'true'
     name: iOS
     runs-on: macos-11
     steps:
@@ -366,6 +415,7 @@ jobs:
         path: ~/v8/v8/output/**/*
   
   build_ios_simulator:
+    if: github.event.inputs.build_ios == 'true'
     name: iOS simulator
     runs-on: macos-11
     steps:
@@ -387,6 +437,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   publish:
+    if: github.event.inputs.do_publish == 'true'
     runs-on: ubuntu-20.04
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_ohos_arm_v8,build_ohos_arm_v7,build_ohos_x86_64]
     steps:
