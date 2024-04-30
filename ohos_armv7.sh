@@ -12,7 +12,6 @@ if [ "$VERSION" == "10.6.194" ]; then
         wget \
         build-essential \
         python3 \
-        ninja-build \
         xz-utils \
         zip
         
@@ -29,6 +28,8 @@ else
         xz-utils \
         zip
 fi
+
+sudo apt-get install -y ninja-build
 
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
