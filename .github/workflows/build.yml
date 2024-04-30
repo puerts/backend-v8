@@ -21,7 +21,7 @@ on:
         default: true
         required: false
       build_ohos:
-        description: 'Build for Android platform'
+        description: 'Build for OHOS platform'
         type: boolean
         default: true
         required: false
