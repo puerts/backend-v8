@@ -28,22 +28,22 @@ on:
       build_ios:
         description: 'Build for iOS platform'
         type: boolean
-        default: false
+        default: true
         required: false
       build_windows:
         description: 'Build for Windows platform'
         type: boolean
-        default: false
+        default: true
         required: false
       build_macos:
         description: 'Build for MacOS platform'
         type: boolean
-        default: false
+        default: true
         required: false
       build_linux:
         description: 'Build for Linux platform'
         type: boolean
-        default: false
+        default: true
         required: false
       do_publish:
         description: 'Publish a release'
