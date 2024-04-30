@@ -38,6 +38,11 @@ if "%VERSION%"=="10.6.194" (
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\win_msvc_v10.6.194.patch
 )
 
+if "%VERSION%"=="9.4.146.24" (
+    echo =====[ patch jinja for python3.10+ ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\jinja_v9.4.146.24.patch
+)
+
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
 node %~dp0\node-script\add_arraybuffer_new_without_stl.js .
 

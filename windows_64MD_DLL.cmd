@@ -33,6 +33,11 @@ call gclient sync
 @REM call git apply --cached --reject %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git checkout -- .
 
+if "%VERSION%"=="9.4.146.24" (
+    echo =====[ patch jinja for python3.10+ ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\jinja_v9.4.146.24.patch
+)
+
 echo =====[ Make dynamic_crt ]=====
 node %~dp0\node-script\rep.js  build\config\win\BUILD.gn
 
