@@ -82,6 +82,7 @@ if [ "$VERSION" == "10.6.194" ]; then
     libcxx_abi_unstable = false
     v8_enable_pointer_compression=false
     v8_enable_sandbox = false
+    use_custom_libcxx=false
     '
 else
     python ./tools/dev/v8gen.py arm64.release -vv -- '
