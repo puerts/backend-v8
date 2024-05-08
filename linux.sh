@@ -79,6 +79,7 @@ if [ "$VERSION" == "10.6.194" ]; then
     v8_enable_pointer_compression=false
     v8_enable_sandbox = false
     use_custom_libcxx=false
+    is_clang=true
     '
 else
     python ./tools/dev/v8gen.py x64.release -vv -- '
