@@ -63,7 +63,7 @@ else
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -C out.gn/x64.release wee8
-strip -S out.gn/x64.release/obj/libwee8.a
+strip -v -S out.gn/x64.release/obj/libwee8.a
 
 mkdir -p output/v8/Lib/iOS/x64
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/iOS/x64/

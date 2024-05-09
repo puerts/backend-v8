@@ -76,7 +76,7 @@ cd ../..
 echo "=====[ Building V8 ]====="
 gn gen --args="target_os=\"ohos\" target_cpu=\"arm\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info = false symbol_level=1 use_custom_libcxx=false use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true" out.gn/arm.release
 ninja -C out.gn/arm.release -t clean
-ninja -C out.gn/arm.release wee8
+ninja -v -C out.gn/arm.release wee8
 
 mkdir -p output/v8/Lib/OHOS/armeabi-v7a
 cp out.gn/arm.release/obj/libwee8.a output/v8/Lib/OHOS/armeabi-v7a/

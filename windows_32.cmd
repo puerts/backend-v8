@@ -59,7 +59,7 @@ if "%VERSION%"=="10.6.194" (
 )
 
 call ninja -C out.gn\x86.release -t clean
-call ninja -C out.gn\x86.release wee8
+call ninja -v -C out.gn\x86.release wee8
 
 md output\v8\Lib\Win32
 copy /Y out.gn\x86.release\obj\wee8.lib output\v8\Lib\Win32\

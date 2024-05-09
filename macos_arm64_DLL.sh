@@ -62,7 +62,7 @@ else
     '
 fi
 ninja -C out.gn/arm64.release -t clean
-ninja -C out.gn/arm64.release v8
+ninja -v -C out.gn/arm64.release v8
 
 mkdir -p output/v8/Lib/macOSdylib_arm64
 cp out.gn/arm64.release/libv8.dylib output/v8/Lib/macOSdylib_arm64/

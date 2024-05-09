@@ -104,7 +104,7 @@ else
     '
 fi
 ninja -C out.gn/arm64.release -t clean
-ninja -C out.gn/arm64.release wee8
+ninja -v -C out.gn/arm64.release wee8
 third_party/android_ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/aarch64-linux-android/bin/strip -g -S -d --strip-debug --verbose out.gn/arm64.release/obj/libwee8.a
 
 mkdir -p output/v8/Lib/Android/arm64-v8a

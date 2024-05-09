@@ -110,7 +110,7 @@ else
     '
 fi
 ninja -C out.gn/arm.release -t clean
-ninja -C out.gn/arm.release wee8
+ninja -v -C out.gn/arm.release wee8
 third_party/android_ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/arm-linux-androideabi/bin/strip -g -S -d --strip-debug --verbose out.gn/arm.release/obj/libwee8.a
 
 mkdir -p output/v8/Lib/Android/armeabi-v7a
