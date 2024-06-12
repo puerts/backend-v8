@@ -31,7 +31,7 @@ let api_cc_path = process.argv[2] + '/src/api/api.cc';
 let api_cc_insert_code = `
 namespace v8
 {
-Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate, 
+V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate, 
       void* data, size_t byte_length, BackingStore::DeleterCallback deleter,
       void* deleter_data)
 {
@@ -63,12 +63,12 @@ V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
 #endif
 }
 
-void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length)
+V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length)
 {
     byte_length = array_buffer->GetBackingStore()->ByteLength();
     return array_buffer->GetBackingStore()->Data();
 }
-void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer)
+V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer)
 {
     return array_buffer->GetBackingStore()->Data();
 }
