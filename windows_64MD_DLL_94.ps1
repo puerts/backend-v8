@@ -2,7 +2,7 @@ param (
     [string]$VERSION
 )
 
-cd $env:HOMEPATH
+cd ~
 Write-Host "=====[ Getting Depot Tools ]====="
 Invoke-WebRequest -Uri "https://storage.googleapis.com/chrome-infra/depot_tools.zip" -OutFile "depot_tools.zip"
 7z x depot_tools.zip -o*
