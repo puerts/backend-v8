@@ -47,9 +47,9 @@ node "$PSScriptRoot\node-script\patchs.js" . $VERSION
 
 Write-Host "=====[ Building V8 ]====="
 if ($VERSION -eq "10.6.194") {
-    & gn gen out.gn\x86.release -args='target_os="win" target_cpu="x86" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false'
+    & gn gen out.gn\x86.release -args="target_os=\"win\" target_cpu=\"x86\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false"
 } else {
-    & gn gen out.gn\x86.release -args='target_os="win" target_cpu="x86" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'
+    & gn gen out.gn\x86.release -args="target_os=\"win\" target_cpu=\"x86\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false"
 }
 
 & ninja -C out.gn\x86.release -t clean
