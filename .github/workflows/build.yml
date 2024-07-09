@@ -56,7 +56,7 @@ jobs:
   build_android_arm_v8:
     if: github.event.inputs.build_android == 'true'
     name: Android (arm64-v8a)
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -73,7 +73,7 @@ jobs:
   build_android_arm_v7:
     if: github.event.inputs.build_android == 'true'
     name: Android (armeabi-v7a)
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -90,7 +90,7 @@ jobs:
   build_android_x86_64:
     if: github.event.inputs.build_android == 'true'
     name: Android (x86_64)
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -134,7 +134,7 @@ jobs:
   build_ohos_arm_v7:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (armeabi-v7a)
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Install NDK
@@ -161,7 +161,7 @@ jobs:
   build_ohos_x86_64:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (x86_64)
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Install NDK
@@ -188,7 +188,7 @@ jobs:
   build_linux:
     if: github.event.inputs.build_linux == 'true'
     name: Linux
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -205,7 +205,7 @@ jobs:
   build_linux_arm64:
     if: github.event.inputs.build_linux == 'true'
     name: Linux_arm64
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
