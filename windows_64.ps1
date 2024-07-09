@@ -53,24 +53,11 @@ node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" .
 node "$PSScriptRoot\node-script\patchs.js" . $VERSION
 
 Write-Host "=====[ Building V8 ]====="
-$gnArgs = @"
-target_os="win"
-target_cpu="x64"
-v8_use_external_startup_data=false
-v8_enable_i18n_support=false
-is_debug=false
-v8_static_library=true
-is_clang=false
-strip_debug_info=true
-symbol_level=0
-v8_enable_pointer_compression=false
-"@
-
 if ($VERSION -eq "10.6.194") {
-    $gnArgs += "v8_enable_sandbox=false"
+    & gn gen out.gn\x64.release -args="target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false"
+} else {
+    & gn gen out.gn\x64.release -args="target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false"
 }
-
-& gn gen out.gn\x64.release -args=$gnArgs
 & ninja -C out.gn\x64.release -t clean
 & ninja -v -C out.gn\x64.release wee8
 
