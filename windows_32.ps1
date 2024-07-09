@@ -5,8 +5,7 @@ param (
 cd ~
 Write-Host "=====[ Getting Depot Tools ]====="
 Invoke-WebRequest -Uri "https://storage.googleapis.com/chrome-infra/depot_tools.zip" -OutFile "depot_tools.zip"
-Expand-Archive -Path "depot_tools.zip" -DestinationPath "."
-
+7z x depot_tools.zip -o*
 $env:PATH = "$PWD\depot_tools;$env:PATH"
 $env:GYP_MSVS_VERSION = "2019"
 $env:DEPOT_TOOLS_WIN_TOOLCHAIN = "0"
@@ -17,7 +16,7 @@ cd depot_tools
 cd ..
 $env:DEPOT_TOOLS_UPDATE = "0"
 
-New-Item -ItemType Directory -Path "v8"
+mkdir v8
 cd v8
 
 Write-Host "=====[ Fetching V8 ]====="
@@ -36,7 +35,7 @@ if ($VERSION -eq "9.4.146.24") {
     Write-Host "=====[ patch jinja for python3.10+ ]====="
     cd third_party\jinja2
     node "$PSScriptRoot\node-script\do-gitpatch.js" -p "$env:GITHUB_WORKSPACE\patches\jinja_v9.4.146.24.patch"
-    cd ../..
+    cd ..\..
 }
 
 node "$PSScriptRoot\node-script\do-gitpatch.js" -p "$env:GITHUB_WORKSPACE\patches\intrin.patch"
