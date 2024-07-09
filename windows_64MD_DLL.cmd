@@ -22,10 +22,10 @@ echo =====[ Fetching V8 ]=====
 call fetch v8
 cd v8
 call git checkout refs/tags/%VERSION%
-cd test\test262\data
+@REM cd test\test262\data
 call git config --system core.longpaths true
-call git restore *
-cd ..\..\..\
+@REM call git restore *
+@REM cd ..\..\..\
 call gclient sync
 
 @REM echo =====[ Patching V8 ]=====
