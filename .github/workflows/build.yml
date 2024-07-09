@@ -229,7 +229,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        call .\windows_64.cmd ${{github.event.inputs.v8_revision}}
+        powershell -ExecutionPolicy Bypass -File .\windows_64.ps1 -VERSION ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
@@ -255,7 +255,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        call .\windows_64MD.cmd ${{github.event.inputs.v8_revision}}
+        powershell -ExecutionPolicy Bypass -File .\windows_64MD.ps1 -VERSION ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
@@ -276,7 +276,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        call .\windows_64MD_DLL_94.cmd ${{github.event.inputs.v8_revision}}
+        powershell -ExecutionPolicy Bypass -File .\windows_64MD_DLL_94.ps1 -VERSION ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
@@ -297,7 +297,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        call .\windows_32.cmd ${{github.event.inputs.v8_revision}}
+        powershell -ExecutionPolicy Bypass -File .\windows_32.ps1 -VERSION ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
