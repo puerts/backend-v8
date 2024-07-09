@@ -30,6 +30,8 @@ node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/b
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
+node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
+
 echo "=====[ Building V8 ]====="
 
 if [ "$VERSION" == "10.6.194" ]; then 

@@ -46,6 +46,8 @@ node %~dp0\node-script\rep.js  build\config\win\BUILD.gn
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
 node %~dp0\node-script\add_arraybuffer_new_without_stl.js .
 
+node %~dp0\node-script\patchs.js . %VERSION%
+
 echo =====[ Building V8 ]=====
 if "%VERSION%"=="10.6.194" (
     call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true"
