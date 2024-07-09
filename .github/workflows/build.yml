@@ -107,7 +107,7 @@ jobs:
   build_ohos_arm_v8:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (arm64-v8a)
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Install NDK
@@ -116,8 +116,8 @@ jobs:
         curl -O https://repo.huaweicloud.com/harmonyos/os/4.1-Release/ohos-sdk-windows_linux-public.tar.gz
         tar xvfz ohos-sdk-windows_linux-public.tar.gz
         rm ohos-sdk-windows_linux-public.tar.gz
-        cd ohos-sdk/linux
         rm -rf ohos-sdk/windows
+        cd ohos-sdk/linux
         unzip -o -d ./ native-linux-x64-4.1.7.5-Release.zip
         rm *.zip
     - name: Run build script
