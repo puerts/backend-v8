@@ -63,6 +63,10 @@ gclient sync
 # git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches
 # git checkout -- .
 
+if [ "$VERSION" == "11.8.172" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
+fi
+
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 

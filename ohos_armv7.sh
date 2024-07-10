@@ -60,6 +60,10 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
 
+if [ "$VERSION" == "11.8.172" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
+fi
+
 if [ "$VERSION" == "9.4.146.24" ]; then 
   echo "=====[ patch jinja for python3.10+ ]====="
   cd third_party/jinja2
