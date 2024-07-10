@@ -51,7 +51,7 @@ if ($VERSION -eq "10.6.194" -or $VERSION -eq "11.8.172") {
 & ninja -C "out.gn\x64.release" -t clean
 & ninja -v -C "out.gn\x64.release" v8
 
-New-Item -ItemType Directory -Path "output\v8\Lib\Win64DLL" -Force
+mkdir -Force output\v8\Lib\Win64DLL
 Copy-Item -Path "out.gn\x64.release\v8.dll.lib" -Destination "output\v8\Lib\Win64DLL\" -Force
 Copy-Item -Path "out.gn\x64.release\v8_libplatform.dll.lib" -Destination "output\v8\Lib\Win64DLL\" -Force
 Copy-Item -Path "out.gn\x64.release\v8.dll" -Destination "output\v8\Lib\Win64DLL\" -Force

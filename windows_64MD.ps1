@@ -70,6 +70,6 @@ if ($VERSION -eq "10.6.194" -or $VERSION -eq "11.8.172") {
 & ninja -C "out.gn\x64.release" -t clean
 & ninja -v -C "out.gn\x64.release" wee8
 
-New-Item -ItemType Directory -Force -Path "output\v8\Lib\Win64MD"
+mkdir -Force output\v8\Lib\Win64MD
 Copy-Item -Force "out.gn\x64.release\obj\wee8.lib" "output\v8\Lib\Win64MD\"
-New-Item -ItemType Directory -Force -Path "output\v8\Inc\Blob\Win64MD"
+mkdir -Force output\v8\Inc\Blob\Win64MD
