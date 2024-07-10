@@ -234,16 +234,11 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
-        path: v8/v8/output/**/*
-        
-    - uses: actions/upload-artifact@v2
-      with:
-        name: v8_bin_win64
-        path: v8/v8/output/**/*
+        path: ~/v8/v8/output/**/*
         
   build_windows_md:
     if: github.event.inputs.build_windows == 'true'
@@ -260,11 +255,11 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
-        path: v8/v8/output/**/*
+        path: ~/v8/v8/output/**/*
         
   build_windows_md_dll:
     if: github.event.inputs.build_windows == 'true'
@@ -281,11 +276,11 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
-        path: v8/v8/output/**/*
+        path: ~/v8/v8/output/**/*
         
   build_windows_32:
     if: github.event.inputs.build_windows == 'true'
@@ -302,11 +297,11 @@ jobs:
     - name: Rename
       shell: bash
       run: |
-        mv v8/v8/output/v8 v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
-        path: v8/v8/output/**/*
+        path: ~/v8/v8/output/**/*
           
   build_macos:
     if: github.event.inputs.build_macos == 'true'
