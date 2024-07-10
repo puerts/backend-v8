@@ -1,5 +1,5 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index dd97c4f922c..64e3e0d0782 100644
+index dd97c4f922c..ed2cfa6cdda 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
 @@ -6675,14 +6675,14 @@ if (v8_check_header_includes) {
@@ -19,7 +19,7 @@ index dd97c4f922c..64e3e0d0782 100644
      deps = [
        ":v8",
        ":v8_libbase",
-@@ -6692,7 +6692,7 @@ if (v8_monolithic) {
+@@ -6692,10 +6692,10 @@ if (v8_monolithic) {
  
      configs = [ ":internal_config" ]
    }
@@ -27,4 +27,8 @@ index dd97c4f922c..64e3e0d0782 100644
 +#}
  
  if (v8_enable_webassembly) {
-   v8_static_library("wee8") {
+-  v8_static_library("wee8") {
++  v8_static_library("wee9") {
+     deps = [
+       ":v8_base",
+       ":v8_libbase",
