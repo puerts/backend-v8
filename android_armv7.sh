@@ -80,40 +80,9 @@ node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
 
 echo "=====[ Building V8 ]====="
 if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172"  ]; then 
-    python ./tools/dev/v8gen.py arm.release -vv -- '
-    target_os = "android"
-    target_cpu = "arm"
-    is_debug = false
-    v8_enable_i18n_support= false
-    v8_target_cpu = "arm"
-    use_goma = false
-    v8_use_snapshot = true
-    v8_use_external_startup_data = false
-    v8_static_library = true
-    strip_absolute_paths_from_debug_symbols = false
-    strip_debug_info = false
-    symbol_level=1
-    use_custom_libcxx=false
-    use_custom_libcxx_for_host=true
-    v8_enable_sandbox = false
-    '
+    gn gen out.gn/arm.release --args="target_os=\"android\" target_cpu=\"arm\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_absolute_paths_from_debug_symbols=false strip_debug_info=false symbol_level=1 use_custom_libcxx=false use_custom_libcxx_for_host=true v8_enable_sandbox=false"
 else
-    python ./tools/dev/v8gen.py arm.release -vv -- '
-    target_os = "android"
-    target_cpu = "arm"
-    is_debug = false
-    v8_enable_i18n_support= false
-    v8_target_cpu = "arm"
-    use_goma = false
-    v8_use_snapshot = true
-    v8_use_external_startup_data = false
-    v8_static_library = true
-    strip_absolute_paths_from_debug_symbols = false
-    strip_debug_info = false
-    symbol_level=1
-    use_custom_libcxx=false
-    use_custom_libcxx_for_host=true
-    '
+    gn gen out.gn/arm.release --args="target_os=\"android\" target_cpu=\"arm\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_absolute_paths_from_debug_symbols=false strip_debug_info=false symbol_level=1 use_custom_libcxx=false use_custom_libcxx_for_host=true"
 fi
 ninja -C out.gn/arm.release -t clean
 ninja -v -C out.gn/arm.release wee8
