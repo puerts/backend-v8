@@ -1,0 +1,22 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index dd97c4f922c..291d8157b6f 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -6694,7 +6694,7 @@ if (v8_monolithic) {
+   }
+ }
+ 
+-if (v8_enable_webassembly) {
++# if (v8_enable_webassembly) {
+   v8_static_library("wee8") {
+     deps = [
+       ":v8_base",
+@@ -6720,7 +6720,7 @@ if (v8_enable_webassembly) {
+       "third_party/wasm-api/wasm.hh",
+     ]
+   }
+-}
++# }
+ 
+ ###############################################################################
+ # Executables
