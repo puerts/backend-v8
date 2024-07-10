@@ -434,8 +434,8 @@ jobs:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
-  publish:
-    if: github.event.inputs.do_publish == 'true'
+  publish_with_ohos:
+    if: github.event.inputs.do_publish == 'true' && github.event.inputs.build_ohos == 'true'
     runs-on: ubuntu-20.04
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_ohos_arm_v8,build_ohos_arm_v7,build_ohos_x86_64]
     steps:
@@ -470,7 +470,40 @@ jobs:
           asset_name: v8_bin_${{github.event.inputs.v8_revision}}.tgz
           asset_content_type: application/tgz
           
-
-
+  publish_without_ohos:
+    if: github.event.inputs.do_publish == 'true' && github.event.inputs.build_ohos == 'false'
+    runs-on: ubuntu-20.04
+    needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll]
+    steps:
+      - uses: actions/download-artifact@v1
+        with:
+          name: v8_bin
+          path: v8_bin/
+          
+      - name: Create Release Asset
+        run: |
+          cd v8_bin/ && tar cvfz ../v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_${{github.event.inputs.v8_revision}} && cd -
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
+          release_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
+          draft: false
+          prerelease: false
+          
+      - name: Upload V8
+        #id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
+          asset_name: v8_bin_${{github.event.inputs.v8_revision}}.tgz
+          asset_content_type: application/tgz
 
   
