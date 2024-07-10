@@ -43,10 +43,11 @@ node "$PSScriptRoot\node-script\patchs.js" "." $VERSION
 
 Write-Output "=====[ Building V8 ]====="
 if ($VERSION -eq "10.6.194") {
-    & gn gen "out.gn\x64.release" -args='target_os="win" target_cpu="x64" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true'
+    $args = 'target_os="win" target_cpu="x64" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true'
 } else {
-    & gn gen "out.gn\x64.release" -args='target_os="win" target_cpu="x64" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'
+    $args = 'target_os="win" target_cpu="x64" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'
 }
+& gn gen out.gn\x64.release "--args=$args"
 & ninja -C "out.gn\x64.release" -t clean
 & ninja -v -C "out.gn\x64.release" v8
 
