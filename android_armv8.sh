@@ -3,7 +3,7 @@
 VERSION=$1
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
-if [ "$VERSION" == "10.6.194" ]; then 
+if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
     sudo apt-get install -y \
         pkg-config \
         git \
@@ -33,7 +33,7 @@ fi
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
-if [ "$VERSION" != "10.6.194" ]; then 
+if [ "$VERSION" != "10.6.194" -a "$VERSION" != "11.8.172" ]; then 
     cd depot_tools
     git reset --hard 8d16d4a
     cd ..
@@ -69,7 +69,7 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
 
 echo "=====[ Building V8 ]====="
-if [ "$VERSION" == "10.6.194" ]; then 
+if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
     python ./tools/dev/v8gen.py arm64.release -vv -- '
     target_os = "android"
     target_cpu = "arm64"

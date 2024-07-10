@@ -34,6 +34,12 @@ if ($VERSION -eq "10.6.194") {
     node "$PSScriptRoot\node-script\do-gitpatch.js" -p "$env:GITHUB_WORKSPACE\patches\win_msvc_v10.6.194.patch"
 }
 
+if ($VERSION -eq "11.8.172") {
+    Write-Host "=====[ patch 11.8.172 ]====="
+    node "$PSScriptRoot\node-script\do-gitpatch.js" -p "$env:GITHUB_WORKSPACE\patches\remove_uchar_include_v11.8.172.patch"
+    node "$PSScriptRoot\node-script\do-gitpatch.js" -p "$env:GITHUB_WORKSPACE\patches\win_dll_v11.8.172.patch"
+}
+
 if ($VERSION -eq "9.4.146.24") {
     Write-Output "=====[ patch jinja for python3.10+ ]====="
     cd third_party\jinja2
@@ -55,7 +61,7 @@ node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" "."
 node "$PSScriptRoot\node-script\patchs.js" "." "$VERSION"
 
 Write-Output "=====[ Building V8 ]====="
-if ($VERSION -eq "10.6.194") {
+if ($VERSION -eq "10.6.194" -or $VERSION -eq "11.8.172") {
     $args = 'target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false'
 } else {
     $args = 'target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'

@@ -42,7 +42,7 @@ node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" "."
 node "$PSScriptRoot\node-script\patchs.js" "." $VERSION
 
 Write-Output "=====[ Building V8 ]====="
-if ($VERSION -eq "10.6.194") {
+if ($VERSION -eq "10.6.194" -or $VERSION -eq "11.8.172") {
     $args = 'target_os="win" target_cpu="x64" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true'
 } else {
     $args = 'target_os="win" target_cpu="x64" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'

@@ -32,7 +32,7 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
 
 echo "=====[ Building V8 ]====="
-if [ "$VERSION" == "10.6.194" ]; then 
+if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
     python ./tools/dev/v8gen.py x64.release -vv -- '
     is_debug = false
     v8_enable_i18n_support= false
