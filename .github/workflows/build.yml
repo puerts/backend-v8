@@ -10,7 +10,6 @@ on:
         description: 'V8 TAG(Branch) to build'
         type: choice
         options:
-        - "8.4.371.19"
         - "9.4.146.24"
         - "10.6.194"
         - "11.8.172"
@@ -230,7 +229,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        powershell -ExecutionPolicy Bypass -File .\windows_64.ps1 -VERSION ${{github.event.inputs.v8_revision}}
+        call .\windows_64.cmd ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
@@ -251,7 +250,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        powershell -ExecutionPolicy Bypass -File .\windows_64MD.ps1 -VERSION ${{github.event.inputs.v8_revision}}
+        call .\windows_64MD.cmd ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
@@ -272,7 +271,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        powershell -ExecutionPolicy Bypass -File .\windows_64MD_DLL_94.ps1 -VERSION ${{github.event.inputs.v8_revision}}
+        call .\windows_64MD_DLL_94.cmd ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
@@ -293,7 +292,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        powershell -ExecutionPolicy Bypass -File .\windows_32.ps1 -VERSION ${{github.event.inputs.v8_revision}}
+        call .\windows_32.cmd ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
