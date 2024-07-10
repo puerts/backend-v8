@@ -51,7 +51,7 @@ if ($VERSION -eq "10.6.194") {
 } else {
     $args = 'target_os=\"win\" target_cpu=\"x86\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'
 }
-& gn gen out.gn\x64.release "--args=$args"
+& gn gen out.gn\x86.release "--args=$args"
 & ninja -C out.gn\x86.release -t clean
 & ninja -v -C out.gn\x86.release wee8
 
