@@ -111,7 +111,9 @@ else
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
-third_party/android_ndk/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux-android/bin/strip -g -S -d --strip-debug --verbose out.gn/x64.release/obj/libwee8.a
+if [ "$VERSION" == "9.4.146.24" ]; then 
+  third_party/android_ndk/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux-android/bin/strip -g -S -d --strip-debug --verbose out.gn/x64.release/obj/libwee8.a
+fi
 
 mkdir -p output/v8/Lib/Android/x64
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/Android/x64/
