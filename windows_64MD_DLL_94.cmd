@@ -86,7 +86,10 @@ copy /Y out.gn\x64.release\v8_libplatform.dll output\v8\Lib\Win64DLL\
 copy /Y out.gn\x64.release\v8.dll.pdb output\v8\Lib\Win64DLL\
 copy /Y out.gn\x64.release\v8_libbase.dll.pdb output\v8\Lib\Win64DLL\
 copy /Y out.gn\x64.release\v8_libplatform.dll.pdb output\v8\Lib\Win64DLL\
-if not "%VERSION%"=="11.8.172" (
-copy /Y out.gn\x64.release\zlib.dll output\v8\Lib\Win64DLL\
-copy /Y out.gn\x64.release\zlib.dll.pdb output\v8\Lib\Win64DLL\
+if "%VERSION%"=="11.8.172" (
+  copy /Y out.gn\x64.release\third_party_zlib.dll output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_zlib.dll.pdb output\v8\Lib\Win64DLL\
+) else (
+  copy /Y out.gn\x64.release\zlib.dll output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\zlib.dll.pdb output\v8\Lib\Win64DLL\
 )
