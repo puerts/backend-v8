@@ -10,7 +10,7 @@ function justReplace(path, from, to) {
     fs.writeFileSync(path, context);
 }
 
-function addV8CC(v8_path) {
+function addV8CC() {
     const filepath = path.join(v8_path, 'BUILD.gn')
     console.log(`add v8cc to ${filepath} ...`);
     let context = fs.readFileSync(filepath, 'utf-8');
@@ -20,9 +20,7 @@ function addV8CC(v8_path) {
     visibility = [ ":*" ]  # Only targets in this file can depend on this.
 
     sources = [
-      "src/snapshot/embedded/embedded-empty.cc",
       "src/snapshot/v8cc.cc",
-      "src/snapshot/snapshot-empty.cc",
     ]
 
     if (v8_control_flow_integrity) {
@@ -40,18 +38,27 @@ function addV8CC(v8_path) {
       ":v8_maybe_icu",
       ":v8_shared_internal_headers",
       ":v8_tracing",
+      ":v8_turboshaft",
       "//build/win:default_exe_manifest",
+      ":v8_snapshot",
     ]
   }
     `;
-    context = context.replace('deps = [ ":mksnapshot($v8_snapshot_toolchain)" ]', 'deps = [ ":mksnapshot($v8_snapshot_toolchain)", ":v8cc($v8_snapshot_toolchain)" ]');
-    let insert_pos = context.indexOf('v8_executable("mksnapshot") {');
-    fs.writeFileSync(filepath, context.slice(0, insert_pos) + v8cc_target + context.slice(insert_pos));
+    if (v8_version == "9.4.146.24") {
+        v8cc_target = v8cc_target.replace('":v8_turboshaft",', '');
+    }
+    console.log(v8cc_target);
+    //context = context.replace('deps = [ ":mksnapshot($v8_snapshot_toolchain)" ]', 'deps = [ ":mksnapshot($v8_snapshot_toolchain)", ":v8cc($v8_snapshot_toolchain)" ]');
+    const v8cc_target_insert_pos = context.indexOf('v8_executable("mksnapshot") {');
+    context = context.slice(0, v8cc_target_insert_pos) + v8cc_target + context.slice(v8cc_target_insert_pos);
+    const wee8_pos = context.indexOf('v8_static_library("wee8")');
+    const ref_pos = context.indexOf('":v8_snapshot",', wee8_pos) + '":v8_snapshot"'.length + 1;
+    fs.writeFileSync(filepath, context.slice(0, ref_pos) + '\n      ":v8cc($v8_snapshot_toolchain)",' + context.slice(ref_pos));
     
     fs.copyFileSync(path.join(__dirname, 'v8cc.cc'), path.join(v8_path, 'src/snapshot/v8cc.cc'));
 }
 
 (function() {
-    addV8CC(v8_path);
+    addV8CC();
     justReplace(path.join(v8_path, 'src/api/api.h'), 'NewArray<internal::Address>(kHandleBlockSize)', 'NewArray<internal::Address>(kHandleBlockSize + 1)');
 })();
