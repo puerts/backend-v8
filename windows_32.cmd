@@ -73,5 +73,5 @@ md output\v8\Lib\Win32
 copy /Y out.gn\x86.release\obj\wee8.lib output\v8\Lib\Win32\
 
 md output\v8\Bin\Win32
-copy /Y out.gn\x64.release\v8cc.exe output\v8\Bin\Win32\
-copy /Y out.gn\x64.release\mksnapshot.exe output\v8\Bin\Win32\
+copy /Y out.gn\x86.release\v8cc.exe output\v8\Bin\Win32\
+copy /Y out.gn\x86.release\mksnapshot.exe output\v8\Bin\Win32\
