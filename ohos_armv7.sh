@@ -86,4 +86,6 @@ ninja -v -C out.gn/arm.release wee8
 
 mkdir -p output/v8/Lib/OHOS/armeabi-v7a
 cp out.gn/arm.release/obj/libwee8.a output/v8/Lib/OHOS/armeabi-v7a/
-mkdir -p output/v8/Inc/Blob/OHOS/armv7a
+mkdir -p output/v8/Bin/OHOS/armeabi-v7a
+find out.gn/ -type f -name v8cc -exec cp "{}" output/v8/Bin/OHOS/armeabi-v7a \;
+find out.gn/ -type f -name mksnapshot -exec cp "{}" output/v8/Bin/OHOS/armeabi-v7a \;
