@@ -40,7 +40,6 @@ function addV8CC(v8_path) {
       ":v8_maybe_icu",
       ":v8_shared_internal_headers",
       ":v8_tracing",
-      ":v8_turboshaft",
       "//build/win:default_exe_manifest",
     ]
   }
