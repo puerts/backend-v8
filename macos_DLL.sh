@@ -51,4 +51,6 @@ cp out.gn/x64.release/libv8.dylib output/v8/Lib/macOSdylib/
 cp out.gn/x64.release/libv8_libplatform.dylib output/v8/Lib/macOSdylib/
 cp out.gn/x64.release/libv8_libbase.dylib output/v8/Lib/macOSdylib/
 cp out.gn/x64.release/libchrome_zlib.dylib output/v8/Lib/macOSdylib/
-cp out.gn/x64.release/libthird_party_abseil-cpp_absl.dylib output/v8/Lib/macOSdylib/
+if [ "$VERSION" == "11.8.172" ]; then
+  cp out.gn/x64.release/libthird_party_abseil-cpp_absl.dylib output/v8/Lib/macOSdylib/
+fi
