@@ -46,4 +46,6 @@ ninja -v -C out.gn/x64.release wee8
 
 mkdir -p output/v8/Lib/macOS
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/macOS/
-mkdir -p output/v8/Inc/Blob/macOS
+mkdir -p output/v8/Bin/macOS
+find out.gn/ -type f -name v8cc -exec cp "{}" output/v8/Bin/macOS \;
+find out.gn/ -type f -name mksnapshot -exec cp "{}" output/v8/Bin/macOS \;

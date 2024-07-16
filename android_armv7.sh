@@ -93,4 +93,6 @@ fi
 
 mkdir -p output/v8/Lib/Android/armeabi-v7a
 cp out.gn/arm.release/obj/libwee8.a output/v8/Lib/Android/armeabi-v7a/
-mkdir -p output/v8/Inc/Blob/Android/armv7a
+mkdir -p output/v8/Bin/Android/armeabi-v7a
+find out.gn/ -type f -name v8cc -exec cp "{}" output/v8/Bin/Android/armeabi-v7a \;
+find out.gn/ -type f -name mksnapshot -exec cp "{}" output/v8/Bin/Android/armeabi-v7a \;

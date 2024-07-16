@@ -86,4 +86,6 @@ fi
 
 mkdir -p output/v8/Lib/Android/x64
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/Android/x64/
-mkdir -p output/v8/Inc/Blob/Android/x64
+mkdir -p output/v8/Bin/Android/x64
+find out.gn/ -type f -name v8cc -exec cp "{}" output/v8/Bin/Android/x64 \;
+find out.gn/ -type f -name mksnapshot -exec cp "{}" output/v8/Bin/Android/x64 \;

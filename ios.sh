@@ -49,4 +49,6 @@ mkdir -p output/v8/Lib/iOS/arm64
 ninja -v -C out.gn/arm64.release wee8
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/iOS/arm64/
 
-mkdir -p output/v8/Inc/Blob/iOS/arm64
+mkdir -p output/v8/Bin/iOS/arm64
+find out.gn/ -type f -name v8cc -exec cp "{}" output/v8/Bin/iOS/arm64 \;
+find out.gn/ -type f -name mksnapshot -exec cp "{}" output/v8/Bin/iOS/arm64 \;
