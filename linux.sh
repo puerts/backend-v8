@@ -61,7 +61,7 @@ gclient sync
 
 if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
   echo "=====[ using libc++ ]===="
-  node -e "const fs = require('fs'); fs.writeFileSync('build/config/compiler/BUILD.gn', fs.readFileSync('build/config/compiler/BUILD.gn', 'utf-8').replace('cflags += [ \"-pthread\" ]', 'cflags += [ \"-pthread\", \"-stdlib=libc++\" ]\n    ldflags += [ \"-lc++abi\" ]'));"
+  node -e "const fs = require('fs'); fs.writeFileSync('build/config/compiler/BUILD.gn', fs.readFileSync('build/config/compiler/BUILD.gn', 'utf-8').replace('cflags_cc += [ \"-std=c++20\" ]', 'cflags_cc += [ \"-std=c++20\", \"-stdlib=libc++\" ]\n    ldflags += [ \"-lc++abi\" ]'));"
 fi
 
 # echo "=====[ Patching V8 ]====="
