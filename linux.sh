@@ -55,6 +55,12 @@ fetch v8
 echo "target_os = ['linux']" >> .gclient
 cd ~/v8/v8
 git checkout refs/tags/$VERSION
+
+if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
+  echo "=====[ Downgrade clang ]===="
+  node -e "const fs = require('fs'); fs.writeFileSync('./DEPS', fs.readFileSync('./DEPS', 'utf-8').replace(/Var\('chromium_url'\) \+ '\/chromium\/src\/tools\/clang\.git' \+ '@' \+ '([a-f0-9]{40})'/, \"Var('chromium_url') + '/chromium/src/tools/clang.git' + '@' + '6a8e571efd68de48d226950d1e10cb8982e71496'\"));"
+fi
+
 gclient sync
 
 # echo "=====[ Patching V8 ]====="
