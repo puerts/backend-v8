@@ -92,7 +92,7 @@ node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
 echo "=====[ Building V8 ]====="
 
 if [ "$VERSION" == "11.8.172" ]; then 
-    gn gen out.gn/x64.release --args="is_debug=false v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false use_custom_libcxx=false is_clang=true simple_template_names=false clang_use_chrome_plugins=false v8_enable_maglev=false  use_sysroot=false use_glib=false"
+    gn gen out.gn/x64.release --args="is_debug=false v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false use_custom_libcxx=false is_clang=true simple_template_names=false clang_use_chrome_plugins=false v8_enable_maglev=false  use_sysroot=false use_glib=false clang_base_path=\"/usr\""
 elif [ "$VERSION" == "10.6.194"]; then 
     gn gen out.gn/x64.release --args="is_debug=false v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false use_custom_libcxx=false is_clang=true"
 else
