@@ -64,9 +64,9 @@ fi
 gclient sync
 
 if [ "$VERSION" == "11.8.172" ]; then
-    wget https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/43a87bbebccad99325fdcf34166295b121ee15c7/debian_sid_amd64_sysroot.tar.xz
-    mkdir -p build/linux/debian_sid_amd64-sysroot
-    tar -xvJf debian_sid_amd64_sysroot.tar.xz -C build/linux/debian_sid_amd64-sysroot
+    #wget https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/43a87bbebccad99325fdcf34166295b121ee15c7/debian_sid_amd64_sysroot.tar.xz
+    #mkdir -p build/linux/debian_sid_amd64-sysroot
+    #tar -xvJf debian_sid_amd64_sysroot.tar.xz -C build/linux/debian_sid_amd64-sysroot
     cd build
     node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/build_clang_14_v11.8.172.patch
     cd ../third_party/zlib
