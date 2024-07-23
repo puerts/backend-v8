@@ -1,8 +1,14 @@
 diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
-index 06812fb9c..6236f08e2 100644
+index 06812fb9c..936fbaba5 100644
 --- a/config/compiler/BUILD.gn
 +++ b/config/compiler/BUILD.gn
-@@ -654,6 +654,8 @@ config("compiler") {
+@@ -649,11 +649,14 @@ config("compiler") {
+         cflags_cc += [ "-fno-trigraphs" ]
+       }
+     } else if (is_clang) {
++      use_cxx17=true
+       if (defined(use_cxx17) && use_cxx17) {
+         cflags_cc += [ "-std=${standard_prefix}++17" ]
        } else {
          cflags_cc += [ "-std=${standard_prefix}++20" ]
        }
@@ -11,7 +17,7 @@ index 06812fb9c..6236f08e2 100644
      } else {
        # The gcc bots are currently using GCC 9, which is not new enough to
        # support "c++20"/"gnu++20".
-@@ -1499,7 +1501,7 @@ config("compiler_deterministic") {
+@@ -1499,7 +1502,7 @@ config("compiler_deterministic") {
    # paths to the tools it invokes. We don't want this because we don't
    # really need it and it can mess up the goma cache entries.
    if (is_clang && (!is_nacl || is_nacl_saigo)) {
@@ -20,7 +26,7 @@ index 06812fb9c..6236f08e2 100644
  
      # Same for links: Let the compiler driver invoke the linker
      # with a relative path and pass relative paths to built-in
-@@ -1508,7 +1510,7 @@ config("compiler_deterministic") {
+@@ -1508,7 +1511,7 @@ config("compiler_deterministic") {
      # We don't link on goma, so this change is just for cleaner
      # internal linker invocations, for people who work on the build.
      if (!is_win) {
@@ -29,7 +35,7 @@ index 06812fb9c..6236f08e2 100644
      }
    }
  }
-@@ -1517,7 +1519,7 @@ config("clang_revision") {
+@@ -1517,7 +1520,7 @@ config("clang_revision") {
    if (is_clang && clang_base_path == default_clang_base_path) {
      update_args = [
        "--print-revision",
@@ -38,7 +44,7 @@ index 06812fb9c..6236f08e2 100644
      ]
      if (llvm_force_head_revision) {
        update_args += [ "--llvm-force-head-revision" ]
-@@ -1781,7 +1783,7 @@ config("default_warnings") {
+@@ -1781,7 +1784,7 @@ config("default_warnings") {
        if (!is_nacl) {
          cflags += [
            # TODO(crbug.com/1343975) Evaluate and possibly enable.

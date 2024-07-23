@@ -14,6 +14,8 @@ if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then
         python3 \
         ninja-build \
         xz-utils \
+        llvm \
+        lld \
         zip
         
     pip install virtualenv
