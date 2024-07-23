@@ -211,6 +211,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         bash ./linux_arm64.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
