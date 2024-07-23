@@ -1,0 +1,22 @@
+diff --git a/buildtools/BUILD.gn b/buildtools/BUILD.gn
+index 3b579a4d46..73db75a872 100644
+--- a/buildtools/BUILD.gn
++++ b/buildtools/BUILD.gn
+@@ -1243,7 +1243,7 @@ config("zlib_config") {
+   if (is_clang) {
+     cflags += [
+       "-Wno-unknown-warning-option",
+-      "-Wno-deprecated-non-prototype",
++#      "-Wno-deprecated-non-prototype",
+     ]
+   }
+ }
+@@ -1459,7 +1459,7 @@ if (enable_perfetto_grpc) {
+   config("grpc_absl_config") {
+     visibility = _buildtools_visibility
+     include_dirs = [ "grpc/src/third_party/abseil-cpp" ]
+-    cflags = [ "-Wno-deprecated-builtins" ]
++#    cflags = [ "-Wno-deprecated-builtins" ]
+   }
+ 
+   config("grpc_boringssl_config") {

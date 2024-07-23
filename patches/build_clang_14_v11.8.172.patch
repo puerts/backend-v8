@@ -1,0 +1,75 @@
+diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
+index 06812fb9c..6236f08e2 100644
+--- a/config/compiler/BUILD.gn
++++ b/config/compiler/BUILD.gn
+@@ -654,6 +654,8 @@ config("compiler") {
+       } else {
+         cflags_cc += [ "-std=${standard_prefix}++20" ]
+       }
++      cflags_cc += [ "-stdlib=libc++" ]
++      ldflags += [ "-stdlib=libc++" ]
+     } else {
+       # The gcc bots are currently using GCC 9, which is not new enough to
+       # support "c++20"/"gnu++20".
+@@ -1499,7 +1501,7 @@ config("compiler_deterministic") {
+   # paths to the tools it invokes. We don't want this because we don't
+   # really need it and it can mess up the goma cache entries.
+   if (is_clang && (!is_nacl || is_nacl_saigo)) {
+-    cflags += [ "-no-canonical-prefixes" ]
++#    cflags += [ "-no-canonical-prefixes" ]
+ 
+     # Same for links: Let the compiler driver invoke the linker
+     # with a relative path and pass relative paths to built-in
+@@ -1508,7 +1510,7 @@ config("compiler_deterministic") {
+     # We don't link on goma, so this change is just for cleaner
+     # internal linker invocations, for people who work on the build.
+     if (!is_win) {
+-      ldflags += [ "-no-canonical-prefixes" ]
++#      ldflags += [ "-no-canonical-prefixes" ]
+     }
+   }
+ }
+@@ -1517,7 +1519,7 @@ config("clang_revision") {
+   if (is_clang && clang_base_path == default_clang_base_path) {
+     update_args = [
+       "--print-revision",
+-      "--verify-version=$clang_version",
++#      "--verify-version=$clang_version",
+     ]
+     if (llvm_force_head_revision) {
+       update_args += [ "--llvm-force-head-revision" ]
+@@ -1781,7 +1783,7 @@ config("default_warnings") {
+       if (!is_nacl) {
+         cflags += [
+           # TODO(crbug.com/1343975) Evaluate and possibly enable.
+-          "-Wno-deprecated-builtins",
++#          "-Wno-deprecated-builtins",
+ 
+           # TODO(crbug.com/1352183) Evaluate and possibly enable.
+           "-Wno-bitfield-constant-conversion",
+diff --git a/config/sysroot.gni b/config/sysroot.gni
+index 0f36edd9e..d018f2c22 100644
+--- a/config/sysroot.gni
++++ b/config/sysroot.gni
+@@ -38,7 +38,7 @@ if (sysroot == "") {
+     # By default build against a sysroot image downloaded from Cloud Storage
+     # during gclient runhooks.
+     if (current_cpu == "x64") {
+-      sysroot = "$target_sysroot_dir/debian_bullseye_amd64-sysroot"
++      sysroot = "$target_sysroot_dir/debian_sid_amd64-sysroot"
+     } else if (current_cpu == "x86") {
+       sysroot = "$target_sysroot_dir/debian_bullseye_i386-sysroot"
+     } else if (current_cpu == "mipsel") {
+diff --git a/nocompile.gni b/nocompile.gni
+index 3900e7a60..2bd758c9e 100644
+--- a/nocompile.gni
++++ b/nocompile.gni
+@@ -209,7 +209,7 @@ if (enable_nocompile_tests) {
+       if (!is_nacl) {
+         args += [
+           # TODO(crbug.com/1343975) Evaluate and possibly enable.
+-          "-Wno-deprecated-builtins",
++#          "-Wno-deprecated-builtins",
+         ]
+       }
+     }

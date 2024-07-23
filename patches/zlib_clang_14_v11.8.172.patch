@@ -1,0 +1,40 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index 8ed0807..49ce127 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -273,7 +273,7 @@ source_set("zlib_slide_hash_simd") {
+ config("zlib_warnings") {
+   if (is_clang) {
+     cflags = [
+-      "-Wno-deprecated-non-prototype",
++#      "-Wno-deprecated-non-prototype",
+       "-Wno-incompatible-pointer-types",
+       "-Wunused-variable",
+     ]
+@@ -379,7 +379,7 @@ config("minizip_warnings") {
+     cflags = [
+       # zlib uses `if ((a == b))` for some reason.
+       "-Wno-parentheses-equality",
+-      "-Wno-deprecated-non-prototype",
++#      "-Wno-deprecated-non-prototype",
+     ]
+   }
+ }
+@@ -452,7 +452,7 @@ if (!is_win || target_os != "winuwp") {
+       cflags = [
+         "-Wno-incompatible-pointer-types-discards-qualifiers",
+ 
+-        "-Wno-deprecated-non-prototype",
++#        "-Wno-deprecated-non-prototype",
+       ]
+     }
+ 
+@@ -475,7 +475,7 @@ if (!is_win || target_os != "winuwp") {
+     if (is_clang) {
+       cflags = [
+         "-Wno-incompatible-pointer-types-discards-qualifiers",
+-        "-Wno-deprecated-non-prototype",
++#        "-Wno-deprecated-non-prototype",
+       ]
+     }
+ 
