@@ -211,6 +211,7 @@ jobs:
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
+        npm i
         bash ./linux_arm64.sh ${{github.event.inputs.v8_revision}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
@@ -293,6 +294,46 @@ jobs:
         cd %GITHUB_WORKSPACE%
         call npm i
         call .\windows_32.cmd ${{github.event.inputs.v8_revision}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+        
+  build_windows_v8cc_arm64:
+    name: Windows-v8cc-arm64
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call npm i
+        call .\windows_v8cc_arm64.cmd ${{github.event.inputs.v8_revision}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
+  
+  build_windows_v8cc_arm:
+    name: Windows-v8cc-arm
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call npm i
+        call .\windows_v8cc_arm.cmd ${{github.event.inputs.v8_revision}}
     - name: Rename
       shell: bash
       run: |
