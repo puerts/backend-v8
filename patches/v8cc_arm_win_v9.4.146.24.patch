@@ -1,0 +1,71 @@
+diff --git a/src/codegen/arm/register-arm.h b/src/codegen/arm/register-arm.h
+index 6608ad4edeb..1694388eba4 100644
+--- a/src/codegen/arm/register-arm.h
++++ b/src/codegen/arm/register-arm.h
+@@ -103,7 +103,7 @@ enum RegisterCode {
+ };
+ 
+ class Register : public RegisterBase<Register, kRegAfterLast> {
+-  friend class RegisterBase;
++  friend class RegisterBase<Register, kRegAfterLast>;
+ 
+   explicit constexpr Register(int code) : RegisterBase(code) {}
+ };
+@@ -164,7 +164,7 @@ class SwVfpRegister : public RegisterBase<SwVfpRegister, kSwVfpAfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<SwVfpRegister, kSwVfpAfterLast>;
+   explicit constexpr SwVfpRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -204,7 +204,7 @@ class DwVfpRegister : public RegisterBase<DwVfpRegister, kDoubleAfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<DwVfpRegister, kDoubleAfterLast>;
+   friend class LowDwVfpRegister;
+   explicit constexpr DwVfpRegister(int code) : RegisterBase(code) {}
+ };
+@@ -232,7 +232,7 @@ class LowDwVfpRegister
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<LowDwVfpRegister, kDoubleCode_d16>;
+   explicit constexpr LowDwVfpRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -264,7 +264,7 @@ class QwNeonRegister : public RegisterBase<QwNeonRegister, kSimd128AfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<QwNeonRegister, kSimd128AfterLast>;
+   explicit constexpr QwNeonRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -281,7 +281,7 @@ enum CRegisterCode {
+ 
+ // Coprocessor register
+ class CRegister : public RegisterBase<CRegister, kCAfterLast> {
+-  friend class RegisterBase;
++  friend class RegisterBase<CRegister, kCAfterLast>;
+   explicit constexpr CRegister(int code) : RegisterBase(code) {}
+ };
+ 
+diff --git a/src/execution/arm/simulator-arm.cc b/src/execution/arm/simulator-arm.cc
+index ec9c05af699..07f598cbaa0 100644
+--- a/src/execution/arm/simulator-arm.cc
++++ b/src/execution/arm/simulator-arm.cc
+@@ -1140,7 +1140,7 @@ uintptr_t Simulator::StackLimit(uintptr_t c_limit) const {
+   // The simulator uses a separate JS stack. If we have exhausted the C stack,
+   // we also drop down the JS limit to reflect the exhaustion on the JS stack.
+   if (base::Stack::GetCurrentStackPosition() < c_limit) {
+-    return reinterpret_cast<uintptr_t>(get_sp());
++    return get_sp();
+   }
+ 
+   // Otherwise the limit is the JS stack. Leave a safety margin of 1024 bytes

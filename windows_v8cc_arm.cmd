@@ -59,6 +59,10 @@ node %~dp0\node-script\add_arraybuffer_new_without_stl.js .
 
 node %~dp0\node-script\add_cross_v8cc.js . %VERSION% arm
 
+if "%VERSION%"=="9.4.146.24" (
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\v8cc_arm_win_v9.4.146.24.patch
+)
+
 echo =====[ Building V8 ]=====
 if not "%VERSION%"=="9.4.146.24" (
     call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false"
