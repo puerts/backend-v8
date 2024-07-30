@@ -1,0 +1,13 @@
+diff --git a/src/execution/arm/simulator-arm.cc b/src/execution/arm/simulator-arm.cc
+index 4a3bdc8b9cc..c0329af1ea0 100644
+--- a/src/execution/arm/simulator-arm.cc
++++ b/src/execution/arm/simulator-arm.cc
+@@ -1140,7 +1140,7 @@ uintptr_t Simulator::StackLimit(uintptr_t c_limit) const {
+   // The simulator uses a separate JS stack. If we have exhausted the C stack,
+   // we also drop down the JS limit to reflect the exhaustion on the JS stack.
+   if (base::Stack::GetCurrentStackPosition() < c_limit) {
+-    return reinterpret_cast<uintptr_t>(get_sp());
++    return get_sp();
+   }
+ 
+   // Otherwise the limit is the JS stack. Leave a safety margin to prevent
