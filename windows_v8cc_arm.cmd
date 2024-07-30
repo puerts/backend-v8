@@ -57,11 +57,11 @@ node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\intrin.patch
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
 node %~dp0\node-script\add_arraybuffer_new_without_stl.js . 
 
-node %~dp0\node-script\add_cross_v8cc.js . %VERSION% arm
-
 if "%VERSION%"=="9.4.146.24" (
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\v8cc_arm_win_v9.4.146.24.patch
 )
+
+node %~dp0\node-script\add_cross_v8cc.js . %VERSION% arm
 
 echo =====[ Building V8 ]=====
 if not "%VERSION%"=="9.4.146.24" (
