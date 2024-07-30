@@ -44,17 +44,25 @@ v8_executable("v8cc") {
         v8cc_target = v8cc_target.replace('":v8_turboshaft",', '');
     }
     
-    const v8_initializers_pos = context.indexOf('v8_source_set("v8_initializers") {');
-    const v8_init_pos = context.indexOf('v8_source_set("v8_init") {');
-    const v8_base_without_compiler_pos = context.indexOf('v8_source_set("v8_base_without_compiler") {');
-    const v8_base_pos = context.indexOf('group("v8_base") {');
+    const v8_initializers_start = context.indexOf('v8_source_set("v8_initializers") {');
+    const v8_initializers_end = context.indexOf('v8_source_set("v8_init") {');
+    const v8_compiler_sources_start = context.indexOf('v8_compiler_sources = [');
+    const v8_compiler_sources_end = context.indexOf('if (v8_enable_webassembly) {', v8_compiler_sources_start);
+    const v8_base_without_compiler_start = context.indexOf('v8_source_set("v8_base_without_compiler") {');
+    const v8_base_without_compiler_end = context.indexOf('group("v8_base") {');
     
-    let new_context = context.slice(0, v8_initializers_pos);
+    let new_context = context.slice(0, v8_initializers_start);
     new_context += `v8_cross_cpu = "${target_cpu}"\n\n`
-    new_context += context.slice(v8_initializers_pos, v8_init_pos).replace(/v8_current_cpu/g, 'v8_cross_cpu');
-    new_context += context.slice(v8_init_pos, v8_base_without_compiler_pos);
-    new_context += context.slice(v8_base_without_compiler_pos, v8_base_pos).replace(/v8_current_cpu/g, 'v8_cross_cpu');
-    new_context += context.slice(v8_base_pos);
+    new_context += context.slice(v8_initializers_start, v8_initializers_end).replace(/v8_current_cpu/g, 'v8_cross_cpu');
+    if (v8_version != "9.4.146.24" && v8_compiler_sources_start > 0) {
+        new_context += context.slice(v8_initializers_end, v8_compiler_sources_start);
+        new_context += context.slice(v8_compiler_sources_start, v8_compiler_sources_end).replace(/v8_current_cpu/g, 'v8_cross_cpu');
+        new_context += context.slice(v8_compiler_sources_end, v8_base_without_compiler_start);
+    } else {
+        new_context += context.slice(v8_initializers_end, v8_base_without_compiler_start);
+    }
+    new_context += context.slice(v8_base_without_compiler_start, v8_base_without_compiler_end).replace(/v8_current_cpu/g, 'v8_cross_cpu');
+    new_context += context.slice(v8_base_without_compiler_end);
     new_context += v8cc_target;
     new_context = new_context.replace(/V8_TARGET_ARCH_X64|V8_TARGET_ARCH_IA32/g, target_cpu == 'arm' ? 'V8_TARGET_ARCH_ARM' : 'V8_TARGET_ARCH_ARM64');
 

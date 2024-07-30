@@ -1,3 +1,52 @@
+diff --git a/src/codegen/arm/register-arm.h b/src/codegen/arm/register-arm.h
+index 15bc1e88f05..c271d9309a6 100644
+--- a/src/codegen/arm/register-arm.h
++++ b/src/codegen/arm/register-arm.h
+@@ -136,7 +136,7 @@ class SwVfpRegister : public RegisterBase<SwVfpRegister, kSwVfpAfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<SwVfpRegister, kSwVfpAfterLast>;
+   explicit constexpr SwVfpRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -175,7 +175,7 @@ class DwVfpRegister : public RegisterBase<DwVfpRegister, kDoubleAfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<DwVfpRegister, kDoubleAfterLast>;
+   friend class LowDwVfpRegister;
+   explicit constexpr DwVfpRegister(int code) : RegisterBase(code) {}
+ };
+@@ -202,7 +202,7 @@ class LowDwVfpRegister
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<LowDwVfpRegister, kDoubleCode_d16>;
+   explicit constexpr LowDwVfpRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -233,7 +233,7 @@ class QwNeonRegister : public RegisterBase<QwNeonRegister, kSimd128AfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<QwNeonRegister, kSimd128AfterLast>;
+   explicit constexpr QwNeonRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -250,7 +250,7 @@ enum CRegisterCode {
+ 
+ // Coprocessor register
+ class CRegister : public RegisterBase<CRegister, kCAfterLast> {
+-  friend class RegisterBase;
++  friend class RegisterBase<CRegister, kCAfterLast>;
+   explicit constexpr CRegister(int code) : RegisterBase(code) {}
+ };
+ 
 diff --git a/src/execution/arm/simulator-arm.cc b/src/execution/arm/simulator-arm.cc
 index 4a3bdc8b9cc..c0329af1ea0 100644
 --- a/src/execution/arm/simulator-arm.cc
