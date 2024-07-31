@@ -29,6 +29,7 @@ gclient sync
 
 if [ "$VERSION" == "11.8.172" ]; then 
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v11.8.172.patch
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
@@ -38,8 +39,10 @@ node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
 
 echo "=====[ Building V8 ]====="
 
-if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
+if [ "$VERSION" == "10.6.194" ]; then 
     gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false"
+elif [ "$VERSION" == "11.8.172" ]; then
+    gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false v8_enable_webassembly=false v8_enable_maglev=false"
 else
     gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false"
 fi
