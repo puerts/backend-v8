@@ -1,7 +1,16 @@
 diff --git a/src/codegen/arm/register-arm.h b/src/codegen/arm/register-arm.h
-index 4edcddaa6f5..6c051d2ec2e 100644
+index 4edcddaa6f5..fa46a7f9bcc 100644
 --- a/src/codegen/arm/register-arm.h
 +++ b/src/codegen/arm/register-arm.h
+@@ -68,7 +68,7 @@ enum RegisterCode {
+ };
+ 
+ class Register : public RegisterBase<Register, kRegAfterLast> {
+-  friend class RegisterBase;
++  friend class RegisterBase<Register, kRegAfterLast>;
+ 
+   explicit constexpr Register(int code) : RegisterBase(code) {}
+ };
 @@ -128,7 +128,7 @@ class SwVfpRegister : public RegisterBase<SwVfpRegister, kSwVfpAfterLast> {
    }
  
