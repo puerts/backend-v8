@@ -1,0 +1,62 @@
+diff --git a/src/codegen/arm/register-arm.h b/src/codegen/arm/register-arm.h
+index 4edcddaa6f5..6c051d2ec2e 100644
+--- a/src/codegen/arm/register-arm.h
++++ b/src/codegen/arm/register-arm.h
+@@ -128,7 +128,7 @@ class SwVfpRegister : public RegisterBase<SwVfpRegister, kSwVfpAfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<SwVfpRegister, kSwVfpAfterLast>;
+   explicit constexpr SwVfpRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -167,7 +167,7 @@ class DwVfpRegister : public RegisterBase<DwVfpRegister, kDoubleAfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<DwVfpRegister, kDoubleAfterLast>;
+   friend class LowDwVfpRegister;
+   explicit constexpr DwVfpRegister(int code) : RegisterBase(code) {}
+ };
+@@ -194,7 +194,7 @@ class LowDwVfpRegister
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<LowDwVfpRegister, kDoubleCode_d16>;
+   explicit constexpr LowDwVfpRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -225,7 +225,7 @@ class QwNeonRegister : public RegisterBase<QwNeonRegister, kSimd128AfterLast> {
+   }
+ 
+  private:
+-  friend class RegisterBase;
++  friend class RegisterBase<QwNeonRegister, kSimd128AfterLast>;
+   explicit constexpr QwNeonRegister(int code) : RegisterBase(code) {}
+ };
+ 
+@@ -242,7 +242,7 @@ enum CRegisterCode {
+ 
+ // Coprocessor register
+ class CRegister : public RegisterBase<CRegister, kCAfterLast> {
+-  friend class RegisterBase;
++  friend class RegisterBase<CRegister, kCAfterLast>;
+   explicit constexpr CRegister(int code) : RegisterBase(code) {}
+ };
+ 
+diff --git a/src/execution/arm/simulator-arm.cc b/src/execution/arm/simulator-arm.cc
+index a8fcfcb448f..444a0ce3111 100644
+--- a/src/execution/arm/simulator-arm.cc
++++ b/src/execution/arm/simulator-arm.cc
+@@ -1136,7 +1136,7 @@ uintptr_t Simulator::StackLimit(uintptr_t c_limit) const {
+   // The simulator uses a separate JS stack. If we have exhausted the C stack,
+   // we also drop down the JS limit to reflect the exhaustion on the JS stack.
+   if (base::Stack::GetCurrentStackPosition() < c_limit) {
+-    return reinterpret_cast<uintptr_t>(get_sp());
++    return get_sp();
+   }
+ 
+   // Otherwise the limit is the JS stack. Leave a safety margin of 4 KiB
