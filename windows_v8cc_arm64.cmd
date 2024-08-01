@@ -54,6 +54,10 @@ if "%VERSION%"=="9.4.146.24" (
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
 node %~dp0\node-script\add_arraybuffer_new_without_stl.js .
 
+if "%VERSION%"=="10.6.194" (
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\v8cc_arm_win_v%VERSION%.patch
+)
+
 node %~dp0\node-script\add_cross_v8cc.js . %VERSION% arm64
 
 echo =====[ Building V8 ]=====
