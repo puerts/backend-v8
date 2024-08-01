@@ -1,23 +1,19 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index a91d61c8c26..72fd1adc8ce 100644
+index a91d61c8c26..3a96b85cb31 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -650,6 +650,14 @@ config("internal_config_base") {
+@@ -650,6 +650,10 @@ config("internal_config_base") {
    ]
  }
  
 +config("wrap_new_delete_symbols") {
-+  if (is_mac) {
-+    ldflags = [ "--redefine-sym _Znwm=__wrap__Znwm", "--redefine-sym _ZdlPv=__wrap__ZdlPv", "--redefine-sym _Znam=__wrap__Znam", "--redefine-sym _ZdaPv=__wrap__ZdaPv", "--redefine-sym _ZnwmRKSt9nothrow_t=__wrap__ZnwmRKSt9nothrow_t", "--redefine-sym _ZnamRKSt9nothrow_t=__wrap__ZnamRKSt9nothrow_t" ]
-+  } else {
-+    ldflags = [ "-Wl,--wrap=_Znwm", "-Wl,--wrap=_ZdlPv", "-Wl,--wrap=_Znam", "-Wl,--wrap=_ZdaPv", "-Wl,--wrap=_ZnwmRKSt9nothrow_t", "-Wl,--wrap=_ZnamRKSt9nothrow_t" ]
-+  }
++  ldflags = [ "-Wl,--wrap=_Znwm", "-Wl,--wrap=_ZdlPv", "-Wl,--wrap=_Znam", "-Wl,--wrap=_ZdaPv", "-Wl,--wrap=_ZnwmRKSt9nothrow_t", "-Wl,--wrap=_ZnamRKSt9nothrow_t" ]
 +}
 +
  config("internal_config") {
    defines = []
  
-@@ -4800,6 +4808,7 @@ v8_source_set("v8_base_without_compiler") {
+@@ -4800,6 +4804,7 @@ v8_source_set("v8_base_without_compiler") {
      "src/zone/type-stats.cc",
      "src/zone/zone-segment.cc",
      "src/zone/zone.cc",
@@ -25,7 +21,7 @@ index a91d61c8c26..72fd1adc8ce 100644
    ]
  
    if (v8_enable_snapshot_compression) {
-@@ -5535,9 +5544,10 @@ v8_component("v8_libbase") {
+@@ -5535,9 +5540,10 @@ v8_component("v8_libbase") {
      "src/base/vlq-base64.cc",
      "src/base/vlq-base64.h",
      "src/base/vlq.h",
@@ -37,7 +33,7 @@ index a91d61c8c26..72fd1adc8ce 100644
  
    public_configs = [ ":libbase_config" ]
  
-@@ -5709,9 +5719,10 @@ v8_component("v8_libplatform") {
+@@ -5709,9 +5715,10 @@ v8_component("v8_libplatform") {
      "src/libplatform/tracing/tracing-controller.cc",
      "src/libplatform/worker-thread.cc",
      "src/libplatform/worker-thread.h",
@@ -49,7 +45,7 @@ index a91d61c8c26..72fd1adc8ce 100644
  
    if (is_component_build) {
      defines = [ "BUILDING_V8_PLATFORM_SHARED" ]
-@@ -6447,7 +6458,7 @@ if (is_component_build) {
+@@ -6447,7 +6454,7 @@ if (is_component_build) {
        ":v8_snapshot",
      ]
  
