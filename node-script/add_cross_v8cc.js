@@ -61,7 +61,7 @@ v8_executable("v8cc") {
     } else {
         new_context += context.slice(v8_initializers_end, v8_base_without_compiler_start);
     }
-    new_context += context.slice(v8_base_without_compiler_start, v8_base_without_compiler_end).replace(/v8_current_cpu/g, 'v8_cross_cpu').replace(/current_cpu/g, 'v8_cross_cpu');
+    new_context += context.slice(v8_base_without_compiler_start, v8_base_without_compiler_end).replace(/v8_current_cpu/g, 'v8_cross_cpu');
     new_context += context.slice(v8_base_without_compiler_end);
     new_context += v8cc_target;
     new_context = new_context.replace(/V8_TARGET_ARCH_X64|V8_TARGET_ARCH_IA32/g, target_cpu == 'arm' ? 'V8_TARGET_ARCH_ARM' : 'V8_TARGET_ARCH_ARM64');
