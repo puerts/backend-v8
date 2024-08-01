@@ -69,16 +69,3 @@ index a8fcfcb448f..444a0ce3111 100644
    }
  
    // Otherwise the limit is the JS stack. Leave a safety margin of 4 KiB
-diff --git a/src/trap-handler/handler-outside-simulator.cc b/src/trap-handler/handler-outside-simulator.cc
-index 179eab0659f..b623983809e 100644
---- a/src/trap-handler/handler-outside-simulator.cc
-+++ b/src/trap-handler/handler-outside-simulator.cc
-@@ -12,7 +12,7 @@
- #endif  // !V8_OS_DARWIN
- 
- // Define the ProbeMemory function declared in trap-handler-simulators.h.
--asm(
-+__asm(
-     ".globl " SYMBOL(ProbeMemory) "                 \n"
-     SYMBOL(ProbeMemory) ":                          \n"
- // First parameter (address) passed in %rdi on Linux/Mac, and %rcx on Windows.
