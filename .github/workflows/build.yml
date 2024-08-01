@@ -40,6 +40,11 @@ on:
         type: boolean
         default: true
         required: false
+      build_macos_silicon:
+        description: 'Build for MacOS(silicon) platform'
+        type: boolean
+        default: true
+        required: false
       build_linux:
         description: 'Build for Linux platform'
         type: boolean
@@ -366,7 +371,7 @@ jobs:
         path: ~/v8/v8/output/**/*
           
   build_macos_arm64:
-    if: github.event.inputs.build_macos == 'true'
+    if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS with apple m1
     runs-on: macos-12
     steps:
@@ -410,7 +415,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_macos_arm64_dll:
-    if: github.event.inputs.build_macos == 'true'
+    if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS-DLL with apple m1
     runs-on: macos-12
     steps:
