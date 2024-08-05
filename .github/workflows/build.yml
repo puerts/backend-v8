@@ -342,11 +342,11 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        call .\windows_v8cc_arm.cmd ${{github.event.inputs.v8_revision}}
+        call .\windows_v8cc_arm.cmd ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
     - name: Rename
       shell: bash
       run: |
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
         name: v8_bin
