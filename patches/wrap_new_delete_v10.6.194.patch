@@ -1,5 +1,5 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index a91d61c8c26..3637e9726c8 100644
+index a91d61c8c26..01ef99b09ec 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
 @@ -650,6 +650,20 @@ config("internal_config_base") {
@@ -56,6 +56,14 @@ index a91d61c8c26..3637e9726c8 100644
    ]
  
    if (v8_use_perfetto) {
+@@ -6167,6 +6184,7 @@ if (current_toolchain == v8_generator_toolchain) {
+       ":v8_libbase",
+       ":v8_shared_internal_headers",
+       "//build/win:default_exe_manifest",
++      ":wrap_symbols",
+     ]
+   }
+ }
 diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
 new file mode 100644
 index 00000000000..986bf64dd1a
