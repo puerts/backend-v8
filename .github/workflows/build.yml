@@ -311,6 +311,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_windows_v8cc_arm64:
+    if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm64
     runs-on: windows-2019
     steps:
@@ -331,6 +332,7 @@ jobs:
         path: ~/v8/v8/output/**/*
   
   build_windows_v8cc_arm:
+    if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm
     runs-on: windows-2019
     steps:
