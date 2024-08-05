@@ -5,7 +5,7 @@ on:
     inputs:
       tag_date:
         description: 'tag date'     
-        required: true
+        required: false
       v8_revision:
         description: 'V8 TAG(Branch) to build'
         type: choice
@@ -45,13 +45,13 @@ on:
         type: boolean
         default: true
         required: false
-      build_linux:
-        description: 'Build for Linux platform'
+      build_macos_silicon:
+        description: 'Build for MacOS(silicon) platform'
         type: boolean
         default: true
         required: false
-      do_publish:
-        description: 'Publish a release'
+      build_linux:
+        description: 'Build for Linux platform'
         type: boolean
         default: true
         required: false
@@ -371,7 +371,7 @@ jobs:
         path: ~/v8/v8/output/**/*
           
   build_macos_arm64:
-    if: github.event.inputs.build_macos == 'true'
+    if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS with apple m1
     runs-on: macos-12
     steps:
@@ -415,7 +415,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   build_macos_arm64_dll:
-    if: github.event.inputs.build_macos == 'true'
+    if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS-DLL with apple m1
     runs-on: macos-12
     steps:
@@ -481,7 +481,7 @@ jobs:
         path: ~/v8/v8/output/**/*
         
   publish_with_ohos:
-    if: github.event.inputs.do_publish == 'true' && github.event.inputs.build_ohos == 'true'
+    if: github.event.inputs.tag_date != '' && github.event.inputs.build_ohos == 'true'
     runs-on: ubuntu-20.04
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_ohos_arm_v8,build_ohos_arm_v7,build_ohos_x86_64,build_windows_v8cc_arm64,build_windows_v8cc_arm]
     steps:
@@ -517,7 +517,7 @@ jobs:
           asset_content_type: application/tgz
           
   publish_without_ohos:
-    if: github.event.inputs.do_publish == 'true' && github.event.inputs.build_ohos == 'false'
+    if: github.event.inputs.tag_date != '' && github.event.inputs.build_ohos == 'false'
     runs-on: ubuntu-20.04
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_windows_v8cc_arm64,build_windows_v8cc_arm]
     steps:
