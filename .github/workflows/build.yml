@@ -15,6 +15,11 @@ on:
         - "11.8.172"
         default: '9.4.146.24'
         required: true
+      wrap_new:
+        description: 'wrapper new/delete'
+        type: boolean
+        default: false
+        required: false
       build_android:
         description: 'Build for Android platform'
         type: boolean

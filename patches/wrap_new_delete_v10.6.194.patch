@@ -1,62 +1,56 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index a91d61c8c26..3a96b85cb31 100644
+index a91d61c8c26..a45834742df 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -650,6 +650,10 @@ config("internal_config_base") {
+@@ -650,6 +650,20 @@ config("internal_config_base") {
    ]
  }
  
-+config("wrap_new_delete_symbols") {
-+  ldflags = [ "-Wl,--wrap=_Znwm", "-Wl,--wrap=_ZdlPv", "-Wl,--wrap=_Znam", "-Wl,--wrap=_ZdaPv", "-Wl,--wrap=_ZnwmRKSt9nothrow_t", "-Wl,--wrap=_ZnamRKSt9nothrow_t" ]
++v8_source_set("wrap_symbols") {
++  sources = [
++    "src/base/wrap_symbols.cc",
++  ]
++
++  public_configs = []
++
++  public_deps = []
++
++  deps = []
++  
++  configs = [ ":internal_config" ]
 +}
 +
  config("internal_config") {
    defines = []
  
-@@ -4800,6 +4804,7 @@ v8_source_set("v8_base_without_compiler") {
-     "src/zone/type-stats.cc",
-     "src/zone/zone-segment.cc",
-     "src/zone/zone.cc",
-+    "src/base/wrap_symbols.cc",
+@@ -5204,6 +5218,7 @@ v8_source_set("v8_base_without_compiler") {
+     ":v8_tracing",
+     ":v8_version",
+     "src/inspector:inspector",
++    ":wrap_symbols",
    ]
  
-   if (v8_enable_snapshot_compression) {
-@@ -5535,9 +5540,10 @@ v8_component("v8_libbase") {
-     "src/base/vlq-base64.cc",
-     "src/base/vlq-base64.h",
-     "src/base/vlq.h",
-+    "src/base/wrap_symbols.cc",
-   ]
- 
--  configs = [ ":internal_config_base" ]
-+  configs = [ ":internal_config_base", ":wrap_new_delete_symbols" ]
+   public_deps = [
+@@ -5541,7 +5556,7 @@ v8_component("v8_libbase") {
  
    public_configs = [ ":libbase_config" ]
  
-@@ -5709,9 +5715,10 @@ v8_component("v8_libplatform") {
-     "src/libplatform/tracing/tracing-controller.cc",
-     "src/libplatform/worker-thread.cc",
-     "src/libplatform/worker-thread.h",
-+    "src/base/wrap_symbols.cc",
+-  deps = [ ":v8_config_headers" ]
++  deps = [ ":v8_config_headers" , ":wrap_symbols"]
+ 
+   data = []
+ 
+@@ -5725,6 +5740,7 @@ v8_component("v8_libplatform") {
+     ":v8_config_headers",
+     ":v8_libbase",
+     ":v8_tracing",
++    ":wrap_symbols",
    ]
  
--  configs = [ ":internal_config_base" ]
-+  configs = [ ":internal_config_base", ":wrap_new_delete_symbols" ]
- 
-   if (is_component_build) {
-     defines = [ "BUILDING_V8_PLATFORM_SHARED" ]
-@@ -6447,7 +6454,7 @@ if (is_component_build) {
-       ":v8_snapshot",
-     ]
- 
--    configs = [ ":internal_config" ]
-+    configs = [ ":internal_config", ":wrap_new_delete_symbols" ]
- 
-     public_configs = [ ":external_config" ]
-   }
+   if (v8_use_perfetto) {
 diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
 new file mode 100644
-index 00000000000..051c587383f
+index 00000000000..986bf64dd1a
 --- /dev/null
 +++ b/src/base/wrap_symbols.cc
 @@ -0,0 +1,50 @@
@@ -65,7 +59,7 @@ index 00000000000..051c587383f
 +
 +extern "C" {
 +
-+void* __wrap__Znwm(unsigned long size) {
++void* __puerts_wrap__Znwm(unsigned long size) {
 +    void* ptr = ::malloc(size);
 +    if (!ptr) {
 +        FATAL("Fatal process out of memory for new");
@@ -74,11 +68,11 @@ index 00000000000..051c587383f
 +    return ptr;
 +}
 +
-+void __wrap__ZdlPv(void* ptr) noexcept {
++void __puerts_wrap__ZdlPv(void* ptr) noexcept {
 +    ::free(ptr);
 +}
 +
-+void* __wrap__Znam(unsigned long size) {
++void* __puerts_wrap__Znam(unsigned long size) {
 +    void* ptr = ::malloc(size);
 +    if (!ptr) {
 +        FATAL("Fatal process out of memory for new[]");
@@ -87,11 +81,11 @@ index 00000000000..051c587383f
 +    return ptr;
 +}
 +
-+void __wrap__ZdaPv(void* ptr) noexcept {
++void __puerts_wrap__ZdaPv(void* ptr) noexcept {
 +    ::free(ptr);
 +}
 +
-+void* __wrap__ZnwmRKSt9nothrow_t(unsigned long size) {
++void* __puerts_wrap__ZnwmRKSt9nothrow_t(unsigned long size) {
 +    void* ptr = ::malloc(size);
 +    if (!ptr) {
 +        FATAL("Fatal process out of memory for new (std::nothrow)");
@@ -100,7 +94,7 @@ index 00000000000..051c587383f
 +    return ptr;
 +}
 +
-+void* __wrap__ZnamRKSt9nothrow_t(unsigned long size) {
++void* __puerts_wrap__ZnamRKSt9nothrow_t(unsigned long size) {
 +    void* ptr = ::malloc(size);
 +    if (!ptr) {
 +        FATAL("Fatal process out of memory for new (std::nothrow)[]");
