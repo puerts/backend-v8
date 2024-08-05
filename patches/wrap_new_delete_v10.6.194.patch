@@ -1,5 +1,5 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index a91d61c8c26..a45834742df 100644
+index a91d61c8c26..3637e9726c8 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
 @@ -650,6 +650,20 @@ config("internal_config_base") {
@@ -31,7 +31,15 @@ index a91d61c8c26..a45834742df 100644
    ]
  
    public_deps = [
-@@ -5541,7 +5556,7 @@ v8_component("v8_libbase") {
+@@ -5355,6 +5370,7 @@ v8_source_set("torque_base") {
+   deps = [
+     ":v8_flags",
+     ":v8_shared_internal_headers",
++    ":wrap_symbols",
+   ]
+ 
+   public_deps = [ ":v8_libbase" ]
+@@ -5541,7 +5557,7 @@ v8_component("v8_libbase") {
  
    public_configs = [ ":libbase_config" ]
  
@@ -40,7 +48,7 @@ index a91d61c8c26..a45834742df 100644
  
    data = []
  
-@@ -5725,6 +5740,7 @@ v8_component("v8_libplatform") {
+@@ -5725,6 +5741,7 @@ v8_component("v8_libplatform") {
      ":v8_config_headers",
      ":v8_libbase",
      ":v8_tracing",
