@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       tag_date:
-        description: 'tag date'     
+        description: 'tag date'
+        type: string
+        default: ""
         required: false
       v8_revision:
         description: 'V8 TAG(Branch) to build'
