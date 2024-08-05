@@ -34,6 +34,7 @@ fi
 if [ "$VERSION" == "10.6.194" -a "$NEW_WRAP" == "true" ]; then 
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v10.6.194.patch
   brew install llvm
+  export PATH="/usr/local/opt/llvm/bin:$PATH"
   llvm-objcopy --version
 fi
 
