@@ -30,6 +30,13 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
 fi
 
+if [ "$VERSION" == "10.6.194" -a "$NEW_WRAP" == "true" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v10.6.194.patch
+  brew install llvm
+  export PATH="/usr/local/opt/llvm/bin:$PATH"
+  llvm-objcopy --version
+fi
+
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
@@ -47,6 +54,9 @@ ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
 
 mkdir -p output/v8/Lib/macOS
+if [ "$VERSION" == "10.6.194" -a "$NEW_WRAP" == "true" ]; then 
+  llvm-objcopy --redefine-sym=__Znwm=___puerts_wrap__Znwm --redefine-sym=__ZdlPv=___puerts_wrap__ZdlPv --redefine-sym=__Znam=___puerts_wrap__Znam --redefine-sym=__ZdaPv=___puerts_wrap__ZdaPv --redefine-sym=__ZnwmRKSt9nothrow_t=___puerts_wrap__ZnwmRKSt9nothrow_t --redefine-sym=__ZnamRKSt9nothrow_t=___puerts_wrap__ZnamRKSt9nothrow_t out.gn/x64.release/obj/libwee8.a 
+fi
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/macOS/
 mkdir -p output/v8/Bin/macOS
 find out.gn/ -type f -name v8cc -exec cp "{}" output/v8/Bin/macOS \;

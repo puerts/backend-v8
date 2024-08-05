@@ -61,10 +61,6 @@ if [ "$VERSION" == "10.6.194" -a "$NEW_WRAP" == "true" ]; then
 fi
 ninja -v -C out.gn/x64.release v8
 
-if [ "$VERSION" == "10.6.194" -a "$NEW_WRAP" == "true" ]; then 
-  cat out.gn/x64.release/toolchain.ninja
-fi
-
 mkdir -p output/v8/Lib/macOSdylib
 cp out.gn/x64.release/libv8.dylib output/v8/Lib/macOSdylib/
 cp out.gn/x64.release/libv8_libplatform.dylib output/v8/Lib/macOSdylib/
