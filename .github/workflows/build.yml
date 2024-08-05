@@ -409,7 +409,7 @@ jobs:
         export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
-        bash ./macos_DLL.sh ${{github.event.inputs.v8_revision}}
+        bash ./macos_DLL.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v2
       with:
