@@ -1,5 +1,5 @@
 set VERSION=%1
-set NEW_WRAP=%1
+set NEW_WRAP=%2
 
 cd /d %USERPROFILE%
 echo =====[ Getting Depot Tools ]=====
