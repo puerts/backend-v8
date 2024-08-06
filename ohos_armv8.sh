@@ -58,7 +58,7 @@ gclient sync -D
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js .
 
-node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION
+node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 if [ "$VERSION" == "11.8.172" ]; then 
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
