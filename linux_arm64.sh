@@ -70,7 +70,7 @@ fi
 if [ "$NEW_WRAP" == "true" ]; then 
   echo "=====[ wrap new delete ]====="
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
-  sudo apt-get install -y clang clang-tools
+  sudo apt-get install -y llvm
   llvm-objcopy --version
 fi
 
