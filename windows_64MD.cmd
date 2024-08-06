@@ -1,4 +1,5 @@
 set VERSION=%1
+set NEW_WRAP=%1
 
 cd /d %USERPROFILE%
 echo =====[ Getting Depot Tools ]=====
@@ -46,6 +47,11 @@ if "%VERSION%"=="9.4.146.24" (
     cd ..\..
 )
 
+if "%NEW_WRAP%"=="true" (
+    echo =====[ wrap new delete ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\wrap_new_delete_v%VERSION%.patch
+)
+
 @REM echo =====[ Patching V8 ]=====
 @REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git apply --cached --reject %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
@@ -75,5 +81,8 @@ call ninja -C out.gn\x64.release -t clean
 call ninja -v -C out.gn\x64.release wee8
 
 md output\v8\Lib\Win64MD
+if "%NEW_WRAP%"=="true" (
+  llvm-objcopy --redefine-sym="??2@YAPEAX_K@Z=__puerts_wrap__Znwm" --redefine-sym="??3@YAXPEAX_K@Z=__puerts_wrap__ZdlPv" --redefine-sym="??_U@YAPEAX_K@Z=__puerts_wrap__Znam" --redefine-sym="??_V@YAXPEAX@Z=__puerts_wrap__ZdaPv" --redefine-sym="??2@YAPEAX_KAEBUnothrow_t@std@@@Z=__puerts_wrap__ZnwmRKSt9nothrow_t" --redefine-sym="??_U@YAPEAX_KAEBUnothrow_t@std@@@Z=__puerts_wrap__ZnamRKSt9nothrow_t" out.gn\x64.release\obj\wee8.lib
+)
 copy /Y out.gn\x64.release\obj\wee8.lib output\v8\Lib\Win64MD\
 md output\v8\Inc\Blob\Win64MD

@@ -232,6 +232,10 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
+    - name: install llvm
+      if: ${{ github.event.inputs.wrap_new == 'true' }}
+      shell: pwsh
+      run: choco install llvm
     - name: Run build script
       shell: cmd
       run: |
@@ -253,6 +257,10 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
+    - name: install llvm
+      if: ${{ github.event.inputs.wrap_new == 'true' }}
+      shell: pwsh
+      run: choco install llvm
     - name: Run build script
       shell: cmd
       run: |
@@ -295,6 +303,10 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
+    - name: install llvm
+      if: ${{ github.event.inputs.wrap_new == 'true' }}
+      shell: pwsh
+      run: choco install llvm
     - name: Run build script
       shell: cmd
       run: |
@@ -504,8 +516,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
-          release_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
+          tag_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
+          release_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
           
@@ -540,8 +552,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
-          release_name: V8_${{github.event.inputs.v8_revision}}_${{ github.event.inputs.tag_date }}
+          tag_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
+          release_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
           
