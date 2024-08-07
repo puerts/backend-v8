@@ -47,6 +47,12 @@ if "%VERSION%"=="9.4.146.24" (
     cd ..\..
 )
 
+
+if "%NEW_WRAP%"=="with_new_wrap" (
+    echo =====[ wrap new delete ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\wrap_new_delete_v%VERSION%.patch
+)
+
 @REM echo =====[ Patching V8 ]=====
 @REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git apply --cached --reject %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
@@ -73,16 +79,11 @@ if "%VERSION%"=="9.4.146.24" (
     call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false"
 )
 
-if "%NEW_WRAP%"=="true" (
-    echo =====[ wrap new delete ]=====
-    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\wrap_new_delete_v%VERSION%.patch
-)
-
 call ninja -C out.gn\x86.release -t clean
 call ninja -v -C out.gn\x86.release wee8
 
 md output\v8\Lib\Win32
-if "%NEW_WRAP%"=="true" (
+if "%NEW_WRAP%"=="with_new_wrap" (
   llvm-objcopy --redefine-sym="??2@YAPEAX_K@Z=__puerts_wrap__Znwm" --redefine-sym="??3@YAXPEAX_K@Z=__puerts_wrap__ZdlPv" --redefine-sym="??_U@YAPEAX_K@Z=__puerts_wrap__Znam" --redefine-sym="??_V@YAXPEAX@Z=__puerts_wrap__ZdaPv" --redefine-sym="??2@YAPEAX_KAEBUnothrow_t@std@@@Z=__puerts_wrap__ZnwmRKSt9nothrow_t" --redefine-sym="??_U@YAPEAX_KAEBUnothrow_t@std@@@Z=__puerts_wrap__ZnamRKSt9nothrow_t" out.gn\x86.release\obj\wee8.lib
 )
 copy /Y out.gn\x86.release\obj\wee8.lib output\v8\Lib\Win32\

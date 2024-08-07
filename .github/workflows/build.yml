@@ -18,10 +18,13 @@ on:
         default: '9.4.146.24'
         required: true
       wrap_new:
-        description: 'wrapper new/delete'
-        type: boolean
-        default: false
-        required: false
+        description: 'wrap new/delete'
+        type: choice
+        options:
+        - "with_new_wrap"
+        - ""
+        default: ""
+        required: true
       build_android:
         description: 'Build for Android platform'
         type: boolean

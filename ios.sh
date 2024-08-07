@@ -32,7 +32,7 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v11.8.172.patch
 fi
 
-if [ "$NEW_WRAP" == "true" ]; then 
+if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
   echo "=====[ wrap new delete ]====="
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
   brew install llvm
@@ -57,7 +57,7 @@ ninja -C out.gn/arm64.release -t clean
 mkdir -p output/v8/Lib/iOS/arm64
 
 ninja -v -C out.gn/arm64.release wee8
-if [ "$NEW_WRAP" == "true" ]; then 
+if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
   llvm-objcopy --redefine-sym=__Znwm=___puerts_wrap__Znwm --redefine-sym=__ZdlPv=___puerts_wrap__ZdlPv --redefine-sym=__Znam=___puerts_wrap__Znam --redefine-sym=__ZdaPv=___puerts_wrap__ZdaPv --redefine-sym=__ZnwmRKSt9nothrow_t=___puerts_wrap__ZnwmRKSt9nothrow_t --redefine-sym=__ZnamRKSt9nothrow_t=___puerts_wrap__ZnamRKSt9nothrow_t out.gn/arm64.release/obj/libwee8.a
 fi
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/iOS/arm64/

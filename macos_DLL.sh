@@ -31,7 +31,7 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
 fi
 
-#if [ "$NEW_WRAP" == "true" ]; then 
+#if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
 #  echo "=====[ wrap new delete ]====="
 #  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
 #  brew install llvm
@@ -56,7 +56,7 @@ fi
 
 ninja -C out.gn/x64.release -t clean
 
-#if [ "$NEW_WRAP" == "true" ]; then 
+#if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
 #  echo "=====[ add llvm-objcopy call to cxx ]====="
 #  sed -i '' "/^rule cxx$/,/^ *command =/ s|\(command = .*\)|\1 \&\& llvm-objcopy --redefine-sym=__Znwm=___puerts_wrap__Znwm --redefine-sym=__ZdlPv=___puerts_wrap__ZdlPv --redefine-sym=__Znam=___puerts_wrap__Znam --redefine-sym=__ZdaPv=___puerts_wrap__ZdaPv --redefine-sym=__ZnwmRKSt9nothrow_t=___puerts_wrap__ZnwmRKSt9nothrow_t --redefine-sym=__ZnamRKSt9nothrow_t=___puerts_wrap__ZnamRKSt9nothrow_t \${out}|" "out.gn/x64.release/toolchain.ninja"
 #fi

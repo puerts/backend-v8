@@ -3,7 +3,7 @@ const path = require('path')
 
 const v8_path = path.resolve(process.argv[2]);
 const v8_version = process.argv[3];
-const wrap_new = process.argv[4] === "true";
+const wrap_new = process.argv[4] === "with_new_wrap";
 
 function justReplace(path, from, to) {
     console.log(`patch ${path} ...`);

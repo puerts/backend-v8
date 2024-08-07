@@ -67,7 +67,7 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
 fi
 
-if [ "$NEW_WRAP" == "true" ]; then 
+if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
   echo "=====[ wrap new delete ]====="
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
   sudo apt-get install -y llvm
@@ -93,7 +93,7 @@ ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
 
 mkdir -p output/v8/Lib/Linux
-if [ "$NEW_WRAP" == "true" ]; then 
+if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
   llvm-objcopy --redefine-sym=_Znwm=__puerts_wrap__Znwm --redefine-sym=_ZdlPv=__puerts_wrap__ZdlPv --redefine-sym=_Znam=__puerts_wrap__Znam --redefine-sym=_ZdaPv=__puerts_wrap__ZdaPv --redefine-sym=_ZnwmRKSt9nothrow_t=__puerts_wrap__ZnwmRKSt9nothrow_t --redefine-sym=_ZnamRKSt9nothrow_t=__puerts_wrap__ZnamRKSt9nothrow_t out.gn/x64.release/obj/libwee8.a 
 fi
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/Linux/
