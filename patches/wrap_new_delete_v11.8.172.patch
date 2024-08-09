@@ -66,11 +66,12 @@ index dd97c4f922c..7bac8115cbe 100644
  }
 diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
 new file mode 100644
-index 00000000000..fc58cf339c6
+index 00000000000..441b1f89537
 --- /dev/null
 +++ b/src/base/wrap_symbols.cc
-@@ -0,0 +1,152 @@
+@@ -0,0 +1,153 @@
 +#include <stdlib.h>
++#include <cstdlib>
 +#include "logging.h"
 +
 +extern "C" {
@@ -187,7 +188,7 @@ index 00000000000..fc58cf339c6
 +#if V8_OS_WIN
 +    return _aligned_malloc(size, (size_t)alignment);
 +#else
-+    return aligned_alloc((size_t)alignment, size);
++    return std::aligned_alloc((size_t)alignment, size);
 +#endif
 +}
 +
@@ -197,7 +198,7 @@ index 00000000000..fc58cf339c6
 +#if V8_OS_WIN
 +    return _aligned_malloc(size, (size_t)alignment);
 +#else
-+    return aligned_alloc((size_t)alignment, size);
++    return std::aligned_alloc((size_t)alignment, size);
 +#endif
 +}
 +
@@ -207,7 +208,7 @@ index 00000000000..fc58cf339c6
 +#if V8_OS_WIN
 +    return _aligned_malloc(size, (size_t)alignment);
 +#else
-+    return aligned_alloc((size_t)alignment, size);
++    return std::aligned_alloc((size_t)alignment, size);
 +#endif
 +}
 +
@@ -217,7 +218,7 @@ index 00000000000..fc58cf339c6
 +#if V8_OS_WIN
 +    return _aligned_malloc(size, (size_t)alignment);
 +#else
-+    return aligned_alloc((size_t)alignment, size);
++    return std::aligned_alloc((size_t)alignment, size);
 +#endif
 +}
 +
