@@ -66,10 +66,10 @@ index dd97c4f922c..7bac8115cbe 100644
  }
 diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
 new file mode 100644
-index 00000000000..2f3d0d30bb2
+index 00000000000..fc58cf339c6
 --- /dev/null
 +++ b/src/base/wrap_symbols.cc
-@@ -0,0 +1,136 @@
+@@ -0,0 +1,152 @@
 +#include <stdlib.h>
 +#include "logging.h"
 +
@@ -184,25 +184,41 @@ index 00000000000..2f3d0d30bb2
 +//_ZnamSt11align_val_t -> operator new[](unsigned long, std::align_val_t)
 +//"??_U@YAPEAX_KW4align_val_t@std@@@Z"
 +void* __puerts_wrap__ZnamSt11align_val_t(unsigned long size, std::align_val_t alignment) {
-+    return _aligned_malloc((size_t)alignment, size);
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return aligned_alloc((size_t)alignment, size);
++#endif
 +}
 +
 +//_ZnamSt11align_val_tRKSt9nothrow_t -> operator new[](unsigned long, std::align_val_t, std::nothrow_t const&)
 +//"??_U@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z"
 +void* __puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t(unsigned long size, std::align_val_t alignment, void*) {
-+    return _aligned_malloc((size_t)alignment, size);
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return aligned_alloc((size_t)alignment, size);
++#endif
 +}
 +
 +//_ZnwmSt11align_val_t -> operator new(unsigned long, std::align_val_t)
 +//"??2@YAPEAX_KW4align_val_t@std@@@Z"
 +void* __puerts_wrap__ZnwmSt11align_val_t(unsigned long size, std::align_val_t alignment) {
-+    return _aligned_malloc((size_t)alignment, size);
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return aligned_alloc((size_t)alignment, size);
++#endif
 +}
 +
 +//_ZnwmSt11align_val_tRKSt9nothrow_t -> operator new(unsigned long, std::align_val_t, std::nothrow_t const&)
 +//"??2@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z"
 +void* __puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t(unsigned long size, std::align_val_t alignment, void*) {
-+    return _aligned_malloc((size_t)alignment, size);
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return aligned_alloc((size_t)alignment, size);
++#endif
 +}
 +
 +}
