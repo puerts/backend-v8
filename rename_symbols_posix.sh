@@ -64,4 +64,22 @@ $LLVM_OBJCOPY \
   --redefine-sym=_ZnwmSt11align_val_tRKSt9nothrow_t=__puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t \
   libv8_custom_libcxx.a 
   
+$LLVM_OBJCOPY \
+  --redefine-sym=_ZNKSt16nested_exception14rethrow_nestedEv=___ZNKSt16nested_exception14rethrow_nestedEv
+  --redefine-sym=_ZNSt13exception_ptrC1ERKS_=___ZNSt13exception_ptrC1ERKS_
+  --redefine-sym=_ZNSt13exception_ptrC2ERKS_=___ZNSt13exception_ptrC2ERKS_
+  --redefine-sym=_ZNSt13exception_ptrD1Ev=___ZNSt13exception_ptrD1Ev
+  --redefine-sym=_ZNSt13exception_ptrD2Ev=___ZNSt13exception_ptrD2Ev
+  --redefine-sym=_ZNSt13exception_ptraSERKS_=___ZNSt13exception_ptraSERKS_
+  --redefine-sym=_ZNSt16nested_exceptionC1Ev=___ZNSt16nested_exceptionC1Ev
+  --redefine-sym=_ZNSt16nested_exceptionC2Ev=___ZNSt16nested_exceptionC2Ev
+  --redefine-sym=_ZNSt16nested_exceptionD0Ev=___ZNSt16nested_exceptionD0Ev
+  --redefine-sym=_ZNSt16nested_exceptionD1Ev=___ZNSt16nested_exceptionD1Ev
+  --redefine-sym=_ZNSt16nested_exceptionD2Ev=___ZNSt16nested_exceptionD2Ev
+  --redefine-sym=_ZSt17current_exceptionv=___ZSt17current_exceptionv
+  --redefine-sym=_ZSt17rethrow_exceptionSt13exception_ptr=___ZSt17rethrow_exceptionSt13exception_ptr
+  --redefine-sym=_ZSt18uncaught_exceptionv=___ZSt18uncaught_exceptionv
+  --redefine-sym=_ZSt19uncaught_exceptionsv=___ZSt19uncaught_exceptionsv
+  libv8_custom_libcxx.a 
+  
 cp libv8_custom_libcxx.a $OUTPUT

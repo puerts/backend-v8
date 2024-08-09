@@ -56,9 +56,33 @@ llvm-objcopy ^
   --redefine-sym="??_U@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z=__puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t" ^
   --redefine-sym="??2@YAPEAX_KW4align_val_t@std@@@Z=__puerts_wrap__ZnwmSt11align_val_t" ^
   --redefine-sym="??2@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z=__puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t" ^
+  v8_custom_libcxx.lib
+
+llvm-objcopy ^
+  --redefine-sym="??0exception_ptr@std@@QEAA@2801T@Z=??0exception_ptr___@std@@QEAA@2801T@Z" ^
   --redefine-sym="??0exception_ptr@std@@QEAA@AEBV01@@Z=??0exception_ptr___@std@@QEAA@AEBV01@@Z" ^
-  --redefine-sym="??1exception_ptr@std@@QEAA@XZ=??1exception_ptr__@std@@QEAA@XZ" ^
-  --redefine-sym="?rethrow_exception@std@@YAXVexception_ptr@1@@Z=?rethrow_exception__@std@@YAXVexception_ptr@1@@Z" ^
+  --redefine-sym="??0exception_ptr@std@@QEAA@XZ=??0exception_ptr___@std@@QEAA@XZ" ^
+  --redefine-sym="??0nested_exception@std@@QEAA@XZ=??0nested_exception___@std@@QEAA@XZ" ^
+  --redefine-sym="??1exception_ptr@std@@QEAA@XZ=??1exception_ptr___@std@@QEAA@XZ" ^
+  --redefine-sym="??1nested_exception@std@@UEAA@XZ=??1nested_exception___@std@@UEAA@XZ" ^
+  --redefine-sym="??4exception_ptr@std@@QEAAAEAV01@2807T@Z=??4exception_ptr___@std@@QEAAAEAV01@2807T@Z" ^
+  --redefine-sym="??4exception_ptr@std@@QEAAAEAV01@AEBV01@@Z=??4exception_ptr___@std@@QEAAAEAV01@AEBV01@@Z" ^
+  --redefine-sym="??8std@@YA_NAEBVexception_ptr@0@0@Z=??8std@@YA_NAEBVexception_ptr___@0@0@Z" ^
+  --redefine-sym="??Bexception_ptr@std@@QEBA_NXZ=??Bexception_ptr___@std@@QEBA_NXZ" ^
+  --redefine-sym="??_Gnested_exception@std@@UEAAPEAXI@Z=??_Gnested_exception___@std@@UEAAPEAXI@Z" ^
+  --redefine-sym="?__copy_exception_ptr@std@@YA?AVexception_ptr@1@PEAXPEBX@Z=?__copy_exception_ptr___@std@@YA?AVexception_ptr@1@PEAXPEBX@Z" ^
+  --redefine-sym="?current_exception@std@@YA?AVexception_ptr@1@XZ=?current_exception___@std@@YA?AVexception_ptr@1@XZ" ^
+  --redefine-sym="?get_terminate@std@@YAP6AXXZXZ=?get_terminate___@std@@YAP6AXXZXZ" ^
+  --redefine-sym="?get_unexpected@std@@YAP6AXXZXZ=?get_unexpected___@std@@YAP6AXXZXZ" ^
+  --redefine-sym="?rethrow_exception@std@@YAXVexception_ptr@1@@Z=?rethrow_exception___@std@@YAXVexception_ptr@1@@Z" ^
+  --redefine-sym="?rethrow_nested@nested_exception@std@@QEBAXXZ=?rethrow_nested___@nested_exception@std@@QEBAXXZ" ^
+  --redefine-sym="?set_terminate@std@@YAP6AXXZP6AXXZ@Z=?set_terminate___@std@@YAP6AXXZP6AXXZ@Z" ^
+  --redefine-sym="?set_unexpected@std@@YAP6AXXZP6AXXZ@Z=?set_unexpected___@std@@YAP6AXXZP6AXXZ@Z" ^
+  --redefine-sym="?swap@std@@YAXAEAVexception_ptr@1@0@Z=?swap@std@@YAXAEAVexception_ptr___@1@0@Z" ^
+  --redefine-sym="?terminate@std@@YAXXZ=?terminate___@std@@YAXXZ" ^
+  --redefine-sym="?uncaught_exception@std@@YA_NXZ=?uncaught_exception___@std@@YA_NXZ" ^
+  --redefine-sym="?uncaught_exceptions@std@@YAHXZ=?uncaught_exceptions___@std@@YAHXZ" ^
+  --redefine-sym="?unexpected@std@@YAXXZ=?unexpected___@std@@YAXXZ" ^
   v8_custom_libcxx.lib
   
 popd
