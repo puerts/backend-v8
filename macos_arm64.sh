@@ -56,7 +56,7 @@ ninja -v -C out.gn/arm64.release wee8
 
 mkdir -p output/v8/Lib/macOS_arm64
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  bash rename_symbols_osx.sh llvm-objcopy arm64
+  bash $GITHUB_WORKSPACE/rename_symbols_osx.sh llvm-objcopy arm64
 fi
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/macOS_arm64/
 mkdir -p output/v8/Inc/Blob/macOS_arm64

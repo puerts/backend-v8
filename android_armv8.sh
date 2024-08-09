@@ -95,7 +95,7 @@ fi
 
 mkdir -p output/v8/Lib/Android/arm64-v8a
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  bash rename_symbols_posix.sh third_party/android_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy arm64
+  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh third_party/android_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy arm64
 fi
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/Android/arm64-v8a/
 mkdir -p output/v8/Bin/Android/arm64-v8a

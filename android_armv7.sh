@@ -102,7 +102,7 @@ fi
 
 mkdir -p output/v8/Lib/Android/armeabi-v7a
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  bash rename_symbols_posix.sh third_party/android_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy arm
+  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh third_party/android_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy arm
 fi
 cp out.gn/arm.release/obj/libwee8.a output/v8/Lib/Android/armeabi-v7a/
 mkdir -p output/v8/Bin/Android/armeabi-v7a

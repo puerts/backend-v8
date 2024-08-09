@@ -79,7 +79,7 @@ call ninja -v -C out.gn\x64.release wee8
 
 md output\v8\Lib\Win64
 if "%NEW_WRAP%"=="with_new_wrap" (
-  call rename_symbols_win.bat x64
+  call %~dp0\rename_symbols_win.bat x64
 )
 copy /Y out.gn\x64.release\obj\wee8.lib output\v8\Lib\Win64\
 
