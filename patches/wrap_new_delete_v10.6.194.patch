@@ -66,15 +66,17 @@ index a91d61c8c26..01ef99b09ec 100644
  }
 diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
 new file mode 100644
-index 00000000000..986bf64dd1a
+index 00000000000..2f3d0d30bb2
 --- /dev/null
 +++ b/src/base/wrap_symbols.cc
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,136 @@
 +#include <stdlib.h>
 +#include "logging.h"
 +
 +extern "C" {
 +
++//_Znwm -> operator new(unsigned long)
++//"??2@YAPEAX_K@Z"
 +void* __puerts_wrap__Znwm(unsigned long size) {
 +    void* ptr = ::malloc(size);
 +    if (!ptr) {
@@ -84,10 +86,14 @@ index 00000000000..986bf64dd1a
 +    return ptr;
 +}
 +
++//_ZdlPv -> operator delete(void*)
++//"??3@YAXPEAX@Z"
 +void __puerts_wrap__ZdlPv(void* ptr) noexcept {
 +    ::free(ptr);
 +}
 +
++//_Znam -> operator new[](unsigned long)
++//"??_U@YAPEAX_K@Z"
 +void* __puerts_wrap__Znam(unsigned long size) {
 +    void* ptr = ::malloc(size);
 +    if (!ptr) {
@@ -97,26 +103,106 @@ index 00000000000..986bf64dd1a
 +    return ptr;
 +}
 +
++//_ZdaPv -> operator delete[](void*)
++//"??_V@YAXPEAX@Z"
 +void __puerts_wrap__ZdaPv(void* ptr) noexcept {
 +    ::free(ptr);
 +}
 +
++//_ZnwmRKSt9nothrow_t -> operator new(unsigned long, std::nothrow_t const&)
++//"??2@YAPEAX_KAEBUnothrow_t@std@@@Z"
 +void* __puerts_wrap__ZnwmRKSt9nothrow_t(unsigned long size) {
-+    void* ptr = ::malloc(size);
-+    if (!ptr) {
-+        FATAL("Fatal process out of memory for new (std::nothrow)");
-+        UNREACHABLE();
-+    }
-+    return ptr;
++    return ::malloc(size);
 +}
 +
++//_ZnamRKSt9nothrow_t -> operator new[](unsigned long, std::nothrow_t const&)
++//"??_U@YAPEAX_KAEBUnothrow_t@std@@@Z"
 +void* __puerts_wrap__ZnamRKSt9nothrow_t(unsigned long size) {
-+    void* ptr = ::malloc(size);
-+    if (!ptr) {
-+        FATAL("Fatal process out of memory for new (std::nothrow)[]");
-+        UNREACHABLE();
-+    }
-+    return ptr;
++    return ::malloc(size);
++}
++
++//_ZdaPvRKSt9nothrow_t -> operator delete[](void*, std::nothrow_t const&)
++//"??_V@YAXPEAXAEBUnothrow_t@std@@@Z"
++void __puerts_wrap__ZdaPvRKSt9nothrow_t(void* ptr, void*) {
++    ::free(ptr);
++}
++
++//_ZdaPvSt11align_val_t -> operator delete[](void*, std::align_val_t)
++//"??_V@YAXPEAXW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdaPvSt11align_val_t(void* ptr, std::align_val_t) {
++    ::free(ptr);
++}
++
++//_ZdaPvSt11align_val_tRKSt9nothrow_t -> operator delete[](void*, std::align_val_t, std::nothrow_t const&)
++//"??_V@YAXPEAXW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void __puerts_wrap__ZdaPvSt11align_val_tRKSt9nothrow_t(void* ptr, std::align_val_t, void*) {
++    ::free(ptr);
++}
++
++//_ZdaPvm -> operator delete[](void*, unsigned long)
++//"??_V@YAXPEAX_K@Z"
++void __puerts_wrap__ZdaPvm(void* ptr, unsigned long) {
++    ::free(ptr);
++}
++
++//_ZdaPvmSt11align_val_t -> operator delete[](void*, unsigned long, std::align_val_t)
++//"??_V@YAXPEAX_KW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdaPvmSt11align_val_t(void* ptr, unsigned long, std::align_val_t) {
++    ::free(ptr);
++}
++
++//_ZdlPvRKSt9nothrow_t -> operator delete(void*, std::nothrow_t const&)
++//"??3@YAXPEAXAEBUnothrow_t@std@@@Z"
++void __puerts_wrap__ZdlPvRKSt9nothrow_t(void* ptr, void*) {
++    ::free(ptr);
++}
++
++//_ZdlPvSt11align_val_t -> operator delete(void*, std::align_val_t)
++//"??3@YAXPEAXW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdlPvSt11align_val_t(void* ptr, std::align_val_t) {
++    ::free(ptr);
++}
++
++//_ZdlPvSt11align_val_tRKSt9nothrow_t -> operator delete(void*, std::align_val_t, std::nothrow_t const&)
++//"??3@YAXPEAXW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void __puerts_wrap__ZdlPvSt11align_val_tRKSt9nothrow_t(void* ptr, std::align_val_t, void*){
++    ::free(ptr);
++}
++
++//_ZdlPvm -> operator delete(void*, unsigned long)
++//"??3@YAXPEAX_K@Z"
++void __puerts_wrap__ZdlPvm(void* ptr, unsigned long) {
++    ::free(ptr);
++}
++
++//_ZdlPvmSt11align_val_t -> operator delete(void*, unsigned long, std::align_val_t)
++//"??3@YAXPEAX_KW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdlPvmSt11align_val_t(void* ptr, unsigned long, std::align_val_t) {
++    ::free(ptr);
++}
++
++//_ZnamSt11align_val_t -> operator new[](unsigned long, std::align_val_t)
++//"??_U@YAPEAX_KW4align_val_t@std@@@Z"
++void* __puerts_wrap__ZnamSt11align_val_t(unsigned long size, std::align_val_t alignment) {
++    return _aligned_malloc((size_t)alignment, size);
++}
++
++//_ZnamSt11align_val_tRKSt9nothrow_t -> operator new[](unsigned long, std::align_val_t, std::nothrow_t const&)
++//"??_U@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void* __puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t(unsigned long size, std::align_val_t alignment, void*) {
++    return _aligned_malloc((size_t)alignment, size);
++}
++
++//_ZnwmSt11align_val_t -> operator new(unsigned long, std::align_val_t)
++//"??2@YAPEAX_KW4align_val_t@std@@@Z"
++void* __puerts_wrap__ZnwmSt11align_val_t(unsigned long size, std::align_val_t alignment) {
++    return _aligned_malloc((size_t)alignment, size);
++}
++
++//_ZnwmSt11align_val_tRKSt9nothrow_t -> operator new(unsigned long, std::align_val_t, std::nothrow_t const&)
++//"??2@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void* __puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t(unsigned long size, std::align_val_t alignment, void*) {
++    return _aligned_malloc((size_t)alignment, size);
 +}
 +
 +}
