@@ -3,7 +3,7 @@
 ARCH=$2
 OUTPUT=$3
 
-if [ -n "$1" ]; then
+if [ -n "$1" ] && [ "$1" != "" ]; then
     DIRECTORY="$1"
     LLVM_AR="$DIRECTORY/llvm-ar"
     LLVM_OBJCOPY="$DIRECTORY/llvm-objcopy"
