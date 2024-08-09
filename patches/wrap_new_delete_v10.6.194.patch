@@ -66,10 +66,10 @@ index a91d61c8c26..01ef99b09ec 100644
  }
 diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
 new file mode 100644
-index 00000000000..441b1f89537
+index 00000000000..b178a352ea1
 --- /dev/null
 +++ b/src/base/wrap_symbols.cc
-@@ -0,0 +1,153 @@
+@@ -0,0 +1,157 @@
 +#include <stdlib.h>
 +#include <cstdlib>
 +#include "logging.h"
@@ -182,6 +182,8 @@ index 00000000000..441b1f89537
 +    ::free(ptr);
 +}
 +
++#if __cplusplus >= 201703L
++
 +//_ZnamSt11align_val_t -> operator new[](unsigned long, std::align_val_t)
 +//"??_U@YAPEAX_KW4align_val_t@std@@@Z"
 +void* __puerts_wrap__ZnamSt11align_val_t(unsigned long size, std::align_val_t alignment) {
@@ -221,5 +223,7 @@ index 00000000000..441b1f89537
 +    return std::aligned_alloc((size_t)alignment, size);
 +#endif
 +}
++
++#endif
 +
 +}
