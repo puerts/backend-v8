@@ -36,7 +36,6 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
   brew install llvm
   export PATH="/usr/local/opt/llvm/bin:$PATH"
-  llvm-objcopy --version
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
@@ -57,28 +56,7 @@ ninja -v -C out.gn/x64.release wee8
 
 mkdir -p output/v8/Lib/macOS
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  llvm-objcopy \
-    --redefine-sym=__Znwm=___puerts_wrap__Znwm \
-    --redefine-sym=__ZdlPv=___puerts_wrap__ZdlPv \
-    --redefine-sym=__Znam=___puerts_wrap__Znam \
-    --redefine-sym=__ZdaPv=___puerts_wrap__ZdaPv \
-    --redefine-sym=__ZnwmRKSt9nothrow_t=___puerts_wrap__ZnwmRKSt9nothrow_t \
-    --redefine-sym=__ZnamRKSt9nothrow_t=___puerts_wrap__ZnamRKSt9nothrow_t \
-    --redefine-sym=__ZdaPvRKSt9nothrow_t=___puerts_wrap__ZdaPvRKSt9nothrow_t \
-    --redefine-sym=__ZdaPvSt11align_val_t=___puerts_wrap__ZdaPvSt11align_val_t \
-    --redefine-sym=__ZdaPvSt11align_val_tRKSt9nothrow_t=___puerts_wrap__ZdaPvSt11align_val_tRKSt9nothrow_t \
-    --redefine-sym=__ZdaPvm=___puerts_wrap__ZdaPvm \
-    --redefine-sym=__ZdaPvmSt11align_val_t=___puerts_wrap__ZdaPvmSt11align_val_t \
-    --redefine-sym=__ZdlPvRKSt9nothrow_t=___puerts_wrap__ZdlPvRKSt9nothrow_t \
-    --redefine-sym=__ZdlPvSt11align_val_t=___puerts_wrap__ZdlPvSt11align_val_t \
-    --redefine-sym=__ZdlPvSt11align_val_tRKSt9nothrow_t=___puerts_wrap__ZdlPvSt11align_val_tRKSt9nothrow_t \
-    --redefine-sym=__ZdlPvm=___puerts_wrap__ZdlPvm \
-    --redefine-sym=__ZdlPvmSt11align_val_t=___puerts_wrap__ZdlPvmSt11align_val_t \
-    --redefine-sym=__ZnamSt11align_val_t=___puerts_wrap__ZnamSt11align_val_t \
-    --redefine-sym=__ZnamSt11align_val_tRKSt9nothrow_t=___puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t \
-    --redefine-sym=__ZnwmSt11align_val_t=___puerts_wrap__ZnwmSt11align_val_t \
-    --redefine-sym=__ZnwmSt11align_val_tRKSt9nothrow_t=___puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t \
-    out.gn/x64.release/obj/libwee8.a 
+  bash rename_symbols_osx.sh llvm-objcopy x64
 fi
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/macOS/
 mkdir -p output/v8/Bin/macOS

@@ -36,7 +36,6 @@ fi
 #  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
 #  brew install llvm
 #  export PATH="/usr/local/opt/llvm/bin:$PATH"
-#  llvm-objcopy --version
 #fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="

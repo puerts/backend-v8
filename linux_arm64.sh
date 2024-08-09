@@ -71,7 +71,6 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   echo "=====[ wrap new delete ]====="
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
   sudo apt-get install -y llvm
-  llvm-objcopy --version
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
@@ -96,28 +95,7 @@ ninja -v -C out.gn/arm64.release wee8
 
 mkdir -p output/v8/Lib/Linux_arm64
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  llvm-objcopy \
-    --redefine-sym=_Znwm=__puerts_wrap__Znwm \
-    --redefine-sym=_ZdlPv=__puerts_wrap__ZdlPv \
-    --redefine-sym=_Znam=__puerts_wrap__Znam \
-    --redefine-sym=_ZdaPv=__puerts_wrap__ZdaPv \
-    --redefine-sym=_ZnwmRKSt9nothrow_t=__puerts_wrap__ZnwmRKSt9nothrow_t \
-    --redefine-sym=_ZnamRKSt9nothrow_t=__puerts_wrap__ZnamRKSt9nothrow_t \
-    --redefine-sym=_ZdaPvRKSt9nothrow_t=__puerts_wrap__ZdaPvRKSt9nothrow_t \
-    --redefine-sym=_ZdaPvSt11align_val_t=__puerts_wrap__ZdaPvSt11align_val_t \
-    --redefine-sym=_ZdaPvSt11align_val_tRKSt9nothrow_t=__puerts_wrap__ZdaPvSt11align_val_tRKSt9nothrow_t \
-    --redefine-sym=_ZdaPvm=__puerts_wrap__ZdaPvm \
-    --redefine-sym=_ZdaPvmSt11align_val_t=__puerts_wrap__ZdaPvmSt11align_val_t \
-    --redefine-sym=_ZdlPvRKSt9nothrow_t=__puerts_wrap__ZdlPvRKSt9nothrow_t \
-    --redefine-sym=_ZdlPvSt11align_val_t=__puerts_wrap__ZdlPvSt11align_val_t \
-    --redefine-sym=_ZdlPvSt11align_val_tRKSt9nothrow_t=__puerts_wrap__ZdlPvSt11align_val_tRKSt9nothrow_t \
-    --redefine-sym=_ZdlPvm=__puerts_wrap__ZdlPvm \
-    --redefine-sym=_ZdlPvmSt11align_val_t=__puerts_wrap__ZdlPvmSt11align_val_t \
-    --redefine-sym=_ZnamSt11align_val_t=__puerts_wrap__ZnamSt11align_val_t \
-    --redefine-sym=_ZnamSt11align_val_tRKSt9nothrow_t=__puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t \
-    --redefine-sym=_ZnwmSt11align_val_t=__puerts_wrap__ZnwmSt11align_val_t \
-    --redefine-sym=_ZnwmSt11align_val_tRKSt9nothrow_t=__puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t \
-    out.gn/arm64.release/obj/libwee8.a 
+  bash rename_symbols_posix.sh llvm-objcopy arm64
 fi
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/Linux_arm64/
 mkdir -p output/v8/Inc/Blob/Linux_arm64
