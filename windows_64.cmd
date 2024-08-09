@@ -52,12 +52,12 @@ if "%VERSION%"=="9.4.146.24" (
     cd ..\..
 )
 
-set CXX_SETTING="is_clang=false use_custom_libcxx=false"
+set "CXX_SETTING=is_clang=false use_custom_libcxx=false"
 
 if "%NEW_WRAP%"=="with_new_wrap" (
     echo =====[ wrap new delete ]=====
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\wrap_new_delete_v%VERSION%.patch
-    set CXX_SETTING="is_clang=true use_custom_libcxx=true"
+    set "CXX_SETTING=is_clang=true use_custom_libcxx=true"
 )
 
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
