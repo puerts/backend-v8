@@ -47,10 +47,12 @@ if "%VERSION%"=="9.4.146.24" (
     cd ..\..
 )
 
+set CXX_SETTING="is_clang=false use_custom_libcxx=false"
 
 if "%NEW_WRAP%"=="with_new_wrap" (
     echo =====[ wrap new delete ]=====
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\wrap_new_delete_v%VERSION%.patch
+    set CXX_SETTING="is_clang=true use_custom_libcxx=true"
 )
 
 @REM echo =====[ Patching V8 ]=====
@@ -68,15 +70,15 @@ node %~dp0\node-script\patchs.js . %VERSION% %NEW_WRAP%
 
 echo =====[ Building V8 ]=====
 if "%VERSION%"=="11.8.172" (
-    call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false"
+    call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false"
 )
 
 if "%VERSION%"=="10.6.194" (
-    call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false"
+    call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false"
 )
 
 if "%VERSION%"=="9.4.146.24" (
-    call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false"
+    call gn gen out.gn\x86.release -args="target_os=""win"" target_cpu=""x86"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false"
 )
 
 call ninja -C out.gn\x86.release -t clean
@@ -84,7 +86,7 @@ call ninja -v -C out.gn\x86.release wee8
 
 md output\v8\Lib\Win32
 if "%NEW_WRAP%"=="with_new_wrap" (
-  call %~dp0\rename_symbols_win.bat x86
+  call %~dp0\rename_symbols_win.bat x86 output\v8\Lib\Win32\
 )
 copy /Y out.gn\x86.release\obj\wee8.lib output\v8\Lib\Win32\
 

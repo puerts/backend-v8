@@ -69,9 +69,12 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
 fi
 
+CXX_SETTING="use_custom_libcxx=false"
+
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
   echo "=====[ wrap new delete ]====="
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
+  CXX_SETTING="use_custom_libcxx=true"
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
@@ -81,11 +84,11 @@ node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
 if [ "$VERSION" == "11.8.172" ]; then 
-    gn gen out.gn/arm64.release --args="target_os=\"android\" target_cpu=\"arm64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 use_custom_libcxx=false use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false"
+    gn gen out.gn/arm64.release --args="target_os=\"android\" target_cpu=\"arm64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false"
 elif [ "$VERSION" == "10.6.194" ]; then
-    gn gen out.gn/arm64.release --args="target_os=\"android\" target_cpu=\"arm64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 use_custom_libcxx=false use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false"
+    gn gen out.gn/arm64.release --args="target_os=\"android\" target_cpu=\"arm64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false"
 else
-    gn gen out.gn/arm64.release --args="target_os=\"android\" target_cpu=\"arm64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 use_custom_libcxx=false use_custom_libcxx_for_host=true v8_enable_pointer_compression=false"
+    gn gen out.gn/arm64.release --args="target_os=\"android\" target_cpu=\"arm64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false"
 fi
 ninja -C out.gn/arm64.release -t clean
 ninja -v -C out.gn/arm64.release wee8
@@ -95,7 +98,7 @@ fi
 
 mkdir -p output/v8/Lib/Android/arm64-v8a
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh third_party/android_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy arm64
+  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh third_party/android_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin arm64 output/v8/Lib/Android/arm64-v8a/
 fi
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/Android/arm64-v8a/
 mkdir -p output/v8/Bin/Android/arm64-v8a
