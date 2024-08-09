@@ -66,7 +66,7 @@ index a91d61c8c26..01ef99b09ec 100644
  }
 diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
 new file mode 100644
-index 00000000000..b178a352ea1
+index 00000000000..6da06cefc06
 --- /dev/null
 +++ b/src/base/wrap_symbols.cc
 @@ -0,0 +1,157 @@
@@ -182,7 +182,7 @@ index 00000000000..b178a352ea1
 +    ::free(ptr);
 +}
 +
-+#if __cplusplus >= 201703L
++#if __cplusplus >= 201703L && (!defined(V8_OS_ANDROID) || defined(_LIBCPP_HAS_ALIGNED_ALLOC))
 +
 +//_ZnamSt11align_val_t -> operator new[](unsigned long, std::align_val_t)
 +//"??_U@YAPEAX_KW4align_val_t@std@@@Z"
