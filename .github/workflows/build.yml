@@ -241,6 +241,7 @@ jobs:
       run: choco install llvm
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
+      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
@@ -266,6 +267,7 @@ jobs:
       run: choco install llvm
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
+      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
@@ -287,6 +289,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
+      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
@@ -312,6 +315,7 @@ jobs:
       run: choco install llvm
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
+      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
