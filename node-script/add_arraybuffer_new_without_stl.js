@@ -28,15 +28,6 @@ V8_EXPORT Local<Module> Module_CreateSyntheticModule_Without_Stl(
       v8::Module::SyntheticModuleEvaluationSteps evaluation_steps);
 
 }
-
-namespace v8_inspector {
-
-V8_EXPORT v8_inspector::V8Inspector* V8Inspector_Create_Without_Stl(v8::Isolate*, v8_inspector::V8InspectorClient*);
-
-V8_EXPORT void V8Inspector_Destroy_Without_Stl(v8_inspector::V8Inspector*);
-
-}
-
 `;
 
 fs.writeFileSync(v8_h_path, v8_h_context.slice(0, v8_h_insert_pos) + v8_h_insert_code + v8_h_context.slice(v8_h_insert_pos));
@@ -111,6 +102,25 @@ const api_cc_content = fs.readFileSync(api_cc_path, 'utf-8');
 const api_cc_insert_pos = api_cc_content.lastIndexOf('#include "src/api/api-macros-undef.h"');
 
 fs.writeFileSync(api_cc_path, api_cc_content.slice(0, api_cc_insert_pos) + api_cc_insert_code + api_cc_content.slice(api_cc_insert_pos));
+
+const v8_inspector_h_path = path.join(process.argv[2], 'include/v8-inspector.h');
+
+const v8_inspector_h_insert_code = `
+namespace v8_inspector {
+
+V8_EXPORT v8_inspector::V8Inspector* V8Inspector_Create_Without_Stl(v8::Isolate*, v8_inspector::V8InspectorClient*);
+
+V8_EXPORT void V8Inspector_Destroy_Without_Stl(v8_inspector::V8Inspector*);
+
+}
+
+`;
+
+const v8_inspector_h_content = fs.readFileSync(v8_inspector_h_path, 'utf-8');
+
+const v8_inspector_h_insert_pos = v8_inspector_h_content.lastIndexOf('#endif');
+
+fs.writeFileSync(v8_inspector_h_path, v8_inspector_h_content.slice(0, v8_inspector_h_insert_pos) + v8_inspector_h_insert_code + v8_inspector_h_content.slice(v8_inspector_h_insert_pos));
 
 const v8_inspector_impl_cc_path = path.join(process.argv[2], 'src/inspector/v8-inspector-impl.cc');
 
