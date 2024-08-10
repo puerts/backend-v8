@@ -239,8 +239,8 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
-      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
@@ -264,8 +264,8 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
-      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
@@ -285,8 +285,8 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
-      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
@@ -310,8 +310,8 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - uses: ilammy/msvc-dev-cmd@v1
     - name: Run build script
-      shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
