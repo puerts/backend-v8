@@ -25,7 +25,7 @@ V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer);
 V8_EXPORT Local<Module> Module_CreateSyntheticModule_Without_Stl(
       Isolate* isolate, Local<String> module_name,
       const std::vector<Local<String>>& export_names,
-      SyntheticModuleEvaluationSteps evaluation_steps);
+      v8::Module::SyntheticModuleEvaluationSteps evaluation_steps);
 
 }
 
