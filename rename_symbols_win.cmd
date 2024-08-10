@@ -4,7 +4,7 @@ setlocal
 set ARCH=%~1
 set OUTPUT=%~2
 
-echo "%OBJCOPY% out.gn/%ARCH%.release/obj/libwee8.a"
+echo "%ARCH% out.gn/%ARCH%.release/obj/libwee8.a"
 
 llvm-objcopy ^
   --redefine-sym="??2@YAPEAX_K@Z=__puerts_wrap__Znwm" ^
@@ -31,9 +31,9 @@ llvm-objcopy ^
 
 call ninja -v -C out.gn\%ARCH%.release d8
 
-pushd out.gn\%ARCH%.release\obj\buildtools\third_party\libc++\libc++
-
-lib /OUT:v8_custom_libcxx.lib *.obj
+echo "gen v8_custom_libcxx.lib"
+lib.exe /OUT:v8_custom_libcxx.lib out.gn\%ARCH%.release\obj\buildtools\third_party\libc++\libc++\*.obj
+dir
 
 llvm-objcopy ^
   --redefine-sym="??2@YAPEAX_K@Z=__puerts_wrap__Znwm" ^
@@ -84,9 +84,7 @@ llvm-objcopy ^
   --redefine-sym="?uncaught_exceptions@std@@YAHXZ=?uncaught_exceptions___@std@@YAHXZ" ^
   --redefine-sym="?unexpected@std@@YAXXZ=?unexpected___@std@@YAXXZ" ^
   v8_custom_libcxx.lib
-  
-popd
 
-copy /Y out.gn\%ARCH%.release\obj\buildtools\third_party\libc++\libc++\v8_custom_libcxx.lib %OUTPUT%
+copy /Y v8_custom_libcxx.lib %OUTPUT%
 
 endlocal
