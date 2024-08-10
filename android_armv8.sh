@@ -97,8 +97,9 @@ if [ "$VERSION" == "9.4.146.24" ]; then
 fi
 
 mkdir -p output/v8/Lib/Android/arm64-v8a
-if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh third_party/android_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin arm64 output/v8/Lib/Android/arm64-v8a/
+if [ "$NEW_WRAP" == "with_new_wrap" ]; then
+  export PATH="$(pwd)/third_party/llvm-build/Release+Asserts/bin:$PATH"
+  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh arm64 output/v8/Lib/Android/arm64-v8a/
 fi
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/Android/arm64-v8a/
 mkdir -p output/v8/Bin/Android/arm64-v8a

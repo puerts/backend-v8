@@ -1,20 +1,11 @@
 #!/bin/bash
 
-ARCH=$2
-OUTPUT=$3
+ARCH=$1
+OUTPUT=$2
 
-if [ -n "$1" ] && [ "$1" != "" ]; then
-    DIRECTORY="$1"
-    LLVM_AR="$DIRECTORY/llvm-ar"
-    LLVM_OBJCOPY="$DIRECTORY/llvm-objcopy"
-else
-    LLVM_AR="llvm-ar"
-    LLVM_OBJCOPY="$DIRECTORY/llvm-objcopy"
-fi
+echo "ARCH=$1 OUTPUT=$2"
 
-echo "$LLVM_OBJCOPY out.gn/$ARCH.release/obj/libwee8.a"
-
-$LLVM_OBJCOPY \
+llvm-objcopy \
   --redefine-sym=_Znwm=__puerts_wrap__Znwm \
   --redefine-sym=_ZdlPv=__puerts_wrap__ZdlPv \
   --redefine-sym=_Znam=__puerts_wrap__Znam \
@@ -39,9 +30,9 @@ $LLVM_OBJCOPY \
 
 ninja -v -C out.gn/$ARCH.release d8
 
-$LLVM_AR rcs libv8_custom_libcxx.a out.gn/$ARCH.release/obj/buildtools/third_party/libc++/libc++/*.o
+llvm-ar rcs libv8_custom_libcxx.a out.gn/$ARCH.release/obj/buildtools/third_party/libc++/libc++/*.o
 
-$LLVM_OBJCOPY \
+llvm-objcopy \
   --redefine-sym=_Znwm=__puerts_wrap__Znwm \
   --redefine-sym=_ZdlPv=__puerts_wrap__ZdlPv \
   --redefine-sym=_Znam=__puerts_wrap__Znam \
@@ -64,7 +55,7 @@ $LLVM_OBJCOPY \
   --redefine-sym=_ZnwmSt11align_val_tRKSt9nothrow_t=__puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t \
   libv8_custom_libcxx.a 
   
-$LLVM_OBJCOPY \
+llvm-objcopy \
   --redefine-sym=_ZNKSt16nested_exception14rethrow_nestedEv=___ZNKSt16nested_exception14rethrow_nestedEv
   --redefine-sym=_ZNSt13exception_ptrC1ERKS_=___ZNSt13exception_ptrC1ERKS_
   --redefine-sym=_ZNSt13exception_ptrC2ERKS_=___ZNSt13exception_ptrC2ERKS_
