@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 let v8_h_path = process.argv[2] + '/include/v8.h';
 let v8_h_context = fs.readFileSync(v8_h_path, 'utf-8');
@@ -8,6 +9,7 @@ let v8_h_insert_pos = v8_h_context.lastIndexOf('#endif');
 let v8_h_insert_code = `
 
 #define HAS_ARRAYBUFFER_NEW_WITHOUT_STL 1
+#define WRAP_API_WITHOUT_STL 1
 
 namespace v8
 {
@@ -19,6 +21,20 @@ V8_EXPORT Local<ArrayBuffer> ArrayBuffer_New_Without_Stl(Isolate* isolate,
       void* data, size_t byte_length);
 V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer, size_t &byte_length);
 V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer);
+
+V8_EXPORT Local<Module> Module_CreateSyntheticModule_Without_Stl(
+      Isolate* isolate, Local<String> module_name,
+      const std::vector<Local<String>>& export_names,
+      SyntheticModuleEvaluationSteps evaluation_steps);
+
+}
+
+namespace v8_inspector {
+
+V8_EXPORT V8Inspector* V8Inspector_Create_Without_Stl(v8::Isolate*, V8InspectorClient*);
+
+V8_EXPORT void V8Inspector_Destroy_Without_Stl(V8Inspector*);
+
 }
 
 `;
@@ -73,7 +89,110 @@ V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer)
 {
     return array_buffer->GetBackingStore()->Data();
 }
+
+Local<Module> CreateSyntheticModule_Without_Stl(
+    Isolate* v8_isolate, Local<String> module_name,
+    Local<FixedArray> export_names,
+    v8::Module::SyntheticModuleEvaluationSteps evaluation_steps) {
+  auto i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);
+  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);
+  i::Handle<i::String> i_module_name = Utils::OpenHandle(*module_name);
+  i::Handle<i::FixedArray> i_export_names = Utils::OpenHandle(*export_names);
+  return v8::Utils::ToLocal(
+      i::Handle<i::Module>(i_isolate->factory()->NewSyntheticModule(
+          i_module_name, i_export_names, evaluation_steps)));
 }
+}
+
 `
 
-fs.writeFileSync(api_cc_path, fs.readFileSync(api_cc_path, 'utf-8') + api_cc_insert_code);
+const api_cc_content = fs.readFileSync(api_cc_path, 'utf-8');
+
+const api_cc_insert_pos = api_cc_content.lastIndexOf('#include "src/api/api-macros-undef.h"');
+
+fs.writeFileSync(api_cc_path, api_cc_content.slice(0, api_cc_insert_pos) + api_cc_insert_code + api_cc_content.slice(api_cc_insert_pos));
+
+const v8_inspector_impl_cc_path = path.join(process.argv[2], 'src/inspector/v8-inspector-impl.cc');
+
+const v8_inspector_impl_cc_insert_code = `
+namespace v8_inspector {
+
+V8_EXPORT V8Inspector* V8Inspector_Create_Without_Stl(v8::Isolate* isolate, V8InspectorClient* client) {
+    return new V8InspectorImpl(isolate, client);
+}
+
+V8_EXPORT void V8Inspector_Destroy_Without_Stl(V8Inspector* inspector) {
+    delete inspector;
+}
+    
+}
+
+`;
+
+fs.writeFileSync(v8_inspector_impl_cc_path, fs.readFileSync(v8_inspector_impl_cc_path, 'utf-8') + v8_inspector_impl_cc_insert_code);
+
+
+const default_platform_cc_path = path.join(process.argv[2], 'src/libplatform/default-platform.cc');
+
+const default_platform_cc_insert_code = `
+namespace v8 {
+namespace platform {
+
+std::unique_ptr<v8::Platform> NewDefaultPlatform_Without_Stl(
+    int thread_pool_size, IdleTaskSupport idle_task_support,
+    InProcessStackDumping in_process_stack_dumping,
+    v8::TracingController* tracing_controller,
+    PriorityMode priority_mode) {
+  return NewDefaultPlatform(thread_pool_size, idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller), priority_mode);
+}
+#if V8_MAJOR_VERSION > 8
+std::unique_ptr<v8::Platform> NewSingleThreadedDefaultPlatform_Without_Stl(
+    IdleTaskSupport idle_task_support,
+    InProcessStackDumping in_process_stack_dumping,
+    v8::TracingController* tracing_controller) {
+  return NewSingleThreadedDefaultPlatform(idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller));
+}
+#endif
+}  // namespace platform
+}  // namespace v8
+
+`;
+
+fs.writeFileSync(default_platform_cc_path, fs.readFileSync(default_platform_cc_path, 'utf-8') + default_platform_cc_insert_code);
+
+
+const libplatform_h_path = path.join(process.argv[2], 'include/libplatform/libplatform.h');
+
+const libplatform_h_content = fs.readFileSync(libplatform_h_path, 'utf-8');
+
+let libplatform_h_insert_pos = libplatform_h_content.lastIndexOf('#endif');
+
+let libplatform_h_insert_code = `
+namespace v8 {
+namespace platform {
+
+
+V8_PLATFORM_EXPORT std::unique_ptr<v8::Platform> NewDefaultPlatform_Without_Stl(
+    int thread_pool_size = 0,
+    IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
+    InProcessStackDumping in_process_stack_dumping =
+        InProcessStackDumping::kDisabled,
+    v8::TracingController* tracing_controller = nullptr,
+    PriorityMode priority_mode = PriorityMode::kDontApply);
+
+#if V8_MAJOR_VERSION > 8
+V8_PLATFORM_EXPORT std::unique_ptr<v8::Platform>
+NewSingleThreadedDefaultPlatform_Without_Stl(
+    IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
+    InProcessStackDumping in_process_stack_dumping =
+        InProcessStackDumping::kDisabled,
+    v8::TracingController* tracing_controller = nullptr);
+#endif
+
+}  // namespace platform
+}  // namespace v8
+
+`;
+
+fs.writeFileSync(libplatform_h_path, libplatform_h_content.slice(0, libplatform_h_insert_pos) + libplatform_h_insert_code + libplatform_h_content.slice(libplatform_h_insert_pos));
+
