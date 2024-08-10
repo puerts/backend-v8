@@ -31,9 +31,9 @@ V8_EXPORT Local<Module> Module_CreateSyntheticModule_Without_Stl(
 
 namespace v8_inspector {
 
-V8_EXPORT V8Inspector* V8Inspector_Create_Without_Stl(v8::Isolate*, V8InspectorClient*);
+V8_EXPORT v8_inspector::V8Inspector* V8Inspector_Create_Without_Stl(v8::Isolate*, v8_inspector::V8InspectorClient*);
 
-V8_EXPORT void V8Inspector_Destroy_Without_Stl(V8Inspector*);
+V8_EXPORT void V8Inspector_Destroy_Without_Stl(v8_inspector::V8Inspector*);
 
 }
 
