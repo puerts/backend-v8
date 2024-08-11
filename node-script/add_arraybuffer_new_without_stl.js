@@ -85,7 +85,7 @@ Local<Module> CreateSyntheticModule_Without_Stl(
     Isolate* v8_isolate, Local<String> module_name,
     Local<String>* export_names, size_t export_names_length,
     v8::Module::SyntheticModuleEvaluationSteps evaluation_steps) {
-  std::vector<int> vec(export_names, export_names + export_names_length);
+  std::vector<Local<String>> vec(export_names, export_names + export_names_length);
   return v8::Module::CreateSyntheticModule(v8_isolate, module_name, vec, evaluation_steps);
 }
 }
