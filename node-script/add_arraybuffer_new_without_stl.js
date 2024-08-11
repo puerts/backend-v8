@@ -24,7 +24,7 @@ V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer);
 
 V8_EXPORT Local<Module> Module_CreateSyntheticModule_Without_Stl(
       Isolate* isolate, Local<String> module_name,
-      const std::vector<Local<String>>& export_names,
+      Local<String>* export_names, size_t export_names_length,
       v8::Module::SyntheticModuleEvaluationSteps evaluation_steps);
 
 }
@@ -83,15 +83,10 @@ V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer)
 
 Local<Module> CreateSyntheticModule_Without_Stl(
     Isolate* v8_isolate, Local<String> module_name,
-    Local<FixedArray> export_names,
+    Local<String>* export_names, size_t export_names_length,
     v8::Module::SyntheticModuleEvaluationSteps evaluation_steps) {
-  auto i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);
-  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);
-  i::Handle<i::String> i_module_name = Utils::OpenHandle(*module_name);
-  i::Handle<i::FixedArray> i_export_names = Utils::OpenHandle(*export_names);
-  return v8::Utils::ToLocal(
-      i::Handle<i::Module>(i_isolate->factory()->NewSyntheticModule(
-          i_module_name, i_export_names, evaluation_steps)));
+  std::vector<int> vec(export_names, export_names + export_names_length);
+  return v8::Module::CreateSyntheticModule(v8_isolate, module_name, vec, evaluation_steps);
 }
 }
 
