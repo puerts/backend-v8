@@ -146,9 +146,16 @@ namespace platform {
 v8::Platform* NewDefaultPlatform_Without_Stl(
     int thread_pool_size, IdleTaskSupport idle_task_support,
     InProcessStackDumping in_process_stack_dumping,
-    v8::TracingController* tracing_controller,
-    PriorityMode priority_mode) {
-  return NewDefaultPlatform(thread_pool_size, idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller), priority_mode).release();
+    v8::TracingController* tracing_controller
+#if V8_MAJOR_VERSION > 10
+    ,PriorityMode priority_mode
+#endif
+	) {
+  return NewDefaultPlatform(thread_pool_size, idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller)
+#if V8_MAJOR_VERSION > 10
+      , priority_mode
+#endif
+	  ).release();
 }
 #if V8_MAJOR_VERSION > 8
 v8::Platform* NewSingleThreadedDefaultPlatform_Without_Stl(
@@ -186,8 +193,11 @@ V8_PLATFORM_EXPORT v8::Platform* NewDefaultPlatform_Without_Stl(
     IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
     InProcessStackDumping in_process_stack_dumping =
         InProcessStackDumping::kDisabled,
-    v8::TracingController* tracing_controller = nullptr,
-    PriorityMode priority_mode = PriorityMode::kDontApply);
+    v8::TracingController* tracing_controller = nullptr
+#if V8_MAJOR_VERSION > 10
+    , PriorityMode priority_mode = PriorityMode::kDontApply
+#endif
+	);
 
 #if V8_MAJOR_VERSION > 8
 V8_PLATFORM_EXPORT v8::Platform*
