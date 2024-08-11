@@ -148,19 +148,19 @@ const default_platform_cc_insert_code = `
 namespace v8 {
 namespace platform {
 
-std::unique_ptr<v8::Platform> NewDefaultPlatform_Without_Stl(
+v8::Platform* NewDefaultPlatform_Without_Stl(
     int thread_pool_size, IdleTaskSupport idle_task_support,
     InProcessStackDumping in_process_stack_dumping,
     v8::TracingController* tracing_controller,
     PriorityMode priority_mode) {
-  return NewDefaultPlatform(thread_pool_size, idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller), priority_mode);
+  return NewDefaultPlatform(thread_pool_size, idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller), priority_mode).release();
 }
 #if V8_MAJOR_VERSION > 8
-std::unique_ptr<v8::Platform> NewSingleThreadedDefaultPlatform_Without_Stl(
+v8::Platform* NewSingleThreadedDefaultPlatform_Without_Stl(
     IdleTaskSupport idle_task_support,
     InProcessStackDumping in_process_stack_dumping,
     v8::TracingController* tracing_controller) {
-  return NewSingleThreadedDefaultPlatform(idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller));
+  return NewSingleThreadedDefaultPlatform(idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller)).release();
 }
 #endif
 }  // namespace platform
@@ -182,7 +182,7 @@ namespace v8 {
 namespace platform {
 
 
-V8_PLATFORM_EXPORT std::unique_ptr<v8::Platform> NewDefaultPlatform_Without_Stl(
+V8_PLATFORM_EXPORT v8::Platform* NewDefaultPlatform_Without_Stl(
     int thread_pool_size = 0,
     IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
     InProcessStackDumping in_process_stack_dumping =
@@ -191,7 +191,7 @@ V8_PLATFORM_EXPORT std::unique_ptr<v8::Platform> NewDefaultPlatform_Without_Stl(
     PriorityMode priority_mode = PriorityMode::kDontApply);
 
 #if V8_MAJOR_VERSION > 8
-V8_PLATFORM_EXPORT std::unique_ptr<v8::Platform>
+V8_PLATFORM_EXPORT v8::Platform*
 NewSingleThreadedDefaultPlatform_Without_Stl(
     IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
     InProcessStackDumping in_process_stack_dumping =
