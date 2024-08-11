@@ -81,7 +81,7 @@ V8_EXPORT void* ArrayBuffer_Get_Data(Local<ArrayBuffer> array_buffer)
     return array_buffer->GetBackingStore()->Data();
 }
 
-V8_EXPORT Local<Module> CreateSyntheticModule_Without_Stl(
+V8_EXPORT Local<Module> Module_CreateSyntheticModule_Without_Stl(
     Isolate* v8_isolate, Local<String> module_name,
     Local<String>* export_names, size_t export_names_length,
     v8::Module::SyntheticModuleEvaluationSteps evaluation_steps) {
