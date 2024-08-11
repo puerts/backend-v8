@@ -140,6 +140,7 @@ fs.writeFileSync(v8_inspector_impl_cc_path, fs.readFileSync(v8_inspector_impl_cc
 const default_platform_cc_path = path.join(process.argv[2], 'src/libplatform/default-platform.cc');
 
 const default_platform_cc_insert_code = `
+#include "include/v8-version.h"
 namespace v8 {
 namespace platform {
 
