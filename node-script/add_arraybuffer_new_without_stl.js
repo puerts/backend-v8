@@ -163,6 +163,10 @@ v8::Platform* NewSingleThreadedDefaultPlatform_Without_Stl(
   return NewSingleThreadedDefaultPlatform(idle_task_support, in_process_stack_dumping, std::unique_ptr<v8::TracingController>(tracing_controller)).release();
 }
 #endif
+
+void DeletePlatform_Without_Stl(v8::Platform* platform) {
+    delete platform;
+}
 }  // namespace platform
 }  // namespace v8
 
@@ -198,6 +202,8 @@ NewSingleThreadedDefaultPlatform_Without_Stl(
         InProcessStackDumping::kDisabled,
     v8::TracingController* tracing_controller = nullptr);
 #endif
+
+V8_PLATFORM_EXPORT void DeletePlatform_Without_Stl(v8::Platform*);
 
 }  // namespace platform
 }  // namespace v8
