@@ -1,0 +1,229 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index 3e48fb11bff..63cf1e858b8 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -524,6 +524,20 @@ v8_toolset_for_shell = "host"
+ # Configurations
+ #
+ 
++v8_source_set("wrap_symbols") {
++  sources = [
++    "src/base/wrap_symbols.cc",
++  ]
++
++  public_configs = []
++
++  public_deps = []
++
++  deps = []
++
++  configs = [ ":internal_config" ]
++}
++
+ config("internal_config_base") {
+   # Only targets in this file and its subdirs can depend on this.
+   visibility = [ "./*" ]
+@@ -4461,6 +4475,7 @@ v8_source_set("v8_base_without_compiler") {
+     ":v8_tracing",
+     ":v8_version",
+     "src/inspector:inspector",
++    ":wrap_symbols",
+   ]
+ 
+   public_deps = [
+@@ -4605,6 +4620,7 @@ v8_source_set("torque_base") {
+   deps = [
+     ":v8_flags",
+     ":v8_shared_internal_headers",
++    ":wrap_symbols",
+   ]
+ 
+   public_deps = [ ":v8_libbase" ]
+@@ -4779,7 +4795,7 @@ v8_component("v8_libbase") {
+ 
+   public_configs = [ ":libbase_config" ]
+ 
+-  deps = [ ":v8_config_headers" ]
++  deps = [ ":v8_config_headers" , ":wrap_symbols" ]
+ 
+   data = []
+ 
+@@ -4951,6 +4967,7 @@ v8_component("v8_libplatform") {
+     ":v8_config_headers",
+     ":v8_libbase",
+     ":v8_tracing",
++    ":wrap_symbols",
+   ]
+ 
+   if (v8_use_perfetto) {
+@@ -5368,6 +5385,7 @@ if (current_toolchain == v8_generator_toolchain) {
+       ":v8_libbase",
+       ":v8_shared_internal_headers",
+       "//build/win:default_exe_manifest",
++      ":wrap_symbols",
+     ]
+   }
+ }
+diff --git a/src/base/wrap_symbols.cc b/src/base/wrap_symbols.cc
+new file mode 100644
+index 00000000000..6721678697d
+--- /dev/null
++++ b/src/base/wrap_symbols.cc
+@@ -0,0 +1,157 @@
++#include <stdlib.h>
++#include <cstdlib>
++#include "logging.h"
++
++extern "C" {
++
++//_Znwm -> operator new(unsigned long)
++//"??2@YAPEAX_K@Z"
++void* __puerts_wrap__Znwm(unsigned long size) {
++    void* ptr = ::malloc(size);
++    if (!ptr) {
++        FATAL("Fatal process out of memory for new");
++        UNREACHABLE();
++    }
++    return ptr;
++}
++
++//_ZdlPv -> operator delete(void*)
++//"??3@YAXPEAX@Z"
++void __puerts_wrap__ZdlPv(void* ptr) noexcept {
++    ::free(ptr);
++}
++
++//_Znam -> operator new[](unsigned long)
++//"??_U@YAPEAX_K@Z"
++void* __puerts_wrap__Znam(unsigned long size) {
++    void* ptr = ::malloc(size);
++    if (!ptr) {
++        FATAL("Fatal process out of memory for new[]");
++        UNREACHABLE();
++    }
++    return ptr;
++}
++
++//_ZdaPv -> operator delete[](void*)
++//"??_V@YAXPEAX@Z"
++void __puerts_wrap__ZdaPv(void* ptr) noexcept {
++    ::free(ptr);
++}
++
++//_ZnwmRKSt9nothrow_t -> operator new(unsigned long, std::nothrow_t const&)
++//"??2@YAPEAX_KAEBUnothrow_t@std@@@Z"
++void* __puerts_wrap__ZnwmRKSt9nothrow_t(unsigned long size) {
++    return ::malloc(size);
++}
++
++//_ZnamRKSt9nothrow_t -> operator new[](unsigned long, std::nothrow_t const&)
++//"??_U@YAPEAX_KAEBUnothrow_t@std@@@Z"
++void* __puerts_wrap__ZnamRKSt9nothrow_t(unsigned long size) {
++    return ::malloc(size);
++}
++
++//_ZdaPvRKSt9nothrow_t -> operator delete[](void*, std::nothrow_t const&)
++//"??_V@YAXPEAXAEBUnothrow_t@std@@@Z"
++void __puerts_wrap__ZdaPvRKSt9nothrow_t(void* ptr, void*) {
++    ::free(ptr);
++}
++
++//_ZdaPvSt11align_val_t -> operator delete[](void*, std::align_val_t)
++//"??_V@YAXPEAXW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdaPvSt11align_val_t(void* ptr, std::align_val_t) {
++    ::free(ptr);
++}
++
++//_ZdaPvSt11align_val_tRKSt9nothrow_t -> operator delete[](void*, std::align_val_t, std::nothrow_t const&)
++//"??_V@YAXPEAXW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void __puerts_wrap__ZdaPvSt11align_val_tRKSt9nothrow_t(void* ptr, std::align_val_t, void*) {
++    ::free(ptr);
++}
++
++//_ZdaPvm -> operator delete[](void*, unsigned long)
++//"??_V@YAXPEAX_K@Z"
++void __puerts_wrap__ZdaPvm(void* ptr, unsigned long) {
++    ::free(ptr);
++}
++
++//_ZdaPvmSt11align_val_t -> operator delete[](void*, unsigned long, std::align_val_t)
++//"??_V@YAXPEAX_KW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdaPvmSt11align_val_t(void* ptr, unsigned long, std::align_val_t) {
++    ::free(ptr);
++}
++
++//_ZdlPvRKSt9nothrow_t -> operator delete(void*, std::nothrow_t const&)
++//"??3@YAXPEAXAEBUnothrow_t@std@@@Z"
++void __puerts_wrap__ZdlPvRKSt9nothrow_t(void* ptr, void*) {
++    ::free(ptr);
++}
++
++//_ZdlPvSt11align_val_t -> operator delete(void*, std::align_val_t)
++//"??3@YAXPEAXW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdlPvSt11align_val_t(void* ptr, std::align_val_t) {
++    ::free(ptr);
++}
++
++//_ZdlPvSt11align_val_tRKSt9nothrow_t -> operator delete(void*, std::align_val_t, std::nothrow_t const&)
++//"??3@YAXPEAXW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void __puerts_wrap__ZdlPvSt11align_val_tRKSt9nothrow_t(void* ptr, std::align_val_t, void*){
++    ::free(ptr);
++}
++
++//_ZdlPvm -> operator delete(void*, unsigned long)
++//"??3@YAXPEAX_K@Z"
++void __puerts_wrap__ZdlPvm(void* ptr, unsigned long) {
++    ::free(ptr);
++}
++
++//_ZdlPvmSt11align_val_t -> operator delete(void*, unsigned long, std::align_val_t)
++//"??3@YAXPEAX_KW4align_val_t@std@@@Z"
++void __puerts_wrap__ZdlPvmSt11align_val_t(void* ptr, unsigned long, std::align_val_t) {
++    ::free(ptr);
++}
++
++#if __cplusplus >= 201703L && (!defined(V8_OS_ANDROID) || defined(_LIBCPP_HAS_ALIGNED_ALLOC)) && !defined(_LIBCPP_HAS_NO_ALIGNED_ALLOCATION)
++
++//_ZnamSt11align_val_t -> operator new[](unsigned long, std::align_val_t)
++//"??_U@YAPEAX_KW4align_val_t@std@@@Z"
++void* __puerts_wrap__ZnamSt11align_val_t(unsigned long size, std::align_val_t alignment) {
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return std::aligned_alloc((size_t)alignment, size);
++#endif
++}
++
++//_ZnamSt11align_val_tRKSt9nothrow_t -> operator new[](unsigned long, std::align_val_t, std::nothrow_t const&)
++//"??_U@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void* __puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t(unsigned long size, std::align_val_t alignment, void*) {
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return std::aligned_alloc((size_t)alignment, size);
++#endif
++}
++
++//_ZnwmSt11align_val_t -> operator new(unsigned long, std::align_val_t)
++//"??2@YAPEAX_KW4align_val_t@std@@@Z"
++void* __puerts_wrap__ZnwmSt11align_val_t(unsigned long size, std::align_val_t alignment) {
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return std::aligned_alloc((size_t)alignment, size);
++#endif
++}
++
++//_ZnwmSt11align_val_tRKSt9nothrow_t -> operator new(unsigned long, std::align_val_t, std::nothrow_t const&)
++//"??2@YAPEAX_KW4align_val_t@std@@AEBUnothrow_t@1@@Z"
++void* __puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t(unsigned long size, std::align_val_t alignment, void*) {
++#if V8_OS_WIN
++    return _aligned_malloc(size, (size_t)alignment);
++#else
++    return std::aligned_alloc((size_t)alignment, size);
++#endif
++}
++
++#endif
++
++}
