@@ -9,7 +9,7 @@ let v8_h_insert_pos = v8_h_context.lastIndexOf('#endif');
 let v8_h_insert_code = `
 
 #define HAS_ARRAYBUFFER_NEW_WITHOUT_STL 1
-#define WRAP_API_WITHOUT_STL 1
+#define V8_HAS_WRAP_API_WITHOUT_STL 1
 
 namespace v8
 {
