@@ -69,3 +69,6 @@ cp out.gn/arm64.release/libchrome_zlib.dylib output/v8/Lib/macOSdylib_arm64/
 if [ "$VERSION" == "11.8.172" ]; then 
   cp out.gn/arm64.release/libthird_party_abseil-cpp_absl.dylib output/v8/Lib/macOSdylib_arm64/
 fi
+if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
+  cp out.gn/arm64.release/libc++_chrome.dylib output/v8/Lib/macOSdylib_arm64/
+fi
