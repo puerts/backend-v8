@@ -184,37 +184,91 @@ const libplatform_h_content = fs.readFileSync(libplatform_h_path, 'utf-8');
 
 let libplatform_h_insert_pos = libplatform_h_content.lastIndexOf('#endif');
 
-let libplatform_h_insert_code = `
-namespace v8 {
-namespace platform {
+
+let v8_version = process.argv[3];
+
+let libplatform_h_insert_code;
+
+let major_versoin = parseInt(v8_version.split('.')[0]);
+
+if (major_versoin > 10) {
+    libplatform_h_insert_code = `
+    namespace v8 {
+    namespace platform {
 
 
-V8_PLATFORM_EXPORT v8::Platform* NewDefaultPlatform_Without_Stl(
-    int thread_pool_size = 0,
-    IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
-    InProcessStackDumping in_process_stack_dumping =
-        InProcessStackDumping::kDisabled,
-    v8::TracingController* tracing_controller = nullptr
-#if V8_MAJOR_VERSION > 10
-    , PriorityMode priority_mode = PriorityMode::kDontApply
-#endif
-	);
+    V8_PLATFORM_EXPORT v8::Platform* NewDefaultPlatform_Without_Stl(
+        int thread_pool_size = 0,
+        IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
+        InProcessStackDumping in_process_stack_dumping =
+            InProcessStackDumping::kDisabled,
+        v8::TracingController* tracing_controller = nullptr, 
+        PriorityMode priority_mode = PriorityMode::kDontApply
+        );
 
-#if V8_MAJOR_VERSION > 8
-V8_PLATFORM_EXPORT v8::Platform*
-NewSingleThreadedDefaultPlatform_Without_Stl(
-    IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
-    InProcessStackDumping in_process_stack_dumping =
-        InProcessStackDumping::kDisabled,
-    v8::TracingController* tracing_controller = nullptr);
-#endif
+    V8_PLATFORM_EXPORT v8::Platform*
+    NewSingleThreadedDefaultPlatform_Without_Stl(
+        IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
+        InProcessStackDumping in_process_stack_dumping =
+            InProcessStackDumping::kDisabled,
+        v8::TracingController* tracing_controller = nullptr);
 
-V8_PLATFORM_EXPORT void DeletePlatform_Without_Stl(v8::Platform*);
+    V8_PLATFORM_EXPORT void DeletePlatform_Without_Stl(v8::Platform*);
 
-}  // namespace platform
-}  // namespace v8
+    }  // namespace platform
+    }  // namespace v8
 
-`;
+    `;
+} else if (major_versoin == 8) {
+    libplatform_h_insert_code = `
+    namespace v8 {
+    namespace platform {
+
+
+    V8_PLATFORM_EXPORT v8::Platform* NewDefaultPlatform_Without_Stl(
+        int thread_pool_size = 0,
+        IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
+        InProcessStackDumping in_process_stack_dumping =
+            InProcessStackDumping::kDisabled,
+        v8::TracingController* tracing_controller = nullptr
+        );
+
+    V8_PLATFORM_EXPORT void DeletePlatform_Without_Stl(v8::Platform*);
+
+    }  // namespace platform
+    }  // namespace v8
+
+    `;
+} else {
+    libplatform_h_insert_code = `
+    namespace v8 {
+    namespace platform {
+
+
+    V8_PLATFORM_EXPORT v8::Platform* NewDefaultPlatform_Without_Stl(
+        int thread_pool_size = 0,
+        IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
+        InProcessStackDumping in_process_stack_dumping =
+            InProcessStackDumping::kDisabled,
+        v8::TracingController* tracing_controller = nullptr
+        );
+
+    V8_PLATFORM_EXPORT v8::Platform*
+    NewSingleThreadedDefaultPlatform_Without_Stl(
+        IdleTaskSupport idle_task_support = IdleTaskSupport::kDisabled,
+        InProcessStackDumping in_process_stack_dumping =
+            InProcessStackDumping::kDisabled,
+        v8::TracingController* tracing_controller = nullptr);
+
+    V8_PLATFORM_EXPORT void DeletePlatform_Without_Stl(v8::Platform*);
+
+    }  // namespace platform
+    }  // namespace v8
+
+    `;
+}
+
+console.log(libplatform_h_insert_code);
 
 fs.writeFileSync(libplatform_h_path, libplatform_h_content.slice(0, libplatform_h_insert_pos) + libplatform_h_insert_code + libplatform_h_content.slice(libplatform_h_insert_pos));
 

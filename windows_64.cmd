@@ -61,7 +61,7 @@ if "%NEW_WRAP%"=="with_new_wrap" (
 )
 
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
-node %~dp0\node-script\add_arraybuffer_new_without_stl.js .
+node %~dp0\node-script\add_arraybuffer_new_without_stl.js . %VERSION% %NEW_WRAP%
 
 node %~dp0\node-script\patchs.js . %VERSION% %NEW_WRAP%
 
