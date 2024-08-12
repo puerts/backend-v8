@@ -72,5 +72,9 @@ llvm-objcopy \
   --redefine-sym=__ZSt18uncaught_exceptionv=___ZSt18uncaught_exceptionv \
   --redefine-sym=__ZSt19uncaught_exceptionsv=___ZSt19uncaught_exceptionsv \
   libv8_custom_libcxx.a 
-  
-cp libv8_custom_libcxx.a $OUTPUT
+
+mkdir v8_custom_libcxx
+cd v8_custom_libcxx
+llvm-ar x ../libv8_custom_libcxx.a
+cd -
+llvm-ar rcs out.gn/$ARCH.release/obj/libwee8.a v8_custom_libcxx/*.o

@@ -85,6 +85,7 @@ llvm-objcopy ^
   --redefine-sym="?unexpected@std@@YAXXZ=?unexpected___@std@@YAXXZ" ^
   v8_custom_libcxx.lib
 
-copy /Y v8_custom_libcxx.lib %OUTPUT%
+lib.exe /OUT:wee8.lib out.gn\%ARCH%.release\obj\wee8.lib v8_custom_libcxx.lib
+copy /Y wee8.lib out.gn\%ARCH%.release\obj\wee8.lib
 
 endlocal
