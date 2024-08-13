@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <stdio.h>
+#include <new>
 
 extern "C" {
 
@@ -118,6 +119,17 @@ void __puerts_wrap__ZdlPvmSt11align_val_t(void* ptr, unsigned long, size_t) {
 void* __puerts_wrap__ZnamSt11align_val_t(unsigned long size, size_t alignment) {
 #if defined(_WIN32)
     return _aligned_malloc(size, alignment);
+#elif defined(__APPLE__)
+    #include <AvailabilityMacros.h>
+    #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
+        return std::aligned_alloc(alignment, size);
+    #else
+        void* ptr = nullptr;
+        if (posix_memalign(&ptr, alignment, size) != 0) {
+            throw std::bad_alloc();
+        }
+        return ptr;
+    #endif
 #else
     return std::aligned_alloc(alignment, size);
 #endif
@@ -128,6 +140,17 @@ void* __puerts_wrap__ZnamSt11align_val_t(unsigned long size, size_t alignment) {
 void* __puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t(unsigned long size, size_t alignment, void*) {
 #if defined(_WIN32)
     return _aligned_malloc(size, alignment);
+#elif defined(__APPLE__)
+    #include <AvailabilityMacros.h>
+    #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
+        return std::aligned_alloc(alignment, size);
+    #else
+        void* ptr = nullptr;
+        if (posix_memalign(&ptr, alignment, size) != 0) {
+            throw std::bad_alloc();
+        }
+        return ptr;
+    #endif
 #else
     return std::aligned_alloc(alignment, size);
 #endif
@@ -138,6 +161,17 @@ void* __puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t(unsigned long size, size_
 void* __puerts_wrap__ZnwmSt11align_val_t(unsigned long size, size_t alignment) {
 #if defined(_WIN32)
     return _aligned_malloc(size, alignment);
+#elif defined(__APPLE__)
+    #include <AvailabilityMacros.h>
+    #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
+        return std::aligned_alloc(alignment, size);
+    #else
+        void* ptr = nullptr;
+        if (posix_memalign(&ptr, alignment, size) != 0) {
+            throw std::bad_alloc();
+        }
+        return ptr;
+    #endif
 #else
     return std::aligned_alloc(alignment, size);
 #endif
@@ -148,6 +182,17 @@ void* __puerts_wrap__ZnwmSt11align_val_t(unsigned long size, size_t alignment) {
 void* __puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t(unsigned long size, size_t alignment, void*) {
 #if defined(_WIN32)
     return _aligned_malloc(size, alignment);
+#elif defined(__APPLE__)
+    #include <AvailabilityMacros.h>
+    #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
+        return std::aligned_alloc(alignment, size);
+    #else
+        void* ptr = nullptr;
+        if (posix_memalign(&ptr, alignment, size) != 0) {
+            throw std::bad_alloc();
+        }
+        return ptr;
+    #endif
 #else
     return std::aligned_alloc(alignment, size);
 #endif
