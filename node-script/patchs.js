@@ -65,5 +65,18 @@ function addV8CC() {
         justReplace(path.join(v8_path, 'src/api/api.h'), 'NewArray<internal::Address>(kHandleBlockSize)', 'NewArray<internal::Address>(kHandleBlockSize + 1)');
     } else {
         console.log("wrap_new is set, skip path kHandleBlockSize");
+        const replacePath = path.join(v8_path, 'buildtools/third_party/libc++/BUILD.gn');
+        if (v8_version == "9.4.146.24") {
+            justReplace(replacePath, '\"trunk/src/vector.cpp\",', '\"trunk/src/vector.cpp\",\n    \"trunk/src/wrap_symbols.cc\",');
+            fs.copyFileSync(path.join(__dirname, 'wrap_symbols.cc'), path.join(v8_path, 'buildtools/third_party/libc++/trunk/src/wrap_symbols.cc'));
+        } else if (v8_version == "10.6.194") {
+            justReplace(replacePath, '\"trunk/src/verbose_abort.cpp\",', '\"trunk/src/verbose_abort.cpp\",\n    \"trunk/src/wrap_symbols.cc\",');
+            fs.copyFileSync(path.join(__dirname, 'wrap_symbols.cc'), path.join(v8_path, 'buildtools/third_party/libc++/trunk/src/wrap_symbols.cc'));
+        } else if (v8_version == "11.8.172") {
+            justReplace(replacePath, '\"//third_party/libc++/src/src/verbose_abort.cpp\",', '\"//third_party/libc++/src/src/verbose_abort.cpp\",\n    \"//third_party/libc++/src/src/wrap_symbols.cc\",');
+            fs.copyFileSync(path.join(__dirname, 'wrap_symbols.cc'), path.join(v8_path, 'third_party/libc++/src/src/wrap_symbols.cc'));
+        } else {
+            throw new Error(`not support version:${v8_version}`);
+        }
     }
 })();
