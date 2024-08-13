@@ -56,7 +56,8 @@ set "CXX_SETTING=is_clang=false use_custom_libcxx=false"
 
 if "%NEW_WRAP%"=="with_new_wrap" (
     echo =====[ wrap new delete ]=====
-    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\wrap_new_delete_v%VERSION%.patch
+    copy /Y %~dp0\node-script\wrap_symbols.cc "third_party\libc++\src\src"
+    node -e "const fs = require('fs'); fs.writeFileSync('buildtools/third_party/libc++/BUILD.gn', fs.readFileSync('buildtools/third_party/libc++/BUILD.gn', 'utf-8').replace('\"//third_party/libc++/src/src/verbose_abort.cpp\",', '\"//third_party/libc++/src/src/verbose_abort.cpp\",\n    \"//third_party/libc++/src/src/wrap_symbols.cc\",'));"
     set "CXX_SETTING=is_clang=true use_custom_libcxx=true"
 )
 
