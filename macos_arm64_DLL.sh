@@ -38,7 +38,7 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/wrap_new_delete_v$VERSION.patch
   brew install llvm
   export PATH="/usr/local/opt/llvm/bin:$PATH"
-  CXX_SETTING="use_custom_libcxx=true"
+  CXX_SETTING="use_custom_libcxx=true libcxx_is_shared=false"
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
@@ -70,5 +70,7 @@ if [ "$VERSION" == "11.8.172" ]; then
   cp out.gn/arm64.release/libthird_party_abseil-cpp_absl.dylib output/v8/Lib/macOSdylib_arm64/
 fi
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
-  cp out.gn/arm64.release/libc++_chrome.dylib output/v8/Lib/macOSdylib_arm64/
+  if [ -f "out.gn/arm64.release/libc++_chrome.dylib" ]; then
+    cp out.gn/arm64.release/libc++_chrome.dylib output/v8/Lib/macOSdylib_arm64/
+  fi
 fi
