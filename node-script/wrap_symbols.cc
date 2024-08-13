@@ -126,7 +126,8 @@ void* __puerts_wrap__ZnamSt11align_val_t(unsigned long size, size_t alignment) {
     #else
         void* ptr = nullptr;
         if (posix_memalign(&ptr, alignment, size) != 0) {
-            throw std::bad_alloc();
+            fprintf(stderr, "Fatal process out of memory for new");
+            abort();
         }
         return ptr;
     #endif
@@ -147,7 +148,7 @@ void* __puerts_wrap__ZnamSt11align_val_tRKSt9nothrow_t(unsigned long size, size_
     #else
         void* ptr = nullptr;
         if (posix_memalign(&ptr, alignment, size) != 0) {
-            throw std::bad_alloc();
+            return nullptr;
         }
         return ptr;
     #endif
@@ -168,7 +169,8 @@ void* __puerts_wrap__ZnwmSt11align_val_t(unsigned long size, size_t alignment) {
     #else
         void* ptr = nullptr;
         if (posix_memalign(&ptr, alignment, size) != 0) {
-            throw std::bad_alloc();
+            fprintf(stderr, "Fatal process out of memory for new");
+            abort();
         }
         return ptr;
     #endif
@@ -189,7 +191,7 @@ void* __puerts_wrap__ZnwmSt11align_val_tRKSt9nothrow_t(unsigned long size, size_
     #else
         void* ptr = nullptr;
         if (posix_memalign(&ptr, alignment, size) != 0) {
-            throw std::bad_alloc();
+            return nullptr;
         }
         return ptr;
     #endif
