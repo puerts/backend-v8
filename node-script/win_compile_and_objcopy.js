@@ -5,7 +5,7 @@ const compileCommand = args.map(arg => arg.indexOf(' ') > 0 ? `"${arg}"` : arg).
 
 try {
   // 执行编译命令
-  console.log(`CXX_SYMBOL_RENAME: ${compileCommand}`);
+  //console.log(`CXX_SYMBOL_RENAME: ${compileCommand}`);
   execSync(compileCommand, { stdio: 'inherit' });
 
   // 提取输出文件名
