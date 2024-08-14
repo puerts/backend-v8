@@ -13,6 +13,7 @@ if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then
         wget \
         build-essential \
         python3 \
+        ninja-build \
         xz-utils \
         zip
         
@@ -30,11 +31,14 @@ else
         zip
 fi
 
-sudo apt-get install -y ninja-build
-
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
+if [ "$VERSION" != "10.6.194" -a "$VERSION" != "11.8.172" ]; then 
+    cd depot_tools
+    git reset --hard 8d16d4a
+    cd ..
+fi
 export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
@@ -49,7 +53,10 @@ echo "target_os = ['android']" >> .gclient
 cd ~/v8/v8
 git checkout refs/tags/$VERSION
 
-gclient sync -D
+echo "=====[ fix DEPS ]===="
+node -e "const fs = require('fs'); fs.writeFileSync('./DEPS', fs.readFileSync('./DEPS', 'utf-8').replace(\"Var('chromium_url') + '/external/github.com/kennethreitz/requests.git'\", \"'https://github.com/kennethreitz/requests'\"));"
+
+gclient sync
 
 
 # echo "=====[ Patching V8 ]====="
@@ -81,7 +88,6 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   echo "=====[ wrap new delete ]====="
   CXX_SETTING="use_custom_libcxx=true"
 fi
-
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
 node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
