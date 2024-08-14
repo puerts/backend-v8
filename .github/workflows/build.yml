@@ -24,7 +24,7 @@ on:
         - "with_new_wrap"
         - ""
         default: ""
-        required: true
+        required: false
       build_android:
         description: 'Build for Android platform'
         type: boolean
