@@ -61,7 +61,7 @@ if "%NEW_WRAP%"=="with_new_wrap" (
 
 @REM issue #4
 if "%VERSION%"=="9.4.146.24" (
-  if "%NEW_WRAP%"!="with_new_wrap" (
+  if not "%NEW_WRAP%"=="with_new_wrap" (
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\intrin.patch
   )
 )
