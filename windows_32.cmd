@@ -60,7 +60,11 @@ if "%NEW_WRAP%"=="with_new_wrap" (
 @REM call git checkout -- .
 
 @REM issue #4
-node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\intrin.patch
+if "%VERSION%"=="9.4.146.24" (
+  if "%NEW_WRAP%"!="with_new_wrap" (
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\intrin.patch
+  )
+)
 
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
 node %~dp0\node-script\add_arraybuffer_new_without_stl.js . %VERSION% %NEW_WRAP%
