@@ -175,15 +175,14 @@ index 0185dd731..8dee0ff83 100644
    } else {
      declare_args() {
 diff --git a/config/c++/c++.gni b/config/c++/c++.gni
-index 10a780c19..7cf11a7b9 100644
+index 10a780c19..28b92e2b5 100644
 --- a/config/c++/c++.gni
 +++ b/config/c++/c++.gni
-@@ -45,6 +45,11 @@ use_custom_libcxx =
+@@ -45,6 +45,10 @@ use_custom_libcxx =
      use_custom_libcxx || (use_custom_libcxx_for_host && !is_a_target_toolchain)
  use_custom_libcxx = use_custom_libcxx && !is_nacl
  
 +if (is_ohos) {
-+  use_custom_libcxx = false
 +  use_custom_libcxx_for_host = false
 +}
 +
