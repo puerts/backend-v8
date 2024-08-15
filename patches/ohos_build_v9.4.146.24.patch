@@ -595,10 +595,10 @@ index 6f1faaf10..cc544e834 100644
      symbol_level = 1
 diff --git a/config/ohos/BUILD.gn b/config/ohos/BUILD.gn
 new file mode 100644
-index 000000000..1f63ffd5a
+index 000000000..9c995b941
 --- /dev/null
 +++ b/config/ohos/BUILD.gn
-@@ -0,0 +1,303 @@
+@@ -0,0 +1,306 @@
 +# Copyright 2022 The Huawei Authors. All rights reserved.
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -691,11 +691,14 @@ index 000000000..1f63ffd5a
 +
 +  if (use_musl) {
 +    cflags += [ "--target=$abi_target" ]
-+    include_dirs = [ "$ohos_toolchain_root/include/libcxx-ohos/include/c++/v1" ]
++    if (use_custom_libcxx) {
++      include_dirs = [ "$ohos_sysroot/usr/include/$abi_target" ]
++    } else {
++      include_dirs = [ "$ohos_toolchain_root/include/libcxx-ohos/include/c++/v1", "$ohos_sysroot/usr/include" ]
++    }
 +    if (current_cpu == "x64") {
 +      include_dirs += [ "$ohos_sysroot/usr/include/x86_64-linux-ohos/asm-x86" ]
 +    }
-+    include_dirs += [ "$ohos_sysroot/usr/include" ]
 +    ldflags += [ "--target=$abi_target" ]
 +  } else {
 +    cflags += [
