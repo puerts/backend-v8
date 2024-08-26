@@ -522,7 +522,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
-          release_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
+          name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
           files: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
@@ -546,7 +546,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
-          release_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
+          name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
           files: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
