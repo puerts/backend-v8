@@ -519,25 +519,13 @@ jobs:
           
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           release_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
-          
-      - name: Upload V8
-        #id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
-          asset_name: v8_bin_${{github.event.inputs.v8_revision}}.tgz
-          asset_content_type: application/tgz
+          files: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
           
   publish_without_ohos:
     if: github.event.inputs.tag_date != '' && github.event.inputs.build_ohos == 'false'
@@ -555,24 +543,13 @@ jobs:
           
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           release_name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
-          
-      - name: Upload V8
-        #id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
-          asset_name: v8_bin_${{github.event.inputs.v8_revision}}.tgz
-          asset_content_type: application/tgz
+          files: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
+
 
   
