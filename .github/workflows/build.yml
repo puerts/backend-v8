@@ -168,32 +168,32 @@ jobs:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
-#  build_ohos_x86_64:
-#    if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
-#    name: OHOS (x86_64)
-#    runs-on: ubuntu-20.04
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Install NDK
-#      run: |
-#        cd ~
-#        curl -O https://repo.huaweicloud.com/harmonyos/os/4.1-Release/ohos-sdk-windows_linux-public.tar.gz
-#        tar xvfz ohos-sdk-windows_linux-public.tar.gz
-#        rm ohos-sdk-windows_linux-public.tar.gz
-#        rm -rf ohos-sdk/windows
-#        cd ohos-sdk/linux
-#        unzip -o -d ./ native-linux-x64-4.1.7.5-Release.zip
-#        rm *.zip
-#    - name: Run build script
-#      run: |
-#        cd $GITHUB_WORKSPACE
-#        npm i
-#        OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_x64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
-#        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-#    - uses: actions/upload-artifact@v2
-#      with:
-#        name: v8_bin
-#        path: ~/v8/v8/output/**/*
+  build_ohos_x86_64:
+    if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
+    name: OHOS (x86_64)
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install NDK
+      run: |
+        cd ~
+        curl -O https://repo.huaweicloud.com/harmonyos/os/4.1-Release/ohos-sdk-windows_linux-public.tar.gz
+        tar xvfz ohos-sdk-windows_linux-public.tar.gz
+        rm ohos-sdk-windows_linux-public.tar.gz
+        rm -rf ohos-sdk/windows
+        cd ohos-sdk/linux
+        unzip -o -d ./ native-linux-x64-4.1.7.5-Release.zip
+        rm *.zip
+    - name: Run build script
+      run: |
+        cd $GITHUB_WORKSPACE
+        npm i
+        OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_x64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: v8_bin
+        path: ~/v8/v8/output/**/*
         
   build_linux:
     if: github.event.inputs.build_linux == 'true'
