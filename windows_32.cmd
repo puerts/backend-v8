@@ -55,6 +55,10 @@ if "%NEW_WRAP%"=="with_new_wrap" (
     set "CXX_SETTING=is_clang=true use_custom_libcxx=true"
 )
 
+if "%VERSION%"=="9.4.146.24" (
+    set "CXX_SETTING=is_clang=false"
+)
+
 @REM echo =====[ Patching V8 ]=====
 @REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patches\builtins-puerts.patches
 @REM call git apply --cached --reject %GITHUB_WORKSPACE%\patches\builtins-puerts.patches

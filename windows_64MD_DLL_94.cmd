@@ -59,6 +59,10 @@ if "%NEW_WRAP%"=="with_new_wrap" (
     set "CXX_SETTING=is_clang=true use_custom_libcxx=true libcxx_is_shared=false"
 )
 
+if "%VERSION%"=="9.4.146.24" (
+    set "CXX_SETTING=is_clang=false"
+)
+
 echo =====[ Make dynamic_crt ]=====
 node %~dp0\node-script\rep.js  build\config\win\BUILD.gn
 

@@ -60,6 +60,10 @@ if "%NEW_WRAP%"=="with_new_wrap" (
     set "CXX_SETTING=is_clang=true use_custom_libcxx=true"
 )
 
+if "%VERSION%"=="9.4.146.24" (
+    set "CXX_SETTING=is_clang=false"
+)
+
 echo =====[ add ArrayBuffer_New_Without_Stl ]=====
 node %~dp0\node-script\add_arraybuffer_new_without_stl.js . %VERSION% %NEW_WRAP%
 

@@ -74,6 +74,8 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   echo "=====[ wrap new delete ]====="
   sudo apt-get install -y llvm
   CXX_SETTING="use_custom_libcxx=true"
+elif [ "$VERSION" == "9.4.146.24" ]; then
+  CXX_SETTING=""
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
