@@ -75,7 +75,7 @@ jobs:
         npm i
         bash ./android_armv8.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -92,7 +92,7 @@ jobs:
         npm i
         bash ./android_armv7.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -109,7 +109,7 @@ jobs:
         npm i
         bash ./android_x64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -136,7 +136,7 @@ jobs:
         npm i
         OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_armv8.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -163,7 +163,7 @@ jobs:
         npm i
         OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_armv7.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -190,7 +190,7 @@ jobs:
         npm i
         OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_x64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -207,7 +207,7 @@ jobs:
         npm i
         bash ./linux.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -224,7 +224,7 @@ jobs:
         npm i
         bash ./linux_arm64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -250,7 +250,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -276,7 +276,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -298,7 +298,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -324,7 +324,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -345,7 +345,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -366,7 +366,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -388,7 +388,7 @@ jobs:
         npm i
         bash ./macos.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -410,7 +410,7 @@ jobs:
         npm i
         bash ./macos_arm64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -432,7 +432,7 @@ jobs:
         npm i
         bash ./macos_DLL.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -454,7 +454,7 @@ jobs:
         npm i
         bash ./macos_arm64_DLL.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -476,7 +476,7 @@ jobs:
         npm i
         bash ./ios.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -498,7 +498,7 @@ jobs:
         npm i
         bash ./ios_simulator.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
