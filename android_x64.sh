@@ -84,17 +84,14 @@ node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
 if [ "$VERSION" == "11.8.172" ]; then 
-    gn gen out.gn/x64.release --args="target_os=\"android\" target_cpu=\"x64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"x64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false"
+    gn gen out.gn/x64.release --args="target_os=\"android\" target_cpu=\"x64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"x64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false"
 elif [ "$VERSION" == "10.6.194" ]; then
-    gn gen out.gn/x64.release --args="target_os=\"android\" target_cpu=\"x64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"x64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false"
+    gn gen out.gn/x64.release --args="target_os=\"android\" target_cpu=\"x64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"x64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false v8_enable_sandbox=false"
 else
-    gn gen out.gn/x64.release --args="target_os=\"android\" target_cpu=\"x64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"x64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=false symbol_level=1 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false"
+    gn gen out.gn/x64.release --args="target_os=\"android\" target_cpu=\"x64\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"x64\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false"
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
-if [ "$VERSION" == "9.4.146.24" ]; then 
-  third_party/android_ndk/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux-android/bin/strip -g -S -d --strip-debug --verbose out.gn/x64.release/obj/libwee8.a
-fi
 
 mkdir -p output/v8/Lib/Android/x64
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
