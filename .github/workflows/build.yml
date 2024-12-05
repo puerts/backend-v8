@@ -374,7 +374,7 @@ jobs:
   build_macos:
     if: github.event.inputs.build_macos == 'true'
     name: macOS
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -396,7 +396,7 @@ jobs:
   build_macos_arm64:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS with apple m1
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -418,7 +418,7 @@ jobs:
   build_macos_dll:
     if: github.event.inputs.build_macos == 'true'
     name: macOS-DLL
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -440,7 +440,7 @@ jobs:
   build_macos_arm64_dll:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS-DLL with apple m1
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -462,7 +462,7 @@ jobs:
   build_ios:
     if: github.event.inputs.build_ios == 'true'
     name: iOS
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -484,7 +484,7 @@ jobs:
   build_ios_simulator:
     if: github.event.inputs.build_ios == 'true'
     name: iOS simulator
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
