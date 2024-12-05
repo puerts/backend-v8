@@ -32,6 +32,10 @@ llvm-objcopy ^
 call ninja -v -C out.gn\%ARCH%.release d8
 
 echo "gen v8_custom_libcxx.lib"
+pushd out.gn\%ARCH%.release\obj\buildtools\third_party\libc++\libc++\
+ren mutex.obj mutex_cxx.obj
+ren string.obj string_cxx.obj
+popd
 lib.exe /OUT:v8_custom_libcxx.lib out.gn\%ARCH%.release\obj\buildtools\third_party\libc++\libc++\*.obj
 dir
 
