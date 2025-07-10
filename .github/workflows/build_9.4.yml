@@ -25,7 +25,7 @@ jobs:
         npm i
         sh ./android_armv8.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -41,7 +41,7 @@ jobs:
         npm i
         sh ./android_armv7.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -57,7 +57,7 @@ jobs:
         npm i
         sh ./android_x64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -73,7 +73,7 @@ jobs:
         npm i
         sh ./linux.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -88,7 +88,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         sh ./linux_arm64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -108,12 +108,12 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin_win64
         path: v8/v8/output/**/*
@@ -133,7 +133,7 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
@@ -153,7 +153,7 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
@@ -173,7 +173,7 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
@@ -193,7 +193,7 @@ jobs:
         npm i
         sh ./macos.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -213,7 +213,7 @@ jobs:
         npm i
         sh ./macos_arm64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -233,7 +233,7 @@ jobs:
         npm i
         sh ./macos_DLL.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -253,7 +253,7 @@ jobs:
         npm i
         sh ./macos_arm64_DLL.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -273,7 +273,7 @@ jobs:
         npm i
         sh ./ios.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -293,7 +293,7 @@ jobs:
         npm i
         sh ./ios_simulator.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*

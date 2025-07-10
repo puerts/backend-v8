@@ -23,7 +23,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv8.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -37,7 +37,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv7.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -51,7 +51,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_x64.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -65,7 +65,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./linux.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -80,12 +80,12 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin_win64
         path: v8/v8/output/**/*
@@ -100,7 +100,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64MD.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
@@ -115,7 +115,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64MD_DLL.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
@@ -130,7 +130,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_32.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
@@ -146,7 +146,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -162,7 +162,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos_DLL.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -178,7 +178,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./ios.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -194,7 +194,7 @@ jobs:
   #    run: |
   #      cd $GITHUB_WORKSPACE
   #      sh ./ios_simulator.sh ${{env.VERSION}}
-  #  - uses: actions/upload-artifact@v2
+  #  - uses: actions/upload-artifact@v4
   #    with:
   #      name: v8_bin
   #      path: ~/v8/v8/output/**/*
