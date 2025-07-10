@@ -232,7 +232,7 @@ jobs:
   build_windows:
     if: github.event.inputs.build_windows == 'true'
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -258,7 +258,7 @@ jobs:
   build_windows_md:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-MD
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -284,7 +284,7 @@ jobs:
   build_windows_md_dll:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-MD-DLL
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - uses: ilammy/msvc-dev-cmd@v1
@@ -306,7 +306,7 @@ jobs:
   build_windows_32:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-32
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -332,7 +332,7 @@ jobs:
   build_windows_v8cc_arm64:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm64
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -353,7 +353,7 @@ jobs:
   build_windows_v8cc_arm:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
