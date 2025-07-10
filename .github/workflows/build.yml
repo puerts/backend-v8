@@ -66,7 +66,7 @@ jobs:
   build_android_arm_v8:
     if: github.event.inputs.build_android == 'true'
     name: Android (arm64-v8a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -75,7 +75,7 @@ jobs:
         npm i
         bash ./android_armv8.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -83,7 +83,7 @@ jobs:
   build_android_arm_v7:
     if: github.event.inputs.build_android == 'true'
     name: Android (armeabi-v7a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -92,7 +92,7 @@ jobs:
         npm i
         bash ./android_armv7.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -100,7 +100,7 @@ jobs:
   build_android_x86_64:
     if: github.event.inputs.build_android == 'true'
     name: Android (x86_64)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -109,7 +109,7 @@ jobs:
         npm i
         bash ./android_x64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -117,7 +117,7 @@ jobs:
   build_ohos_arm_v8:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (arm64-v8a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install NDK
@@ -136,7 +136,7 @@ jobs:
         npm i
         OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_armv8.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -144,7 +144,7 @@ jobs:
   build_ohos_arm_v7:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (armeabi-v7a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install NDK
@@ -163,7 +163,7 @@ jobs:
         npm i
         OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_armv7.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -171,7 +171,7 @@ jobs:
   build_ohos_x86_64:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (x86_64)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install NDK
@@ -190,7 +190,7 @@ jobs:
         npm i
         OHOS_NDK_HOME=~/ohos-sdk/linux/native bash ./ohos_x64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -198,7 +198,7 @@ jobs:
   build_linux:
     if: github.event.inputs.build_linux == 'true'
     name: Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -207,7 +207,7 @@ jobs:
         npm i
         bash ./linux.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -215,7 +215,7 @@ jobs:
   build_linux_arm64:
     if: github.event.inputs.build_linux == 'true'
     name: Linux_arm64
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -224,7 +224,7 @@ jobs:
         npm i
         bash ./linux_arm64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -232,7 +232,7 @@ jobs:
   build_windows:
     if: github.event.inputs.build_windows == 'true'
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -250,7 +250,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -258,7 +258,7 @@ jobs:
   build_windows_md:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-MD
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -276,7 +276,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -284,7 +284,7 @@ jobs:
   build_windows_md_dll:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-MD-DLL
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - uses: ilammy/msvc-dev-cmd@v1
@@ -298,7 +298,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -306,7 +306,7 @@ jobs:
   build_windows_32:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-32
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -324,7 +324,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -332,7 +332,7 @@ jobs:
   build_windows_v8cc_arm64:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm64
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -345,7 +345,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -353,7 +353,7 @@ jobs:
   build_windows_v8cc_arm:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -366,7 +366,7 @@ jobs:
       shell: bash
       run: |
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -374,7 +374,7 @@ jobs:
   build_macos:
     if: github.event.inputs.build_macos == 'true'
     name: macOS
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -388,7 +388,7 @@ jobs:
         npm i
         bash ./macos.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -396,7 +396,7 @@ jobs:
   build_macos_arm64:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS with apple m1
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -410,7 +410,7 @@ jobs:
         npm i
         bash ./macos_arm64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -418,7 +418,7 @@ jobs:
   build_macos_dll:
     if: github.event.inputs.build_macos == 'true'
     name: macOS-DLL
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -432,7 +432,7 @@ jobs:
         npm i
         bash ./macos_DLL.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -440,7 +440,7 @@ jobs:
   build_macos_arm64_dll:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS-DLL with apple m1
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -454,7 +454,7 @@ jobs:
         npm i
         bash ./macos_arm64_DLL.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -462,7 +462,7 @@ jobs:
   build_ios:
     if: github.event.inputs.build_ios == 'true'
     name: iOS
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -476,7 +476,7 @@ jobs:
         npm i
         bash ./ios.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
@@ -484,7 +484,7 @@ jobs:
   build_ios_simulator:
     if: github.event.inputs.build_ios == 'true'
     name: iOS simulator
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -498,14 +498,14 @@ jobs:
         npm i
         bash ./ios_simulator.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   publish_with_ohos:
     if: github.event.inputs.tag_date != '' && github.event.inputs.build_ohos == 'true'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_ohos_arm_v8,build_ohos_arm_v7,build_ohos_x86_64,build_windows_v8cc_arm64,build_windows_v8cc_arm]
     steps:
       - uses: actions/download-artifact@v3
@@ -529,7 +529,7 @@ jobs:
           
   publish_without_ohos:
     if: github.event.inputs.tag_date != '' && github.event.inputs.build_ohos == 'false'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_windows_v8cc_arm64,build_windows_v8cc_arm]
     steps:
       - uses: actions/download-artifact@v3

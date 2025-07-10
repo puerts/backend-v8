@@ -16,7 +16,7 @@ env:
 jobs:
   build_android_arm_v8:
     name: Android (arm64-v8a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -25,14 +25,14 @@ jobs:
         npm i
         sh ./android_armv8.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
 
   build_android_arm_v7:
     name: Android (armeabi-v7a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -41,14 +41,14 @@ jobs:
         npm i
         sh ./android_armv7.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_android_x86_64:
     name: Android (x86_64)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -57,14 +57,14 @@ jobs:
         npm i
         sh ./android_x64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_linux:
     name: Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -73,14 +73,14 @@ jobs:
         npm i
         sh ./linux.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_linux_arm64:
     name: Linux_arm64
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -88,14 +88,14 @@ jobs:
         cd $GITHUB_WORKSPACE
         sh ./linux_arm64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
 
   build_windows:
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -108,19 +108,19 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin_win64
         path: v8/v8/output/**/*
         
   build_windows_md:
     name: Windows-MD
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -133,14 +133,14 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
   build_windows_md_dll:
     name: Windows-MD-DLL
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -153,14 +153,14 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
   build_windows_32:
     name: Windows-32
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -173,14 +173,14 @@ jobs:
       shell: bash
       run: |
         mv v8/v8/output/v8 v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
           
   build_macos:
     name: macOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -193,14 +193,14 @@ jobs:
         npm i
         sh ./macos.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
           
   build_macos_arm64:
     name: macOS with apple m1
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -213,14 +213,14 @@ jobs:
         npm i
         sh ./macos_arm64.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_macos_dll:
     name: macOS-DLL
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -233,14 +233,14 @@ jobs:
         npm i
         sh ./macos_DLL.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_macos_arm64_dll:
     name: macOS-DLL with apple m1
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -253,14 +253,14 @@ jobs:
         npm i
         sh ./macos_arm64_DLL.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
 
   build_ios:
     name: iOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -273,14 +273,14 @@ jobs:
         npm i
         sh ./ios.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
   
   build_ios_simulator:
     name: iOS simulator
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -293,13 +293,13 @@ jobs:
         npm i
         sh ./ios_simulator.sh ${{env.VERSION}}
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_9.4
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll]
     steps:
       - uses: actions/download-artifact@v1

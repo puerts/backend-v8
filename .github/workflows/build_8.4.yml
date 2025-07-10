@@ -16,77 +16,77 @@ env:
 jobs:
   build_android_arm_v8:
     name: Android (arm64-v8a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv8.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
 
   build_android_arm_v7:
     name: Android (armeabi-v7a)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_armv7.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_android_x86_64:
     name: Android (x86_64)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
         sh ./android_x64.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_linux:
     name: Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
         sh ./linux.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_linux_arm64:
     name: Linux_arm64
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
         sh ./linux_arm64.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
 
   build_windows:
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -94,19 +94,19 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin_win64
         path: v8/v8/output/**/*
         
   build_windows_md:
     name: Windows-MD
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -114,14 +114,14 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64MD.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
   build_windows_md_dll:
     name: Windows-MD-DLL
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -129,14 +129,14 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_64MD_DLL.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
         
   build_windows_32:
     name: Windows-32
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -144,14 +144,14 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call .\windows_32.cmd ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: v8/v8/output/**/*
           
   build_macos:
     name: macOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - name: Use Xcode 11.7 to use SDK 10.15
@@ -160,14 +160,14 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
         
   build_macos_dll:
     name: macOS-DLL
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - name: Use Xcode 11.7 to use SDK 10.15
@@ -176,14 +176,14 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./macos_DLL.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
 
   build_ios:
     name: iOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - name: Use Xcode 11.7 to use SDK 10.15
@@ -192,14 +192,14 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         sh ./ios.sh ${{env.VERSION}}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: v8_bin
         path: ~/v8/v8/output/**/*
   
   #build_ios_simulator:
   #  name: iOS simulator
-  #  runs-on: macos-10.15
+  #  runs-on: macos-latest
   #  steps:
   #  - uses: actions/checkout@v2
   #  - name: Use Xcode 12.0 to use SDK 10.15
@@ -208,7 +208,7 @@ jobs:
   #    run: |
   #      cd $GITHUB_WORKSPACE
   #      sh ./ios_simulator.sh ${{env.VERSION}}
-  #  - uses: actions/upload-artifact@v2
+  #  - uses: actions/upload-artifact@v4
   #    with:
   #      name: v8_bin
   #      path: ~/v8/v8/output/**/*
