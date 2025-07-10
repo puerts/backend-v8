@@ -180,7 +180,7 @@ jobs:
           
   build_macos:
     name: macOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -200,7 +200,7 @@ jobs:
           
   build_macos_arm64:
     name: macOS with apple m1
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -220,7 +220,7 @@ jobs:
         
   build_macos_dll:
     name: macOS-DLL
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -240,7 +240,7 @@ jobs:
         
   build_macos_arm64_dll:
     name: macOS-DLL with apple m1
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -260,7 +260,7 @@ jobs:
 
   build_ios:
     name: iOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
@@ -280,7 +280,7 @@ jobs:
   
   build_ios_simulator:
     name: iOS simulator
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
     - name: use python3.9
       run: |
