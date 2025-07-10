@@ -16,7 +16,7 @@ env:
 jobs:
   build_android_arm_v8:
     name: Android (arm64-v8a)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -30,7 +30,7 @@ jobs:
 
   build_android_arm_v7:
     name: Android (armeabi-v7a)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -44,7 +44,7 @@ jobs:
         
   build_android_x86_64:
     name: Android (x86_64)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
@@ -58,7 +58,7 @@ jobs:
         
   build_linux:
     name: Linux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run build script
