@@ -42,6 +42,7 @@ fi
 export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
+~/depot_tools/ensure_bootstrap
 
 
 mkdir v8
@@ -89,10 +90,10 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   CXX_SETTING="use_custom_libcxx=true"
 fi
 
-echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
-node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
+# echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
+# node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
 
-node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
+# node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 rm -rf third_party/android_ndk
 

@@ -58,10 +58,10 @@ node "$PSScriptRoot\node-script\rep.js" build\config\win\BUILD.gn
 Write-Host "=====[ commenting out Zc_inline ]====="
 node -e "const fs = require('fs'); fs.writeFileSync('./build/config/compiler/BUILD.gn', fs.readFileSync('./build/config/compiler/BUILD.gn', 'utf-8').replace('\"/Zc:inline\"', '#\"/Zc:inline\"'));"
 
-Write-Host "=====[ add ArrayBuffer_New_Without_Stl ]====="
-node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" .
+# Write-Host "=====[ add ArrayBuffer_New_Without_Stl ]====="
+# node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" .
 
-node "$PSScriptRoot\node-script\patchs.js" . $VERSION
+# node "$PSScriptRoot\node-script\patchs.js" . $VERSION
 
 Write-Host "=====[ Building V8 ]====="
 if ($VERSION -eq "10.6.194" -or $VERSION -eq "11.8.172") {

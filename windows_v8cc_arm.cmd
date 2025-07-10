@@ -55,12 +55,12 @@ if "%VERSION%"=="9.4.146.24" (
 @REM issue #4
 node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\intrin.patch
 
-echo =====[ add ArrayBuffer_New_Without_Stl ]=====
-node %~dp0\node-script\add_arraybuffer_new_without_stl.js . %VERSION% %NEW_WRAP%
+@REM echo =====[ add ArrayBuffer_New_Without_Stl ]=====
+@REM node %~dp0\node-script\add_arraybuffer_new_without_stl.js . %VERSION% %NEW_WRAP%
 
-node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\v8cc_arm_win_v%VERSION%.patch
+@REM node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\v8cc_arm_win_v%VERSION%.patch
 
-node %~dp0\node-script\add_cross_v8cc.js . %VERSION% arm
+@REM node %~dp0\node-script\add_cross_v8cc.js . %VERSION% arm
 
 echo =====[ Building V8 ]=====
 if "%VERSION%"=="11.8.172" (
