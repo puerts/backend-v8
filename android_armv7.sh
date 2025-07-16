@@ -35,7 +35,6 @@ fi
 sudo apt-get update
 sudo apt-get install -y libatomic1-i386-cross
 sudo rm -rf /var/lib/apt/lists/*
-#export LD_LIBRARY_PATH=”LD_LIBRARY_PATH:/usr/i686-linux-gnu/lib/”
 echo "/usr/i686-linux-gnu/lib" > i686.conf
 sudo mv i686.conf /etc/ld.so.conf.d/
 sudo ldconfig
@@ -49,7 +48,6 @@ cd ..
 export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
-
 
 mkdir v8
 cd v8
@@ -65,11 +63,6 @@ echo "=====[ fix DEPS ]===="
 node -e "const fs = require('fs'); fs.writeFileSync('./DEPS', fs.readFileSync('./DEPS', 'utf-8').replace(\"Var('chromium_url') + '/external/github.com/kennethreitz/requests.git'\", \"'https://github.com/kennethreitz/requests'\"));"
 
 gclient sync
-
-
-# echo "=====[ Patching V8 ]====="
-# git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches
-# git checkout -- .
 
 if [ "$VERSION" == "11.8.172" ]; then 
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/remove_uchar_include_v11.8.172.patch
@@ -89,12 +82,66 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
-if [ "$VERSION" == "11.8.172"  ]; then 
-    gn gen out.gn/arm.release --args="target_os=\"android\" target_cpu=\"arm\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false"
+if [ "$VERSION" == "11.8.172" ]; then 
+    gn gen out.gn/arm.release --args="
+      target_os=\"android\"
+      target_cpu=\"arm\"
+      is_debug=false
+      v8_enable_i18n_support=false
+      v8_target_cpu=\"arm\"
+      use_goma=false
+      v8_use_snapshot=true
+      v8_use_external_startup_data=false
+      v8_static_library=true
+      strip_debug_info=true
+      symbol_level=0
+      $CXX_SETTING
+      use_custom_libcxx_for_host=true
+      v8_enable_pointer_compression=true
+      v8_enable_31bit_smis_on_64bit_arch=true
+      v8_code_comments=false
+      v8_enable_sandbox=false
+      v8_enable_maglev=false
+      v8_enable_webassembly=false
+    "
 elif [ "$VERSION" == "10.6.194" ]; then
-    gn gen out.gn/arm.release --args="target_os=\"android\" target_cpu=\"arm\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_sandbox=false"
+    gn gen out.gn/arm.release --args="
+      target_os=\"android\"
+      target_cpu=\"arm\"
+      is_debug=false
+      v8_enable_i18n_support=false
+      v8_target_cpu=\"arm\"
+      use_goma=false
+      v8_use_snapshot=true
+      v8_use_external_startup_data=false
+      v8_static_library=true
+      strip_debug_info=true
+      symbol_level=0
+      $CXX_SETTING
+      use_custom_libcxx_for_host=true
+      v8_enable_pointer_compression=true
+      v8_enable_31bit_smis_on_64bit_arch=true
+      v8_code_comments=false
+      v8_enable_sandbox=false
+    "
 else
-    gn gen out.gn/arm.release --args="target_os=\"android\" target_cpu=\"arm\" is_debug=false v8_enable_i18n_support=false v8_target_cpu=\"arm\" use_goma=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true"
+    gn gen out.gn/arm.release --args="
+      target_os=\"android\"
+      target_cpu=\"arm\"
+      is_debug=false
+      v8_enable_i18n_support=false
+      v8_target_cpu=\"arm\"
+      use_goma=false
+      v8_use_snapshot=true
+      v8_use_external_startup_data=false
+      v8_static_library=true
+      strip_debug_info=true
+      symbol_level=0
+      $CXX_SETTING
+      use_custom_libcxx_for_host=true
+      v8_enable_pointer_compression=true
+      v8_enable_31bit_smis_on_64bit_arch=true
+    "
 fi
 ninja -C out.gn/arm.release -t clean
 ninja -v -C out.gn/arm.release wee8
