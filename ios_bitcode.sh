@@ -6,9 +6,11 @@ NEW_WRAP=$2
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
-cd depot_tools
-git reset --hard 8d16d4a
-cd ..
+if [ "$VERSION" != "10.6.194" -a "$VERSION" != "11.8.172" ]; then 
+    cd depot_tools
+    git reset --hard 8d16d4a
+    cd ..
+fi
 export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient

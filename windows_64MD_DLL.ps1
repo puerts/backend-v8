@@ -11,9 +11,11 @@ $env:GYP_MSVS_VERSION = "2019"
 $env:DEPOT_TOOLS_WIN_TOOLCHAIN = "0"
 & gclient
 
-cd depot_tools
-& git reset --hard 8d16d4a
-cd ..
+if ($VERSION -ne "10.6.194" -and $VERSION -ne "11.8.172") {
+    cd depot_tools
+    & git reset --hard 8d16d4a
+    cd ..
+}
 $env:DEPOT_TOOLS_UPDATE = "0"
 
 New-Item -ItemType Directory -Name "v8"
