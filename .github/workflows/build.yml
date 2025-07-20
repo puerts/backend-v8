@@ -239,7 +239,12 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -265,7 +270,12 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -287,7 +297,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -313,7 +328,12 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -335,6 +355,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -356,6 +382,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
