@@ -25,6 +25,7 @@ echo "target_os = ['ios']" >> .gclient
 cd ~/v8/v8
 git checkout refs/tags/$VERSION
 gclient sync
+python3 tools/clang/scripts/update.py
 
 # echo "=====[ Patching V8 ]====="
 # git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches
