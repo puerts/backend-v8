@@ -55,10 +55,10 @@ if ($VERSION -eq "9.4.146.24") {
     cd ..\..
 }
 
-# Write-Host "=====[ add ArrayBuffer_New_Without_Stl ]====="
-# node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" .
+Write-Host "=====[ add ArrayBuffer_New_Without_Stl ]====="
+node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" .
 
-# node "$PSScriptRoot\node-script\patchs.js" . $VERSION
+node "$PSScriptRoot\node-script\patchs.js" . $VERSION
 
 Write-Host "=====[ Building V8 ]====="
 if ($VERSION -eq "10.6.194" -or $VERSION -eq "11.8.172") {

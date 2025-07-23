@@ -38,10 +38,10 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v11.8.172.patch
 fi
 
-# echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
-# node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
+echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
+node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
 
-# node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
+node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
 

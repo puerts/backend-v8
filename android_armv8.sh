@@ -78,10 +78,10 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   CXX_SETTING="use_custom_libcxx=true"
 fi
 
-# echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
-# node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
+echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
+node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
 
-# node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
+node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
 if [ "$VERSION" == "11.8.172" ]; then 

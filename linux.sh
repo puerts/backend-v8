@@ -79,10 +79,10 @@ elif [ "$VERSION" == "9.4.146.24" ]; then
   CXX_SETTING=""
 fi
 
-# echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
-# node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
+echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
+node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION $NEW_WRAP
 
-# node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
+node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
 
