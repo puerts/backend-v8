@@ -43,6 +43,7 @@ fi
 export DEPOT_TOOLS_UPDATE=0
 export PATH=$(pwd)/depot_tools:$PATH
 gclient
+~/depot_tools/ensure_bootstrap
 
 
 mkdir v8

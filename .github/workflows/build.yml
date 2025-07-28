@@ -77,7 +77,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_android_arm_v8
         path: ~/v8/v8/output/**/*
 
   build_android_arm_v7:
@@ -94,7 +94,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_android_arm_v7
         path: ~/v8/v8/output/**/*
         
   build_android_x86_64:
@@ -111,7 +111,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_android_x86_64
         path: ~/v8/v8/output/**/*
         
   build_ohos_arm_v8:
@@ -138,7 +138,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_ohos_arm_v8
         path: ~/v8/v8/output/**/*
 
   build_ohos_arm_v7:
@@ -165,7 +165,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_ohos_arm_v7
         path: ~/v8/v8/output/**/*
         
   build_ohos_x86_64:
@@ -192,7 +192,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_ohos_x86_64
         path: ~/v8/v8/output/**/*
         
   build_linux:
@@ -209,7 +209,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_linux
         path: ~/v8/v8/output/**/*
         
   build_linux_arm64:
@@ -226,7 +226,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_linux_arm64
         path: ~/v8/v8/output/**/*
 
   build_windows:
@@ -239,7 +239,12 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -252,7 +257,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_windows
         path: ~/v8/v8/output/**/*
         
   build_windows_md:
@@ -265,7 +270,12 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -278,7 +288,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_windows_md
         path: ~/v8/v8/output/**/*
         
   build_windows_md_dll:
@@ -287,7 +297,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -300,7 +315,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_windows_md_dll
         path: ~/v8/v8/output/**/*
         
   build_windows_32:
@@ -313,7 +328,12 @@ jobs:
       if: ${{ github.event.inputs.wrap_new == 'true' }}
       shell: pwsh
       run: choco install llvm
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -326,7 +346,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_windows_32
         path: ~/v8/v8/output/**/*
         
   build_windows_v8cc_arm64:
@@ -335,6 +355,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -347,7 +373,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_windows_v8cc_arm64
         path: ~/v8/v8/output/**/*
   
   build_windows_v8cc_arm:
@@ -356,6 +382,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
     - name: Run build script
       shell: cmd
       run: |
@@ -368,7 +400,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_windows_v8cc_arm
         path: ~/v8/v8/output/**/*
           
   build_macos:
@@ -390,7 +422,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_macos
         path: ~/v8/v8/output/**/*
           
   build_macos_arm64:
@@ -412,7 +444,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_macos_arm64
         path: ~/v8/v8/output/**/*
         
   build_macos_dll:
@@ -434,7 +466,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_macos_dll
         path: ~/v8/v8/output/**/*
         
   build_macos_arm64_dll:
@@ -456,7 +488,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_macos_arm64_dll
         path: ~/v8/v8/output/**/*
 
   build_ios:
@@ -478,7 +510,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_ios
         path: ~/v8/v8/output/**/*
   
   build_ios_simulator:
@@ -500,7 +532,7 @@ jobs:
         mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
     - uses: actions/upload-artifact@v4
       with:
-        name: v8_bin
+        name: v8_bin_ios_simulator
         path: ~/v8/v8/output/**/*
         
   publish_with_ohos:
@@ -508,14 +540,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_ohos_arm_v8,build_ohos_arm_v7,build_ohos_x86_64,build_windows_v8cc_arm64,build_windows_v8cc_arm]
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: v8_bin
           path: v8_bin/
           
       - name: Create Release Asset
         run: |
-          cd v8_bin/ && tar cvfz ../v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_${{github.event.inputs.v8_revision}} && cd -
+          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_bin
           
       - name: Create Release
         id: create_release
@@ -532,15 +563,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_android_arm_v8,build_android_arm_v7,build_android_x86_64,build_linux,build_linux_arm64,build_windows,build_windows_32,build_windows_md,build_macos_arm64,build_macos_arm64_dll,build_ios_simulator,build_macos,build_ios,build_windows_md_dll,build_macos_dll,build_windows_v8cc_arm64,build_windows_v8cc_arm]
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: v8_bin
           path: v8_bin/
           
       - name: Create Release Asset
         run: |
-          cd v8_bin/ && tar cvfz ../v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_${{github.event.inputs.v8_revision}} && cd -
-          
+          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_bin
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2

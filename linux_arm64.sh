@@ -47,6 +47,7 @@ else
     export PATH=$(pwd)/depot_tools:$(pwd)/depot_tools/.cipd_bin/2.7/bin:$PATH
 fi
 gclient
+~/depot_tools/ensure_bootstrap
 
 
 mkdir v8
