@@ -1,0 +1,69 @@
+name: build v8
+
+on: 
+  workflow_dispatch:
+    inputs:
+      tag_date:
+        description: 'tag date'
+        type: string
+        default: ""
+        required: false
+      v8_revision:
+        description: 'V8 TAG(Branch) to build'
+        type: choice
+        options:
+        - "9.4.146.24"
+        - "10.6.194"
+        - "11.8.172"
+        default: '9.4.146.24'
+        required: true
+      wrap_new:
+        description: 'wrap new/delete'
+        type: choice
+        options:
+        - "with_new_wrap"
+        - ""
+        default: ""
+        required: false
+
+      build_windows:
+        description: 'Build for Windows platform'
+        type: boolean
+        default: true
+        required: false
+
+  
+
+jobs:
+  build_windows:
+    if: github.event.inputs.build_windows == 'true'
+    name: Windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install llvm
+      if: ${{ github.event.inputs.wrap_new == 'true' }}
+      shell: pwsh
+      run: choco install llvm
+    - name: Install VS2019 Build Tools
+      shell: pwsh
+      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: '2019'
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call npm i
+        call .\windows_64.cmd ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
+    - name: Rename
+      shell: bash
+      run: |
+        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: v8_bin_windows
+        path: ~/v8/v8/output/**/*
+        
+  
