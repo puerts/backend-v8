@@ -1,4 +1,4 @@
-name: build v8
+name: build_my_v8
 
 on: 
   workflow_dispatch:
@@ -56,7 +56,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%
         call npm i
-        call .\windows_64.cmd ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
+        call .\my_windows_64.cmd ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
     - name: Rename
       shell: bash
       run: |
