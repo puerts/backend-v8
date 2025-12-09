@@ -430,12 +430,12 @@ jobs:
   build_macos:
     if: github.event.inputs.build_macos == 'true'
     name: macOS
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
-    - name: use python3.9
+    - name: Setup Python 3.9
       run: |
         brew install python@3.9
-        pip install virtualenv
+        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
@@ -452,12 +452,12 @@ jobs:
   build_macos_arm64:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS with apple m1
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
-    - name: use python3.9
+    - name: Setup Python 3.9
       run: |
         brew install python@3.9
-        pip install virtualenv
+        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
