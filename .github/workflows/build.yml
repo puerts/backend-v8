@@ -439,7 +439,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
-        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         bash ./macos.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
@@ -461,7 +460,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
-        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         bash ./macos_arm64.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
@@ -474,16 +472,15 @@ jobs:
   build_macos_dll:
     if: github.event.inputs.build_macos == 'true'
     name: macOS-DLL
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
-    - name: use python3.9
+    - name: Setup Python 3.9
       run: |
         brew install python@3.9
-        pip install virtualenv
+        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
-        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         bash ./macos_DLL.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
@@ -496,16 +493,15 @@ jobs:
   build_macos_arm64_dll:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS-DLL with apple m1
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
-    - name: use python3.9
+    - name: Setup Python 3.9
       run: |
         brew install python@3.9
-        pip install virtualenv
+        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
-        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         bash ./macos_arm64_DLL.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
@@ -518,16 +514,15 @@ jobs:
   build_ios:
     if: github.event.inputs.build_ios == 'true'
     name: iOS
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
-    - name: use python3.9
+    - name: Setup Python 3.9
       run: |
         brew install python@3.9
-        pip install virtualenv
+        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
-        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         bash ./ios.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
@@ -540,16 +535,15 @@ jobs:
   build_ios_simulator:
     if: github.event.inputs.build_ios == 'true'
     name: iOS simulator
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
-    - name: use python3.9
+    - name: Setup Python 3.9
       run: |
         brew install python@3.9
-        pip install virtualenv
+        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
     - name: Run build script
       run: |
-        export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
         cd $GITHUB_WORKSPACE
         npm i
         bash ./ios_simulator.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
