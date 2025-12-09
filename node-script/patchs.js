@@ -63,6 +63,7 @@ function addV8CC() {
     addV8CC();
     if (!wrap_new) {
         justReplace(path.join(v8_path, 'src/api/api.h'), 'NewArray<internal::Address>(kHandleBlockSize)', 'NewArray<internal::Address>(kHandleBlockSize + 1)');
+        justReplace(path.join(v8_path, 'src/parsing/parser.cc'), 'CHECK(stack_overflow());', '//CHECK(stack_overflow());');
     } else {
         console.log("wrap_new is set, skip path kHandleBlockSize");
         const replacePath = path.join(v8_path, 'buildtools/third_party/libc++/BUILD.gn');
