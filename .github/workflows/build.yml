@@ -66,9 +66,12 @@ jobs:
   build_android_arm_v8:
     if: github.event.inputs.build_android == 'true'
     name: Android (arm64-v8a)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -83,9 +86,12 @@ jobs:
   build_android_arm_v7:
     if: github.event.inputs.build_android == 'true'
     name: Android (armeabi-v7a)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -100,9 +106,12 @@ jobs:
   build_android_x86_64:
     if: github.event.inputs.build_android == 'true'
     name: Android (x86_64)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -117,8 +126,11 @@ jobs:
   build_ohos_arm_v8:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (arm64-v8a)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
     - uses: actions/checkout@v2
     - name: Install NDK
       run: |
@@ -144,9 +156,12 @@ jobs:
   build_ohos_arm_v7:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (armeabi-v7a)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
     - name: Install NDK
       run: |
         cd ~
@@ -171,9 +186,12 @@ jobs:
   build_ohos_x86_64:
     if: github.event.inputs.v8_revision != '8.4.371.19' && github.event.inputs.build_ohos == 'true'
     name: OHOS (x86_64)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
     - name: Install NDK
       run: |
         cd ~
@@ -198,9 +216,12 @@ jobs:
   build_linux:
     if: github.event.inputs.build_linux == 'true'
     name: Linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -215,9 +236,12 @@ jobs:
   build_linux_arm64:
     if: github.event.inputs.build_linux == 'true'
     name: Linux_arm64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -232,7 +256,7 @@ jobs:
   build_windows:
     if: github.event.inputs.build_windows == 'true'
     name: Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -263,7 +287,7 @@ jobs:
   build_windows_md:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-MD
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -294,7 +318,7 @@ jobs:
   build_windows_md_dll:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-MD-DLL
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: Install VS2019 Build Tools
@@ -321,7 +345,7 @@ jobs:
   build_windows_32:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-32
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: install llvm
@@ -352,7 +376,7 @@ jobs:
   build_windows_v8cc_arm64:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm64
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: Install VS2019 Build Tools
@@ -379,7 +403,7 @@ jobs:
   build_windows_v8cc_arm:
     if: github.event.inputs.build_windows == 'true'
     name: Windows-v8cc-arm
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: Install VS2019 Build Tools
@@ -406,7 +430,7 @@ jobs:
   build_macos:
     if: github.event.inputs.build_macos == 'true'
     name: macOS
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -428,7 +452,7 @@ jobs:
   build_macos_arm64:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS with apple m1
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -450,7 +474,7 @@ jobs:
   build_macos_dll:
     if: github.event.inputs.build_macos == 'true'
     name: macOS-DLL
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -472,7 +496,7 @@ jobs:
   build_macos_arm64_dll:
     if: github.event.inputs.build_macos == 'true' && github.event.inputs.build_macos_silicon == 'true'
     name: macOS-DLL with apple m1
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -494,7 +518,7 @@ jobs:
   build_ios:
     if: github.event.inputs.build_ios == 'true'
     name: iOS
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
@@ -516,7 +540,7 @@ jobs:
   build_ios_simulator:
     if: github.event.inputs.build_ios == 'true'
     name: iOS simulator
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
     - name: use python3.9
       run: |
