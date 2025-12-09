@@ -432,11 +432,10 @@ jobs:
     name: macOS
     runs-on: macos-latest
     steps:
-    - name: Setup Python 3.9
-      run: |
-        brew install python@3.9
-        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -453,11 +452,10 @@ jobs:
     name: macOS with apple m1
     runs-on: macos-latest
     steps:
-    - name: Setup Python 3.9
-      run: |
-        brew install python@3.9
-        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -474,11 +472,10 @@ jobs:
     name: macOS-DLL
     runs-on: macos-latest
     steps:
-    - name: Setup Python 3.9
-      run: |
-        brew install python@3.9
-        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -495,11 +492,10 @@ jobs:
     name: macOS-DLL with apple m1
     runs-on: macos-latest
     steps:
-    - name: Setup Python 3.9
-      run: |
-        brew install python@3.9
-        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -516,11 +512,10 @@ jobs:
     name: iOS
     runs-on: macos-latest
     steps:
-    - name: Setup Python 3.9
-      run: |
-        brew install python@3.9
-        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
@@ -537,11 +532,10 @@ jobs:
     name: iOS simulator
     runs-on: macos-latest
     steps:
-    - name: Setup Python 3.9
-      run: |
-        brew install python@3.9
-        brew link --overwrite python@3.9
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
     - name: Run build script
       run: |
         cd $GITHUB_WORKSPACE
