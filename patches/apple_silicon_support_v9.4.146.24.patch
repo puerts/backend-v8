@@ -1,0 +1,31 @@
+diff --git a/gni/snapshot_toolchain.gni b/gni/snapshot_toolchain.gni
+index e855b88e430..901182d30a3 100644
+--- a/gni/snapshot_toolchain.gni
++++ b/gni/snapshot_toolchain.gni
+@@ -70,6 +70,15 @@ if (v8_snapshot_toolchain == "") {
+     # therefore snapshots will need to be built using native mksnapshot
+     # in combination with qemu
+     v8_snapshot_toolchain = current_toolchain
++  } else if (host_cpu == current_cpu) {
++    # Cross-build from same ISA on one OS to another. For example:
++    # * targeting win/x64 on a linux/x64 host
++    # * targeting win/arm64 on a mac/arm64 host
++    v8_snapshot_toolchain = host_toolchain
++  } else if (host_cpu == "arm64" && current_cpu == "x64") {
++    # Cross-build from arm64 to intel (likely on an Apple Silicon mac).
++    v8_snapshot_toolchain =
++        "//build/toolchain/${host_os}:clang_arm64_v8_$v8_current_cpu"
+   } else if (host_cpu == "x64") {
+     # This is a cross-compile from an x64 host to either a non-Intel target
+     # cpu or a different target OS. Clang will always be used by default on the
+@@ -106,6 +115,10 @@ if (v8_snapshot_toolchain == "") {
+       # cross compile Windows arm64 with host toolchain.
+       v8_snapshot_toolchain = host_toolchain
+     }
++  } else if (host_cpu == "arm64" && current_cpu == "arm64" &&
++             host_os == "mac") {
++    # cross compile iOS arm64 with host_toolchain
++    v8_snapshot_toolchain = host_toolchain
+   }
+ }
+ 

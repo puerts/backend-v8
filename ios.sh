@@ -36,6 +36,10 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v11.8.172.patch
 fi
 
+if [ "$VERSION" == "9.4.146.24" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/apple_silicon_support_v9.4.146.24.patch
+fi
+
 CXX_SETTING="use_custom_libcxx=false"
 
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
