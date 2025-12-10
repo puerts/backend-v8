@@ -58,7 +58,7 @@ git checkout refs/tags/$VERSION
 echo "=====[ fix DEPS ]===="
 node -e "const fs = require('fs'); fs.writeFileSync('./DEPS', fs.readFileSync('./DEPS', 'utf-8').replace(\"Var('chromium_url') + '/external/github.com/kennethreitz/requests.git'\", \"'https://github.com/kennethreitz/requests'\"));"
 
-gclient sync -D -D
+gclient sync -D
 
 
 # echo "=====[ Patching V8 ]====="
