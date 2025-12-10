@@ -1,5 +1,12 @@
 VERSION=$1
 NEW_WRAP=$2
+
+# Exit immediately if a command exits with a non-zero status (except for version 9.4.146.24)
+if [ "$VERSION" != "9.4.146.24" ]; then
+    set -e
+    set -o pipefail
+fi
+
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
 cd ~
