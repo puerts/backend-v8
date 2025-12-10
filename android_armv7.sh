@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+# Fail on pipe errors
+set -o pipefail
+
 VERSION=$1
 NEW_WRAP=$2
 
