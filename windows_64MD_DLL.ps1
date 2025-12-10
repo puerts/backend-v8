@@ -26,7 +26,7 @@ Write-Output "=====[ Fetching V8 ]====="
 cd v8
 & git checkout "refs/tags/$VERSION"
 & git config --system core.longpaths true
-& gclient sync
+& gclient sync -D
 
 if ($VERSION -eq "9.4.146.24") {
     Write-Output "=====[ patch jinja for python3.10+ ]====="

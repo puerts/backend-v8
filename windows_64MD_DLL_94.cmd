@@ -29,7 +29,7 @@ call git checkout refs/tags/%VERSION%
 call git config --system core.longpaths true
 @REM call git restore *
 @REM cd ..\..\..\
-call gclient sync
+call gclient sync -D
 
 @REM echo =====[ Patching V8 ]=====
 @REM node %GITHUB_WORKSPACE%\CRLF2LF.js %GITHUB_WORKSPACE%\patches\builtins-puerts.patches

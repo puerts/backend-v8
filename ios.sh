@@ -26,7 +26,7 @@ fetch v8
 echo "target_os = ['ios']" >> .gclient
 cd ~/v8/v8
 git checkout refs/tags/$VERSION
-gclient sync
+gclient sync -D
 python3 tools/clang/scripts/update.py
 
 # echo "=====[ Patching V8 ]====="

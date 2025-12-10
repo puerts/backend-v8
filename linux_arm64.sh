@@ -57,7 +57,7 @@ fetch v8
 echo "target_os = ['linux-arm64']" >> .gclient
 cd ~/v8/v8
 git checkout refs/tags/$VERSION
-gclient sync
+gclient sync -D
 
 # echo "=====[ Patching V8 ]====="
 # git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches

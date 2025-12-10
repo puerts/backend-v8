@@ -29,7 +29,7 @@ call git checkout refs/tags/%VERSION%
 call git config --system core.longpaths true
 @REM call git restore *
 @REM cd ..\..\..\
-call gclient sync
+call gclient sync -D
 
 if "%VERSION%"=="10.6.194" (
     echo =====[ patch 10.6.194 ]=====
