@@ -66,9 +66,6 @@ else
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -C out.gn/x64.release wee8
-
-./third_party/llvm-build/Release+Asserts/bin/llvm-strip --strip-debug --verbose out.gn/x64.release/obj/libwee8.a
-
 mkdir -p output/v8/Lib/iOS/x64
 cp out.gn/x64.release/obj/libwee8.a output/v8/Lib/iOS/x64/
 mkdir -p output/v8/Inc/Blob/iOS/x64
