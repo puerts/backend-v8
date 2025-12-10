@@ -137,6 +137,19 @@ index d8d9a6b8d..a4c4e168c 100644
    import("//build/config/android/channel.gni")
    import("//build/config/chromecast_build.gni")
    import("//build/config/clang/clang.gni")
+diff --git a/config/android/rules.gni b/config/android/rules.gni
+index 40be6fb60..dc0c11487 100644
+--- a/config/android/rules.gni
++++ b/config/android/rules.gni
+@@ -16,7 +16,7 @@ import("//build/config/rts.gni")
+ import("//build/config/sanitizers/sanitizers.gni")
+ import("//build/config/zip.gni")
+ import("//build/toolchain/toolchain.gni")
+-assert(is_android || is_robolectric)
++assert(is_android || is_robolectric || is_ohos)
+ 
+ if (target_cpu == "arm") {
+   _sanitizer_arch = "arm"
 diff --git a/config/arm.gni b/config/arm.gni
 index 5b404c1ca..fb30513bf 100644
 --- a/config/arm.gni
