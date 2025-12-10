@@ -30,9 +30,27 @@ index 248470369..a52c1bcb6 100644
  // equivalent types.
  #define STD_STRING_ITERATOR_IS_CHAR_POINTER
 diff --git a/config/BUILD.gn b/config/BUILD.gn
-index 53511ac36..bc60746e9 100644
+index 53511ac36..533141103 100644
 --- a/config/BUILD.gn
 +++ b/config/BUILD.gn
+@@ -20,7 +20,7 @@ import("//build/config/rust.gni")
+ import("//build/config/sanitizers/sanitizers.gni")
+ import("//build/config/ui.gni")
+ import("//build/toolchain/goma.gni")
+-if (is_android) {
++if (is_android || is_ohos) {
+   import("//build/config/android/abi.gni")
+ }
+ 
+@@ -201,7 +201,7 @@ config("default_libs") {
+         "ole32.lib",
+       ]
+     }
+-  } else if (is_android) {
++  } else if (is_android || is_ohos) {
+     libs = [
+       "dl",
+       "m",
 @@ -318,7 +318,7 @@ config("executable_config") {
        "//build/config/ios:ios_dynamic_flags",
        "//build/config/ios:ios_executable_flags",
@@ -112,15 +130,19 @@ index e7c18c068..608db1175 100644
  # This is included by reference in the //build/config/compiler config that
  # is applied to all targets. It is here to separate out the logic that is
 diff --git a/config/android/abi.gni b/config/android/abi.gni
-index 1a082cf2b..e7a35e07c 100644
+index 1a082cf2b..3a68fcae2 100644
 --- a/config/android/abi.gni
 +++ b/config/android/abi.gni
-@@ -8,7 +8,7 @@
+@@ -8,7 +8,11 @@
  # NOTE: Because Chrome OS builds may depend on targets built with the Android
  # toolchain, this GNI file may be read and processed from within Chrome OS
  # toolchains. Checking |is_android| here would therefore be too restrictive.
 -assert(is_android || is_chromeos)
 +assert(is_android || is_chromeos || is_ohos)
++
++if (is_ohos) {
++  import("//build/config/ohos/abi.gni")
++}
  
  declare_args() {
    # Adds intrumentation to each function. Writes a file with the order that
@@ -151,9 +173,18 @@ index 40be6fb60..dc0c11487 100644
  if (target_cpu == "arm") {
    _sanitizer_arch = "arm"
 diff --git a/config/arm.gni b/config/arm.gni
-index 5b404c1ca..fb30513bf 100644
+index 5b404c1ca..e41735c27 100644
 --- a/config/arm.gni
 +++ b/config/arm.gni
+@@ -47,7 +47,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
+     arm_arch = "armv8-a+crc"
+   }
+ 
+-  if (current_os == "android" || target_os == "android") {
++  if (current_os == "android" || target_os == "android" || target_os == "ohos") {
+     arm_float_abi = "softfp"
+   } else {
+     declare_args() {
 @@ -137,7 +137,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
      # - "none": No branch protection.
      arm_control_flow_integrity = "none"
@@ -186,11 +217,41 @@ index 3c0b549b2..b4b72c3d4 100644
    libcxx_is_shared = true
  }
 diff --git a/config/clang/BUILD.gn b/config/clang/BUILD.gn
-index fe044e29e..0ef290f03 100644
+index fe044e29e..933c8e993 100644
 --- a/config/clang/BUILD.gn
 +++ b/config/clang/BUILD.gn
-@@ -32,7 +32,7 @@ config("find_bad_constructs") {
-       "check-stack-allocated",
+@@ -16,23 +16,23 @@ config("find_bad_constructs") {
+     # The plugin is built directly into clang, so there's no need to load it
+     # dynamically.
+     cflags += [
+-      "-Xclang",
+-      "-add-plugin",
+-      "-Xclang",
+-      "find-bad-constructs",
+-
+-      "-Xclang",
+-      "-plugin-arg-find-bad-constructs",
+-      "-Xclang",
+-      "raw-ref-template-as-trivial-member",
+-
+-      "-Xclang",
+-      "-plugin-arg-find-bad-constructs",
+-      "-Xclang",
+-      "check-stack-allocated",
++      # "-Xclang",
++      # "-add-plugin",
++      # "-Xclang",
++      # "find-bad-constructs",
++
++      # "-Xclang",
++      # "-plugin-arg-find-bad-constructs",
++      # "-Xclang",
++      # "raw-ref-template-as-trivial-member",
++
++      # "-Xclang",
++      # "-plugin-arg-find-bad-constructs",
++      # "-Xclang",
++      # "check-stack-allocated",
      ]
  
 -    if (is_linux || is_chromeos || is_android || is_fuchsia) {
@@ -198,6 +259,370 @@ index fe044e29e..0ef290f03 100644
        cflags += [
          "-Xclang",
          "-plugin-arg-find-bad-constructs",
+diff --git a/config/clang/clang.gni b/config/clang/clang.gni
+index 1a065b5e3..c69c5991d 100644
+--- a/config/clang/clang.gni
++++ b/config/clang/clang.gni
+@@ -7,6 +7,17 @@ import("//build/toolchain/toolchain.gni")
+ 
+ default_clang_base_path = "//third_party/llvm-build/Release+Asserts"
+ 
++if (is_ohos) {
++  import("//build/config/ohos/config.gni")
++}
++
++if (!is_ohos) {
++  default_clang_base_path = "//third_party/llvm-build/Release+Asserts"
++} else {
++  default_clang_base_path = ohos_toolchain_root
++}
++
++
+ declare_args() {
+   # Indicates if the build should use the Chrome-specific plugins for enforcing
+   # coding guidelines, etc. Only used when compiling with Chrome's Clang, not
+diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
+index 06812fb9c..afc3c7157 100644
+--- a/config/compiler/BUILD.gn
++++ b/config/compiler/BUILD.gn
+@@ -125,7 +125,7 @@ declare_args() {
+   # the space overhead is too great. We should use some mixture of profiles and
+   # optimization settings to better tune the size increase.
+   thin_lto_enable_optimizations =
+-      (is_chromeos || is_android || is_win || is_linux || is_mac ||
++      (is_chromeos || is_android || is_win || is_linux || is_mac || is_ohos ||
+        (is_ios && use_lld)) && is_official_build
+ 
+   # Initialize all local variables with a pattern. This flag will fill
+@@ -136,7 +136,7 @@ declare_args() {
+   #
+   # TODO(crbug.com/1131993): This regresses binary size by ~1MB on Android and
+   # needs to be evaluated before enabling it there as well.
+-  init_stack_vars = !(is_android && is_official_build)
++  init_stack_vars = !(is_android && is_official_build) && !is_ohos
+ 
+   # Zero init has favorable performance/size tradeoffs for Chrome OS
+   # but was not evaluated for other platforms.
+@@ -207,12 +207,12 @@ declare_args() {
+   # lld doesn't have the bug.
+   use_icf = (is_posix || is_fuchsia) && !is_debug && !using_sanitizer &&
+             !use_clang_coverage && current_os != "zos" &&
+-            !(is_android && use_order_profiling) &&
++            !((is_android || is_ohos) && use_order_profiling) &&
+             (use_lld || (use_gold && (is_chromeos || !(current_cpu == "x86" ||
+                                                        current_cpu == "x64"))))
+ }
+ 
+-if (is_android) {
++if (is_android || is_ohos) {
+   # Set the path to use orderfile for linking Chrome
+   # Note that this is for using only one orderfile for linking
+   # the Chrome binary/library.
+@@ -257,7 +257,7 @@ config("default_include_dirs") {
+ # the executable they are loaded into, so they are unresolved at link-time.
+ config("no_unresolved_symbols") {
+   if (!using_sanitizer &&
+-      (is_linux || is_chromeos || is_android || is_fuchsia)) {
++      (is_linux || is_chromeos || is_android || is_fuchsia || is_ohos)) {
+     ldflags = [
+       "-Wl,-z,defs",
+       "-Wl,--as-needed",
+@@ -292,6 +292,8 @@ config("compiler") {
+     configs += [ "//build/config/win:compiler" ]
+   } else if (is_android) {
+     configs += [ "//build/config/android:compiler" ]
++  } else if (is_ohos) {
++    configs += [ "//build/config/ohos:compiler" ]
+   } else if (is_linux || is_chromeos) {
+     configs += [ "//build/config/linux:compiler" ]
+   } else if (is_nacl) {
+@@ -375,7 +377,7 @@ config("compiler") {
+         }
+ 
+         # The x86 toolchain currently has problems with stack-protector.
+-        if (is_android && current_cpu == "x86") {
++        if ((is_android || is_ohos) && current_cpu == "x86") {
+           cflags += [ "-fno-stack-protector" ]
+         } else if (current_os != "aix") {
+           # Not available on aix.
+@@ -440,7 +442,7 @@ config("compiler") {
+       ldflags += [ "-Wl,--build-id" ]
+     }
+ 
+-    if (!is_android) {
++    if (!is_android && !is_ohos) {
+       defines += [
+         # _FILE_OFFSET_BITS=64 should not be set on Android in order to maintain
+         # the behavior of the Android NDK from earlier versions.
+@@ -485,7 +487,7 @@ config("compiler") {
+ 
+   # Linux/Android/Fuchsia common flags setup.
+   # ---------------------------------
+-  if (is_linux || is_chromeos || is_android || is_fuchsia) {
++  if (is_linux || is_chromeos || is_android || is_fuchsia && !is_ohos) {
+     asmflags += [ "-fPIC" ]
+     cflags += [ "-fPIC" ]
+     ldflags += [ "-fPIC" ]
+@@ -509,7 +511,7 @@ config("compiler") {
+ 
+   # Linux-specific compiler flags setup.
+   # ------------------------------------
+-  if (use_gold) {
++  if (use_gold && !is_ohos) {
+     ldflags += [ "-fuse-ld=gold" ]
+     if (!is_android) {
+       # On Android, this isn't needed.  gcc in the NDK knows to look next to
+@@ -594,7 +596,9 @@ config("compiler") {
+     # TODO(hans): Remove this once Clang generates better optimized debug info
+     # by default. https://crbug.com/765793
+     cflags += [
++	  "-Xclang",
+       "-mllvm",
++	  "-Xclang",
+       "-instcombine-lower-dbg-declare=0",
+     ]
+     if (!is_debug && use_thin_lto && is_a_target_toolchain) {
+@@ -616,7 +620,7 @@ config("compiler") {
+   # C11/C++11 compiler flags setup.
+   # ---------------------------
+   if (is_linux || is_chromeos || is_android || (is_nacl && is_clang) ||
+-      current_os == "aix") {
++      is_ohos || current_os == "aix") {
+     if (is_clang) {
+       standard_prefix = "c"
+ 
+@@ -740,6 +744,10 @@ config("compiler") {
+       # TODO(thakis): Check if '=0' (that is, number of cores, instead
+       # of "all" which means number of hardware threads) is faster.
+       ldflags += [ "-Wl,--thinlto-jobs=all" ]
++	  if (is_ohos && !use_musl) {
++        ldflags -= [ "-Wl,--thinlto-jobs=all" ]
++        ldflags += [ "-Wl,--thinlto-jobs=8" ]
++      }
+       if (is_apple) {
+         ldflags += [
+           "-Wl,-cache_path_lto," +
+@@ -819,7 +827,7 @@ config("compiler") {
+ 
+   # Pass flag to LLD so Android builds can allow debuggerd to properly symbolize
+   # stack crashes (http://crbug.com/919499).
+-  if (use_lld && is_android) {
++  if (use_lld && (is_android || is_ohos)) {
+     ldflags += [ "-Wl,--no-rosegment" ]
+   }
+ 
+@@ -1112,7 +1120,7 @@ config("compiler_cpu_abi") {
+         ]
+       }
+     } else if (current_cpu == "arm") {
+-      if (is_clang && !is_android && !is_nacl &&
++      if (is_clang && !is_ohos && !is_android && !is_nacl &&
+           !(is_chromeos_lacros && is_chromeos_device)) {
+         cflags += [ "--target=arm-linux-gnueabihf" ]
+         ldflags += [ "--target=arm-linux-gnueabihf" ]
+@@ -1127,7 +1135,7 @@ config("compiler_cpu_abi") {
+         cflags += [ "-mtune=$arm_tune" ]
+       }
+     } else if (current_cpu == "arm64") {
+-      if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
++      if (is_clang && !is_ohos && !is_android && !is_nacl && !is_fuchsia &&
+           !(is_chromeos_lacros && is_chromeos_device)) {
+         cflags += [ "--target=aarch64-linux-gnu" ]
+         ldflags += [ "--target=aarch64-linux-gnu" ]
+@@ -1417,7 +1425,7 @@ config("compiler_codegen") {
+     # This can be removed once https://bugs.llvm.org/show_bug.cgi?id=40348
+     # has been resolved, and -mno-outline is obeyed by the linker during
+     # ThinLTO.
+-    ldflags += [ "-Wl,-mllvm,-enable-machine-outliner=never" ]
++    # ldflags += [ "-Wl,-mllvm,-enable-machine-outliner=never" ]
+   }
+ 
+   asmflags = cflags
+@@ -1456,7 +1464,7 @@ config("compiler_deterministic") {
+   }
+ 
+   # Makes builds independent of absolute file path.
+-  if (is_clang && strip_absolute_paths_from_debug_symbols) {
++  if (is_clang && strip_absolute_paths_from_debug_symbols && !is_ohos) {
+     # If debug option is given, clang includes $cwd in debug info by default.
+     # For such build, this flag generates reproducible obj files even we use
+     # different build directory like "out/feature_a" and "out/feature_b" if
+@@ -1630,6 +1638,8 @@ config("runtime_library") {
+     configs += [ "//build/config/mac:runtime_library" ]
+   } else if (is_android) {
+     configs += [ "//build/config/android:runtime_library" ]
++  } else if (is_ohos) {
++    configs += [ "//build/config/ohos:runtime_library" ]
+   }
+ 
+   if (is_component_build) {
+@@ -1776,6 +1786,8 @@ config("default_warnings") {
+         # Ignore warnings about MSVC optimization pragmas.
+         # TODO(thakis): Only for no_chromium_code? http://crbug.com/912662
+         "-Wno-ignored-pragma-optimize",
++		"-Wno-deprecated-non-prototype",
++        "-Wno-bitwise-instead-of-logical",
+       ]
+ 
+       if (!is_nacl) {
+@@ -2126,7 +2138,7 @@ config("no_exceptions") {
+ # See: //docs/static_initializers.md
+ # See: https://groups.google.com/a/chromium.org/d/topic/chromium-dev/B9Q5KTD7iCo/discussion
+ config("wglobal_constructors") {
+-  if (is_clang) {
++  if (is_clang && !is_ohos && !is_linux) {
+     cflags = [ "-Wglobal-constructors" ]
+   }
+ }
+@@ -2135,7 +2147,7 @@ config("wglobal_constructors") {
+ # destructors, which will slow down closing the program.
+ # TODO(thakis): Make this a blocklist instead, http://crbug.com/101600
+ config("wexit_time_destructors") {
+-  if (is_clang) {
++  if (is_clang && !is_ohos) {
+     cflags = [ "-Wexit-time-destructors" ]
+   }
+ }
+@@ -2202,7 +2214,7 @@ if (is_win) {
+   common_optimize_on_cflags = []
+   common_optimize_on_ldflags = []
+ 
+-  if (is_android) {
++  if (is_android || is_ohos) {
+     # TODO(jdduke) Re-enable on mips after resolving linking
+     # issues with libc++ (crbug.com/456380).
+     if (current_cpu != "mipsel" && current_cpu != "mips64el") {
+@@ -2347,7 +2359,7 @@ config("no_optimize") {
+       # traces on Windows ARM64 rely on it.
+       cflags += [ "/Oy-" ]
+     }
+-  } else if (is_android && !android_full_debug) {
++  } else if ((is_android || is_ohos) && !android_full_debug) {
+     # On Android we kind of optimize some things that don't affect debugging
+     # much even when optimization is disabled to get the binary size down.
+     if (is_clang) {
+@@ -2470,9 +2482,9 @@ if (is_clang && is_a_target_toolchain) {
+   } else if (clang_use_default_sample_profile) {
+     assert(build_with_chromium,
+            "Our default profiles currently only apply to Chromium")
+-    assert(is_android || is_chromeos || is_castos,
++    assert(is_android || is_ohos || is_chromeos || is_castos,
+            "The current platform has no default profile")
+-    if (is_android || is_castos) {
++    if (is_android || is_ohos || is_castos) {
+       _clang_sample_profile = "//chrome/android/profiles/afdo.prof"
+     } else {
+       assert(
+@@ -2782,7 +2794,7 @@ config("minimal_symbols") {
+     }
+ 
+     ldflags = []
+-    if (is_android && is_clang) {
++    if ((is_android || is_ohos) && is_clang) {
+       # Android defaults to symbol_level=1 builds, but clang, unlike gcc,
+       # doesn't emit DW_AT_linkage_name in -g1 builds.
+       # -fdebug-info-for-profiling enables that (and a bunch of other things we
+@@ -2825,7 +2837,7 @@ config("default_symbols") {
+   }
+ 
+   # This config is removed by base unittests apk.
+-  if (is_android && is_clang && strip_debug_info) {
++  if ((is_android || is_ohos) && is_clang && strip_debug_info) {
+     configs += [ ":strip_debug" ]
+   }
+ }
+@@ -2859,7 +2871,7 @@ if (is_apple) {
+   }
+ }
+ 
+-if (is_android) {
++if (is_android || is_ohos) {
+   # Use orderfile for linking Chrome on Android.
+   # This config enables using an orderfile for linking in LLD.
+   config("chrome_orderfile_config") {
+diff --git a/config/compiler/compiler.gni b/config/compiler/compiler.gni
+index 18717014e..cf287f949 100644
+--- a/config/compiler/compiler.gni
++++ b/config/compiler/compiler.gni
+@@ -15,7 +15,7 @@ import("//build/toolchain/goma.gni")
+ import("//build/toolchain/toolchain.gni")
+ import("//build_overrides/build.gni")
+ 
+-if (is_android) {
++if (is_android || is_ohos) {
+   import("//build/config/android/abi.gni")
+ }
+ if (current_cpu == "arm" || current_cpu == "arm64") {
+@@ -40,7 +40,7 @@ declare_args() {
+   # If true, optimize for size.
+   # Default to favoring speed over size for platforms not listed below.
+   optimize_for_size =
+-      !is_high_end_android && (is_android || is_ios || is_castos)
++      !is_high_end_android && (is_android || is_ios || is_castos || is_ohos)
+ }
+ 
+ declare_args() {
+@@ -91,7 +91,7 @@ declare_args() {
+   # have the same LLVM revisions as us, making bitcode useless to them.
+   use_thin_lto =
+       is_cfi || (is_clang && is_official_build && chrome_pgo_phase != 1 &&
+-                 (is_linux || is_win || is_mac ||
++                 (is_linux || is_win || is_mac || is_ohos ||
+                   (is_ios && use_lld && !is_cronet_build) ||
+                   (is_android && target_os != "chromeos") ||
+                   (is_chromeos && is_chromeos_device)))
+@@ -190,7 +190,7 @@ if (is_chromeos) {
+   } else {
+     enable_frame_pointers = true
+   }
+-} else if (is_android) {
++} else if (is_android || is_ohos) {
+   enable_frame_pointers =
+       enable_profiling ||
+       # Ensure that stacks from arm64 crash dumps are usable (crbug.com/391706).
+@@ -238,7 +238,7 @@ can_unwind_with_cfi_table = is_android && !is_component_build &&
+ # Whether or not cfi table should be enabled on arm.
+ # TODO(crbug.com/1090409): Replace can_unwind_with_cfi_table with this once
+ # sampling profiler is enabled on android.
+-enable_arm_cfi_table = is_android && !is_component_build && current_cpu == "arm"
++enable_arm_cfi_table = (is_android || is_ohos) && !is_component_build && current_cpu == "arm"
+ 
+ declare_args() {
+   # Whether to use the gold linker from binutils instead of lld or bfd.
+@@ -248,7 +248,7 @@ declare_args() {
+                (current_cpu == "x64" || current_cpu == "x86" ||
+                 current_cpu == "arm" || current_cpu == "arm64" ||
+                 current_cpu == "mipsel" || current_cpu == "mips64el")) ||
+-              (is_android && (current_cpu == "x86" || current_cpu == "x64" ||
++              ((is_android || is_ohos) && (current_cpu == "x86" || current_cpu == "x64" ||
+                               current_cpu == "arm" || current_cpu == "arm64" ||
+                               current_cpu == "riscv64")))
+ }
+@@ -264,7 +264,7 @@ declare_args() {
+ # official builders.
+ strip_absolute_paths_from_debug_symbols_default =
+     is_android || is_fuchsia || is_nacl || (is_win && use_lld) || is_linux ||
+-    is_chromeos || (is_apple && !enable_dsyms)
++    is_chromeos || (is_apple && !enable_dsyms) || is_ohos
+ 
+ # If the platform uses stripped absolute paths by default, then we don't expose
+ # it as a configuration option. If this is causing problems, please file a bug.
+@@ -282,13 +282,13 @@ assert(
+     "Invalid use_debug_fission.")
+ if (use_debug_fission == "default") {
+   use_debug_fission = is_debug && !is_android && !is_fuchsia && !is_apple &&
+-                      !is_win && (use_gold || use_lld) && cc_wrapper == ""
++                      !is_win && (use_gold || use_lld) && cc_wrapper == "" && !is_ohos
+ }
+ 
+ # If it wasn't manually set, set to an appropriate default.
+ assert(symbol_level >= -1 && symbol_level <= 2, "Invalid symbol_level")
+ if (symbol_level == -1) {
+-  if (is_android && !is_component_build && !use_debug_fission) {
++  if ((is_android || is_ohos) && !is_component_build && !use_debug_fission) {
+     # Prefer faster & smaller release builds.
+     symbol_level = 1
+   } else if (is_chromeos_device) {
 diff --git a/config/ohos/BUILD.gn b/config/ohos/BUILD.gn
 new file mode 100644
 index 000000000..d92230a93
