@@ -282,7 +282,7 @@ index 1a065b5e3..c69c5991d 100644
    # Indicates if the build should use the Chrome-specific plugins for enforcing
    # coding guidelines, etc. Only used when compiling with Chrome's Clang, not
 diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
-index 06812fb9c..70727eb0b 100644
+index 06812fb9c..de182d4de 100644
 --- a/config/compiler/BUILD.gn
 +++ b/config/compiler/BUILD.gn
 @@ -125,7 +125,7 @@ declare_args() {
@@ -359,7 +359,7 @@ index 06812fb9c..70727eb0b 100644
    # Linux/Android/Fuchsia common flags setup.
    # ---------------------------------
 -  if (is_linux || is_chromeos || is_android || is_fuchsia) {
-+  if (is_linux || is_chromeos || is_android || is_fuchsia && !is_ohos) {
++  if (is_linux || is_chromeos || is_android || is_fuchsia || is_ohos) {
      asmflags += [ "-fPIC" ]
      cflags += [ "-fPIC" ]
      ldflags += [ "-fPIC" ]
