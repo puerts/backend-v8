@@ -558,11 +558,13 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          pattern: v8_bin_*
           path: v8_bin/
+          merge-multiple: true
           
       - name: Create Release Asset
         run: |
-          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_bin
+          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tar.gz v8_bin
           
       - name: Create Release
         id: create_release
@@ -572,7 +574,7 @@ jobs:
           name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
-          files: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
+          files: ./v8_bin_${{github.event.inputs.v8_revision}}.tar.gz
           
   publish_without_ohos:
     if: github.event.inputs.tag_date != '' && github.event.inputs.build_ohos == 'false'
@@ -581,11 +583,13 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          pattern: v8_bin_*
           path: v8_bin/
+          merge-multiple: true
           
       - name: Create Release Asset
         run: |
-          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tgz v8_bin
+          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tar.gz v8_bin
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -594,7 +598,7 @@ jobs:
           name: V8_${{github.event.inputs.v8_revision}}_${{github.event.inputs.wrap_new}}_${{ github.event.inputs.tag_date }}
           draft: false
           prerelease: false
-          files: ./v8_bin_${{github.event.inputs.v8_revision}}.tgz
+          files: ./v8_bin_${{github.event.inputs.v8_revision}}.tar.gz
 
 
   
