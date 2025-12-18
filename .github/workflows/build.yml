@@ -564,7 +564,7 @@ jobs:
           
       - name: Create Release Asset
         run: |
-          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tar.gz v8_bin
+          cd v8_bin/ && tar cvfz ../v8_bin_${{github.event.inputs.v8_revision}}.tar.gz v8_${{github.event.inputs.v8_revision}} && cd -
           
       - name: Create Release
         id: create_release
@@ -589,7 +589,7 @@ jobs:
           
       - name: Create Release Asset
         run: |
-          tar cvfz v8_bin_${{github.event.inputs.v8_revision}}.tar.gz v8_bin
+          cd v8_bin/ && tar cvfz ../v8_bin_${{github.event.inputs.v8_revision}}.tar.gz v8_${{github.event.inputs.v8_revision}} && cd -
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
