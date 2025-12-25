@@ -529,27 +529,27 @@ jobs:
         name: v8_bin_ios
         path: ~/v8/v8/output/**/*
   
-  build_ios_simulator:
-    if: github.event.inputs.build_ios == 'true'
-    name: iOS simulator
-    runs-on: macos-14
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.9'
-    - name: Select Xcode 15.2
-      run: sudo xcode-select -switch "/Applications/Xcode_15.2.0.app"
-    - name: Run build script
-      run: |
-        cd $GITHUB_WORKSPACE
-        npm i
-        bash ./ios_simulator.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
-        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
-    - uses: actions/upload-artifact@v4
-      with:
-        name: v8_bin_ios_simulator
-        path: ~/v8/v8/output/**/*
+#  build_ios_simulator:
+#    if: github.event.inputs.build_ios == 'true'
+#    name: iOS simulator
+#    runs-on: macos-14
+#    steps:
+#    - uses: actions/checkout@v2
+#    - uses: actions/setup-python@v5
+#      with:
+#        python-version: '3.9'
+#    - name: Select Xcode 15.2
+#      run: sudo xcode-select -switch "/Applications/Xcode_15.2.0.app"
+#    - name: Run build script
+#      run: |
+#        cd $GITHUB_WORKSPACE
+#        npm i
+#        bash ./ios_simulator.sh ${{github.event.inputs.v8_revision}} ${{github.event.inputs.wrap_new}}
+#        mv ~/v8/v8/output/v8 ~/v8/v8/output/v8_${{github.event.inputs.v8_revision}}
+#    - uses: actions/upload-artifact@v4
+#      with:
+#        name: v8_bin_ios_simulator
+#        path: ~/v8/v8/output/**/*
         
   publish_with_ohos:
     if: github.event.inputs.tag_date != '' && github.event.inputs.build_ohos == 'true'
