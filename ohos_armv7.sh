@@ -59,6 +59,9 @@ node -e "const fs = require('fs'); fs.writeFileSync('./DEPS', fs.readFileSync('.
 
 gclient sync -D
 
+if [ "$VERSION" == "9.4.146.24" ]; then 
+    build/linux/sysroot_scripts/install-sysroot.py --arch=i386
+fi
 
 # echo "=====[ Patching V8 ]====="
 # git apply --cached $GITHUB_WORKSPACE/patches/builtins-puerts.patches
