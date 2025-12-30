@@ -10,7 +10,7 @@ set GYP_MSVS_VERSION=2019
 set DEPOT_TOOLS_WIN_TOOLCHAIN=0
 call gclient
 
-if not "%VERSION%"=="10.6.194" if not "%VERSION%"=="11.8.172" (
+if "%VERSION%"=="9.4.146.24" (
     cd depot_tools
     call git reset --hard 8d16d4a
     cd ..

@@ -11,7 +11,7 @@ $env:GYP_MSVS_VERSION = "2019"
 $env:DEPOT_TOOLS_WIN_TOOLCHAIN = "0"
 & gclient
 
-if ($VERSION -ne "10.6.194" -and $VERSION -ne "11.8.172") {
+if ($VERSION -eq "9.4.146.24") {
     cd depot_tools
     & git reset --hard 8d16d4a
     cd ..
