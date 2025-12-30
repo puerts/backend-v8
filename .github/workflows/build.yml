@@ -13,9 +13,9 @@ on:
         type: choice
         options:
         - "9.4.146.24"
-        - "10.6.194"
         - "11.8.172"
-        default: '9.4.146.24'
+        - "12.9.202.27"
+        default: '11.8.172'
         required: true
       wrap_new:
         description: 'wrap new/delete'

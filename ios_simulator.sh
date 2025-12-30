@@ -51,12 +51,12 @@ node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
 
-if [ "$VERSION" == "10.6.194" ]; then 
-    gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false"
-elif [ "$VERSION" == "11.8.172" ]; then
-    gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false v8_enable_webassembly=false v8_enable_maglev=false v8_enable_webassembly=false"
-else
+if [ "$VERSION" == "9.4.146.24" ]; then
     gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false"
+elif [ "$VERSION" == "10.6.194" ]; then
+    gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false"
+else
+    gn gen out.gn/x64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"x64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false v8_enable_webassembly=false v8_enable_maglev=false v8_enable_webassembly=false"
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -C out.gn/x64.release wee8
