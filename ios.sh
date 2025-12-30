@@ -38,7 +38,11 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v11.8.172.patch
 fi
 
-if [ "$VERSION" == "9.4.146.24" ]; then 
+if [ "$VERSION" == "12.9.202.27" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v12.9.202.27.patch
+fi
+
+if [ "$VERSION" == "9.4.146.24" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/apple_silicon_support_v9.4.146.24.patch
 fi
 

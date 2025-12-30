@@ -43,6 +43,11 @@ if "%VERSION%"=="11.8.172" (
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\enable_wee8_v11.8.172.patch
 )
 
+if "%VERSION%"=="12.9.202.27" (
+    echo =====[ patch 12.9.202.27 ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\enable_wee8_v12.9.202.27.patch
+)
+
 if "%VERSION%"=="9.4.146.24" (
     echo =====[ patch jinja for python3.10+ ]=====
     cd third_party\jinja2
