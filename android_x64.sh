@@ -72,7 +72,6 @@ if [ "$VERSION" == "12.9.202.27" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v12.9.202.27.patch
 fi
 
-if [ "$VERSION" == "9.4.146.24" ]; then
 CXX_SETTING="use_custom_libcxx=false"
 
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
