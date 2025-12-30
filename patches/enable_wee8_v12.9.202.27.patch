@@ -1,8 +1,16 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index 19e0d2b5847..dcad4ac684e 100644
+index 19e0d2b5847..5635f1b8db1 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -7232,7 +7232,7 @@ if (v8_monolithic) {
+@@ -7225,14 +7225,14 @@ if (v8_check_header_includes) {
+ # Produce a single static library for embedders
+ #
+ 
+-if (v8_monolithic) {
++#if (v8_monolithic) {
+   assert(!is_component_build,
+          "Set `is_component_build = false` for v8_monolithic.")
+ 
    # Using external startup data would produce separate files.
    assert(!v8_use_external_startup_data,
           "Set `v8_use_external_startup_data = false` for v8_monolithic.")
@@ -11,8 +19,12 @@ index 19e0d2b5847..dcad4ac684e 100644
      deps = [
        ":v8",
        ":v8_libbase",
-@@ -7245,7 +7245,7 @@ if (v8_monolithic) {
- }
+@@ -7242,10 +7242,10 @@ if (v8_monolithic) {
+ 
+     configs = [ ":internal_config" ]
+   }
+-}
++#}
  
  if (v8_enable_webassembly) {
 -  v8_static_library("wee8") {
