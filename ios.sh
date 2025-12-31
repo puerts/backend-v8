@@ -67,6 +67,8 @@ if [ "$VERSION" == "9.4.146.24" ]; then
     gn gen out.gn/arm64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"arm64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false $CXX_SETTING"
 elif [ "$VERSION" == "10.6.194" ]; then
     gn gen out.gn/arm64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing= false target_os=\"ios\" target_cpu=\"arm64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false $CXX_SETTING"
+elif [ "$VERSION" == "11.8.172" ]; then
+    gn gen out.gn/arm64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing= false target_os=\"ios\" target_cpu=\"arm64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false $CXX_SETTING v8_enable_webassembly=false v8_enable_maglev=false v8_enable_webassembly=false"
 else
     gn gen out.gn/arm64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false strip_debug_info=true symbol_level=0 v8_static_library=true ios_enable_code_signing= false target_os=\"ios\" target_cpu=\"arm64\" v8_enable_pointer_compression=false libcxx_abi_unstable=false v8_enable_sandbox=false $CXX_SETTING v8_enable_webassembly=false v8_enable_maglev=false v8_enable_webassembly=false"
 fi

@@ -111,6 +111,8 @@ if [ "$VERSION" == "9.4.146.24" ]; then
   gn gen --args="target_os=\"ohos\" target_cpu=\"arm\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true" out.gn/arm.release
 elif [ "$VERSION" == "10.6.194" ]; then
   gn gen --args="target_os=\"ohos\" target_cpu=\"arm\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false" out.gn/arm.release
+elif [ "$VERSION" == "11.8.172" ]; then
+  gn gen --args="target_os=\"ohos\" target_cpu=\"arm\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false" out.gn/arm.release
 else
   gn gen --args="target_os=\"ohos\" target_cpu=\"arm\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false" out.gn/arm.release
 fi
