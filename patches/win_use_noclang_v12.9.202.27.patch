@@ -1,0 +1,13 @@
+diff --git a/src/heap/cppgc/marking-state.h b/src/heap/cppgc/marking-state.h
+index d3533274ba7..1f42edd7783 100644
+--- a/src/heap/cppgc/marking-state.h
++++ b/src/heap/cppgc/marking-state.h
+@@ -358,7 +358,7 @@ class MutatorMarkingState final : public BasicMarkingState {
+   ~MutatorMarkingState() override = default;
+ 
+   inline bool MarkNoPush(HeapObjectHeader& header) {
+-    return MutatorMarkingState::BasicMarkingState::MarkNoPush(header);
++    return BasicMarkingState::MarkNoPush(header);
+   }
+ 
+   inline void ReTraceMarkedWeakContainer(cppgc::Visitor&, HeapObjectHeader&);

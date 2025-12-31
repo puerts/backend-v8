@@ -264,11 +264,11 @@ jobs:
       shell: pwsh
       run: choco install llvm
     - name: Install VS2019 Build Tools
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       shell: pwsh
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       with:
         vsversion: '2019'
     - name: Run build script
@@ -297,11 +297,11 @@ jobs:
       shell: pwsh
       run: choco install llvm
     - name: Install VS2019 Build Tools
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       shell: pwsh
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       with:
         vsversion: '2019'
     - name: Run build script
@@ -326,11 +326,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install VS2019 Build Tools
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       shell: pwsh
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       with:
         vsversion: '2019'
     - name: Run build script
@@ -359,11 +359,11 @@ jobs:
       shell: pwsh
       run: choco install llvm
     - name: Install VS2019 Build Tools
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       shell: pwsh
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       with:
         vsversion: '2019'
     - name: Run build script
@@ -388,11 +388,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install VS2019 Build Tools
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       shell: pwsh
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       with:
         vsversion: '2019'
     - name: Run build script
@@ -417,11 +417,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install VS2019 Build Tools
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       shell: pwsh
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
     - uses: ilammy/msvc-dev-cmd@v1
-      if: github.event.inputs.v8_revision != '12.9.202.27'
+      if: github.event.inputs.v8_revision == '9.4.146.24' || github.event.inputs.v8_revision == '11.8.172'  
       with:
         vsversion: '2019'
     - name: Run build script
