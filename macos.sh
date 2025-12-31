@@ -57,6 +57,7 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION
 
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
+echo "=====[ Building V8 ]====="
 if [ "$VERSION" == "9.4.146.24" ]; then
     gn gen out.gn/x64.release --args="is_debug=false target_cpu=\"x64\" v8_target_cpu=\"x64\"  v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false $CXX_SETTING"
 elif [ "$VERSION" == "10.6.194" ]; then
@@ -65,7 +66,8 @@ elif [ "$VERSION" == "11.8.172" ]; then
     gn gen out.gn/x64.release --args="is_debug=false target_cpu=\"x64\" v8_target_cpu=\"x64\"  v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false $CXX_SETTING is_clang=true v8_enable_maglev=false v8_enable_webassembly=false"
 else
     gn gen out.gn/x64.release --args="is_debug=false target_cpu=\"x64\" v8_target_cpu=\"x64\"  v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false $CXX_SETTING is_clang=true v8_enable_maglev=false v8_enable_webassembly=false"
-fininja -C out.gn/x64.release -t clean
+fi
+ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
 
 mkdir -p output/v8/Lib/macOS
