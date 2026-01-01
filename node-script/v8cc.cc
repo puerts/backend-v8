@@ -136,7 +136,9 @@ int main(int argc, char* argv[]) {
             v8::String::NewFromUtf8(isolate, fileContent.c_str()).ToLocalChecked();
         source_length = source->Length();
         if (is_module) {
-#if V8_MAJOR_VERSION > 8
+#if V8_MAJOR_VERSION >= 12
+            v8::ScriptOrigin origin(script_url, ln, col, true, -1, v8::Local<v8::Value>(), false, false, true);
+#elif V8_MAJOR_VERSION > 8
             v8::ScriptOrigin origin(isolate, script_url, ln, col, true, -1, v8::Local<v8::Value>(), false, false, true);
 #else
             v8::ScriptOrigin origin(script_url, v8::Integer::New(isolate, ln), v8::Integer::New(isolate, col), v8::True(isolate),
@@ -148,7 +150,9 @@ int main(int argc, char* argv[]) {
                 cached_data = v8::ScriptCompiler::CreateCodeCache(module.ToLocalChecked()->GetUnboundModuleScript());
             }
         } else {
-#if V8_MAJOR_VERSION > 8
+#if V8_MAJOR_VERSION >= 12
+            v8::ScriptOrigin origin(script_url, ln, col);
+#elif V8_MAJOR_VERSION > 8
             v8::ScriptOrigin origin(isolate, script_url, ln, col);
 #else
             v8::ScriptOrigin origin(script_url, v8::Integer::New(isolate, ln), v8::Integer::New(isolate, col));
