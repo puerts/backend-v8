@@ -109,6 +109,15 @@ if "%VERSION%"=="11.8.172" (
   copy /Y out.gn\x64.release\third_party_zlib.dll.pdb output\v8\Lib\Win64DLL\
   copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll output\v8\Lib\Win64DLL\
   copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.pdb output\v8\Lib\Win64DLL\
+) else if "%VERSION%"=="12.9.202.27" (
+  copy /Y out.gn\x64.release\third_party_zlib.dll output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_zlib.dll.pdb output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll" output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll.lib" output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll.pdb" output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.lib output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.pdb output\v8\Lib\Win64DLL\
 ) else (
   copy /Y out.gn\x64.release\zlib.dll output\v8\Lib\Win64DLL\
   copy /Y out.gn\x64.release\zlib.dll.pdb output\v8\Lib\Win64DLL\
