@@ -54,6 +54,8 @@ function addV8CC() {
 
     sources = [
       "src/snapshot/v8cc.cc",
+	  "src/snapshot/snapshot-empty.cc",
+	  "src/snapshot/embedded/embedded-empty.cc",
     ]
 
     configs = [
