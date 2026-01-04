@@ -46,6 +46,9 @@ if "%VERSION%"=="12.9.202.27" (
     echo =====[ patch 12.9.202.27 ]=====
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\enable_wee8_v12.9.202.27.patch
 	node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\win_use_noclang_v12.9.202.27.patch
+) else if "%VERSION%"=="13.6.233.17" (
+    echo =====[ patch 13.6.233.17 ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\enable_wee8_v13.6.233.17.patch
 )
 
 if "%VERSION%"=="9.4.146.24" (
