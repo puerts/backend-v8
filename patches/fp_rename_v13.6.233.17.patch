@@ -1,0 +1,16 @@
+diff --git a/src/execution/frames-inl.h b/src/execution/frames-inl.h
+index 374232d5f5a..7e15761977c 100644
+--- a/src/execution/frames-inl.h
++++ b/src/execution/frames-inl.h
+@@ -256,9 +256,9 @@ inline Address CommonFrame::caller_pc() const {
+       fp() + StandardFrameConstants::kCallerPCOffset));
+ }
+ 
+-inline bool CommonFrameWithJSLinkage::IsConstructFrame(Address fp) {
++inline bool CommonFrameWithJSLinkage::IsConstructFrame(Address fp1) {
+   intptr_t frame_type =
+-      base::Memory<intptr_t>(fp + TypedFrameConstants::kFrameTypeOffset);
++      base::Memory<intptr_t>(fp1 + TypedFrameConstants::kFrameTypeOffset);
+   return frame_type == StackFrame::TypeToMarker(StackFrame::CONSTRUCT) ||
+          frame_type == StackFrame::TypeToMarker(StackFrame::FAST_CONSTRUCT);
+ }
