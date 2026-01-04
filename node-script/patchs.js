@@ -61,6 +61,8 @@ function addV8CC() {
       ":disable_icf",
     ]
 
+    cflags_cc += [ "-Wno-shadow" ]
+
     deps = [
       ":v8_base_without_compiler",
       ":v8_compiler_for_mksnapshot",

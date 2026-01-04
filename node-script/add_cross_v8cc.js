@@ -55,6 +55,8 @@ v8_executable("v8cc") {
       ":internal_config",
       ":disable_icf",
     ]
+	
+    cflags_cc += [ "-Wno-shadow" ]
 
     deps = [
       ":v8_base_without_compiler",
