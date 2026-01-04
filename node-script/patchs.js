@@ -56,11 +56,10 @@ function addV8CC() {
       "src/snapshot/v8cc.cc",
     ]
 
-    if (v8_control_flow_integrity) {
-      sources += [ "src/deoptimizer/deoptimizer-cfi-empty.cc" ]
-    }
-
-    configs = [ ":internal_config" ]
+    configs = [
+      ":internal_config",
+      ":disable_icf",
+    ]
 
     deps = [
       ":v8_base_without_compiler",
@@ -71,7 +70,6 @@ function addV8CC() {
       ":v8_maybe_icu",
       ":v8_shared_internal_headers",
       ":v8_tracing",
-      ":v8_turboshaft",
       "//build/win:default_exe_manifest",
     ]
   }
