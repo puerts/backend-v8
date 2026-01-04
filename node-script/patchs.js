@@ -49,12 +49,6 @@ function addV8CC() {
         v8cc_target = v8cc_target.replace('":v8_turboshaft",', '');
     } else if (v8_version == "13.6.233.17") {
 		v8cc_target = `
-  config("v8cc_no_shadow") {
-    cflags_cc = [ "-Wno-shadow" ]
-    cflags -= [ "-Wshadow" ]
-    cflags += [ "-Wno-shadow" ]
-  }
-
   v8_executable("v8cc") {
     visibility = [ ":*" ]  # Only targets in this file can depend on this.
 
@@ -67,7 +61,6 @@ function addV8CC() {
     configs = [
       ":internal_config",
       ":disable_icf",
-      ":v8cc_no_shadow",
     ]
 
     deps = [
