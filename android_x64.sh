@@ -5,7 +5,7 @@ NEW_WRAP=$2
 
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
-if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
+if [ "$VERSION" != "9.4.146.24" ]; then 
     sudo apt-get install -y \
         pkg-config \
         git \

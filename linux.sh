@@ -5,7 +5,7 @@ NEW_WRAP=$2
 
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
-if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
+if [ "$VERSION" != "9.4.146.24" ]; then 
     sudo apt-get install -y \
         pkg-config \
         git \
@@ -40,7 +40,7 @@ if [ "$VERSION" == "9.4.146.24" ]; then
     cd ..
 fi
 export DEPOT_TOOLS_UPDATE=0
-if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
+if [ "$VERSION" != "9.4.146.24" ]; then 
     export PATH=$(pwd)/depot_tools:$PATH
 else
     export PATH=$(pwd)/depot_tools:$(pwd)/depot_tools/.cipd_bin/2.7/bin:$PATH

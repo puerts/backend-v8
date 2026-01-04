@@ -5,7 +5,7 @@ NEW_WRAP=$2
 
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
-if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
+if [ "$VERSION" != "9.4.146.24" ]; then 
     sudo apt-get install -y \
         pkg-config \
         git \
@@ -76,8 +76,8 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v11.8.172.patch
 fi
 
-if [ "$VERSION" == "12.9.202.27" -o "$VERSION" == "13.6.233.17" ]; then 
-  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v$VERSION.patch
+if [ "$VERSION" == "12.9.202.27" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v12.9.202.27.patch
 fi
 
 CXX_SETTING="use_custom_libcxx=false"
