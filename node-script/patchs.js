@@ -51,6 +51,8 @@ function addV8CC() {
 		v8cc_target = `
   config("v8cc_no_shadow") {
     cflags_cc = [ "-Wno-shadow" ]
+    cflags -= [ "-Wshadow" ]
+    cflags += [ "-Wno-shadow" ]
   }
 
   v8_executable("v8cc") {
