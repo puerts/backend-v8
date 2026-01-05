@@ -1,0 +1,12 @@
+diff --git a/include/v8-memory-span.h b/include/v8-memory-span.h
+index 5916cdfe06b..e279f9f4c09 100644
+--- a/include/v8-memory-span.h
++++ b/include/v8-memory-span.h
+@@ -158,6 +158,7 @@ class V8_EXPORT MemorySpan {
+     using value_type = T;
+     using pointer = value_type*;
+     using reference = value_type&;
++    using element_type = T;
+     using iterator_category = std::random_access_iterator_tag;
+     // There seems to be no feature-test macro covering this, so use the
+     // presence of `<ranges>` as a crude proxy, since it was added to the

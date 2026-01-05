@@ -41,6 +41,10 @@ if [ "$VERSION" == "12.9.202.27" -o "$VERSION" == "13.6.233.17" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v$VERSION.patch
 fi
 
+if [ "$VERSION" == "13.6.233.17" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/memory_span_v13.6.233.17.patch
+fi
+
 CXX_SETTING="use_custom_libcxx=false"
 
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
@@ -67,7 +71,7 @@ elif [ "$VERSION" == "11.8.172" ]; then
 elif [ "$VERSION" == "12.9.202.27" ]; then
     gn gen out.gn/x64.release --args="is_debug=false target_cpu=\"x64\" v8_target_cpu=\"x64\"  v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false $CXX_SETTING is_clang=true v8_enable_maglev=false v8_enable_webassembly=false"
 else
-    gn gen out.gn/x64.release --args="is_debug=false target_cpu=\"x64\" v8_target_cpu=\"x64\"  v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false use_custom_libcxx=true is_clang=true v8_enable_maglev=false v8_enable_webassembly=false"
+    gn gen out.gn/x64.release --args="is_debug=false target_cpu=\"x64\" v8_target_cpu=\"x64\"  v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false v8_static_library=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false use_custom_libcxx=false is_clang=true v8_enable_maglev=false v8_enable_webassembly=false"
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
