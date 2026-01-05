@@ -72,6 +72,9 @@ fi
 
 if [ "$VERSION" == "13.6.233.17" ]; then 
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/v8_monolithic_for_shared_library_flags_v13.6.233.17.patch
+  cd build
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/turn_off_crel_v13.6.233.17.patch
+  cd ..
 fi
 
 CXX_SETTING="use_custom_libcxx=false"
