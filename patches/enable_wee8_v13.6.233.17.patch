@@ -1,12 +1,16 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index 9a2b2cdd94f..1d16c2a7f63 100644
+index 9a2b2cdd94f..de35bd22930 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -7205,14 +7205,14 @@ if (v8_check_header_includes) {
+@@ -7205,14 +7205,18 @@ if (v8_check_header_includes) {
  # Produce a single static library for embedders
  #
  
 -if (v8_monolithic) {
++config("tls_used_in_lib") {
++  defines += [ "V8_TLS_USED_IN_LIBRARY" ]
++}
++
 +#if (v8_monolithic) {
    assert(!is_component_build,
           "Set `is_component_build = false` for v8_monolithic.")
@@ -19,9 +23,11 @@ index 9a2b2cdd94f..1d16c2a7f63 100644
      deps = [
        ":v8",
        ":v8_libbase",
-@@ -7222,10 +7222,10 @@ if (v8_monolithic) {
+@@ -7221,11 +7225,12 @@ if (v8_monolithic) {
+     ]
  
      configs = [ ":internal_config" ]
++    configs += [ ":tls_used_in_lib" ]
    }
 -}
 +#}
