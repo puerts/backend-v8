@@ -1,0 +1,28 @@
+diff --git a/third_party/inspector_protocol/BUILD.gn b/third_party/inspector_protocol/BUILD.gn
+index afe71231733..ba0f25e554f 100644
+--- a/third_party/inspector_protocol/BUILD.gn
++++ b/third_party/inspector_protocol/BUILD.gn
+@@ -13,6 +13,15 @@ config("crdtp_config") {
+   include_dirs = [ "../../include" ]
+ }
+ 
++config("crdtp_disable_warnings") {
++  cflags_cc = [
++    "-Wno-deprecated-declarations",
++    "-Wno-error=deprecated-declarations",
++    "-Wno-unused-variable",
++    "-Wno-error=unused-variable",
++  ]
++}
++
+ v8_source_set("crdtp") {
+   sources = [
+     "crdtp/cbor.cc",
+@@ -36,6 +45,7 @@ v8_source_set("crdtp") {
+     "crdtp/status.h",
+   ]
+   configs = [ ":crdtp_config" ]
++  configs += [ ":crdtp_disable_warnings" ]
+   deps = [ ":crdtp_platform" ]
+ }
+ 
