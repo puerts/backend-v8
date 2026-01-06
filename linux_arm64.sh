@@ -17,7 +17,14 @@ if [ "$VERSION" != "9.4.146.24" ]; then
         ninja-build \
         xz-utils \
         zip
-        
+    
+	
+	sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+    # aarch64 的 glibc 头文件与基础运行库（关键：提供 bits/libc-header-start.h 等）
+    sudo apt-get install -y libc6-dev-arm64-cross libc6-arm64-cross
+    # 一些经常会被用到的基础开发头（视你开启的特性可能需要）
+    sudo apt-get install -y linux-libc-dev-arm64-cross
+
     pip install virtualenv
 else
     sudo apt-get install -y \
