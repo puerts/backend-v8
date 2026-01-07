@@ -1,5 +1,5 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index 9a2b2cdd94f..cdfd55a3807 100644
+index 9a2b2cdd94f..c4a333c2d8c 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
 @@ -961,6 +961,13 @@ config("external_config") {
@@ -16,7 +16,23 @@ index 9a2b2cdd94f..cdfd55a3807 100644
  # This config should only be applied to code that needs to be explicitly
  # aware of whether we are using startup data or not.
  config("external_startup_data") {
-@@ -6314,6 +6321,10 @@ v8_source_set("v8_base_without_compiler") {
+@@ -5266,6 +5273,7 @@ v8_source_set("v8_compiler_for_mksnapshot_source_set") {
+     # So we include it, even if this config is not used outside of debug builds.
+     configs = [ ":internal_config" ]
+   }
++  configs += [ ":v8_disable_deprecated_warnings" ]
+ }
+ 
+ # The src/compiler files with default behavior.
+@@ -5295,6 +5303,7 @@ v8_source_set("v8_compiler") {
+   ]
+ 
+   configs = [ ":internal_config" ]
++  configs += [ ":v8_disable_deprecated_warnings" ]
+ }
+ 
+ group("v8_compiler_for_mksnapshot") {
+@@ -6314,6 +6323,10 @@ v8_source_set("v8_base_without_compiler") {
      deps += [ ":postmortem-metadata" ]
    }
  
