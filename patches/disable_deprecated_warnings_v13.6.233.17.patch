@@ -1,0 +1,29 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index 9a2b2cdd94f..cdfd55a3807 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -961,6 +961,13 @@ config("external_config") {
+   }
+ }
+ 
++config("v8_disable_deprecated_warnings") {
++  cflags_cc = [
++    "-Wno-deprecated-declarations",
++    "-Wno-error=deprecated-declarations",
++  ]
++}
++
+ # This config should only be applied to code that needs to be explicitly
+ # aware of whether we are using startup data or not.
+ config("external_startup_data") {
+@@ -6314,6 +6321,10 @@ v8_source_set("v8_base_without_compiler") {
+     deps += [ ":postmortem-metadata" ]
+   }
+ 
++  # libstdc++ may warn about deprecated APIs in its own headers (e.g.
++  # get_temporary_buffer) and V8 builds with -Werror by default.
++  configs += [ ":v8_disable_deprecated_warnings" ]
++
+   libs = []
+ 
+   # Platforms that don't have CAS support need to link atomic library

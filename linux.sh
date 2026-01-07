@@ -73,6 +73,7 @@ fi
 if [ "$VERSION" == "13.6.233.17" ]; then 
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/v8_monolithic_for_shared_library_flags_v13.6.233.17.patch
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/crdtp_disable_warnings_v13.6.233.17.patch
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/disable_deprecated_warnings_v13.6.233.17.patch
   cd build
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/turn_off_crel_v13.6.233.17.patch
   cd ..

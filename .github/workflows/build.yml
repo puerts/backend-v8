@@ -217,7 +217,7 @@ jobs:
   build_linux:
     if: github.event.inputs.build_linux == 'true'
     name: Linux
-    runs-on: ${{ github.event.inputs.v8_revision == '13.6.233.17' && 'ubuntu-24.04' || 'ubuntu-22.04' }}
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v5
@@ -237,7 +237,7 @@ jobs:
   build_linux_arm64:
     if: github.event.inputs.build_linux == 'true'
     name: Linux_arm64
-    runs-on: ${{ github.event.inputs.v8_revision == '13.6.233.17' && 'ubuntu-24.04' || 'ubuntu-22.04' }}
+    runs-on: ubuntu-22.04
     #runs-on: ${{ github.event.inputs.v8_revision == '13.6.233.17' && 'ubuntu-22.04-arm' || 'ubuntu-22.04' }}
     steps:
     - uses: actions/checkout@v2
