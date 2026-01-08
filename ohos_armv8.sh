@@ -111,7 +111,7 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 rm -rf third_party/android_ndk
-find third_party/icu -mindepth 1 -type d -exec rm -rf {} +
+#find third_party/icu -mindepth 1 -type d -exec rm -rf {} +
 
 echo "=====[ Building V8 ]====="
 if [ "$VERSION" == "9.4.146.24" ]; then
