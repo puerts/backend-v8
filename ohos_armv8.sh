@@ -77,6 +77,7 @@ if [ "$VERSION" == "12.9.202.27" -o "$VERSION" == "13.6.233.17" ]; then
 fi
 
 if [ "$VERSION" == "13.6.233.17" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/clang15_compatible_v13.6.233.17.patch
   cd build
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/turn_off_crel_v13.6.233.17.patch
   cd ..

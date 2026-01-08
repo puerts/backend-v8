@@ -1,0 +1,892 @@
+diff --git a/include/v8config.h b/include/v8config.h
+index 02721dda97f..253387d2d45 100644
+--- a/include/v8config.h
++++ b/include/v8config.h
+@@ -504,7 +504,11 @@ path. Add it with -I<path> to the command line
+ // debug builds.
+ // Use like:
+ //   V8_INLINE_STATEMENT foo = bar(); // Will force inlining the bar() call.
+-#if !defined(DEBUG) && defined(__clang__) && V8_HAS_ATTRIBUTE_ALWAYS_INLINE
++//
++// NOTE(OHOS/clang15): Some clang 15 builds are known to crash in
++// Sema::ProcessStmtAttributes when parsing attributed statements in certain
++// contexts. Avoid emitting statement attributes for clang < 16.
++#if !defined(DEBUG) && defined(__clang__) && V8_HAS_ATTRIBUTE_ALWAYS_INLINE && __clang_major__ >= 16
+ # define V8_INLINE_STATEMENT [[clang::always_inline]]
+ #else
+ # define V8_INLINE_STATEMENT
+diff --git a/src/base/numbers/double.h b/src/base/numbers/double.h
+index 0de0aad0847..987de8af1ac 100644
+--- a/src/base/numbers/double.h
++++ b/src/base/numbers/double.h
+@@ -5,8 +5,6 @@
+ #ifndef V8_BASE_NUMBERS_DOUBLE_H_
+ #define V8_BASE_NUMBERS_DOUBLE_H_
+ 
+-#include <bit>
+-
+ #include "src/base/macros.h"
+ #include "src/base/numbers/diy-fp.h"
+ 
+@@ -14,11 +12,11 @@ namespace v8 {
+ namespace base {
+ 
+ // We assume that doubles and uint64_t have the same endianness.
+-inline constexpr uint64_t double_to_uint64(double d) {
+-  return std::bit_cast<uint64_t>(d);
++inline uint64_t double_to_uint64(double d) {
++  return v8::base::bit_cast<uint64_t>(d);
+ }
+-inline constexpr double uint64_to_double(uint64_t d64) {
+-  return std::bit_cast<double>(d64);
++inline double uint64_to_double(uint64_t d64) {
++  return v8::base::bit_cast<double>(d64);
+ }
+ 
+ // Helper functions for doubles.
+diff --git a/src/base/template-meta-programming/list.h b/src/base/template-meta-programming/list.h
+index 13f7c9adb83..ffeddab66a7 100644
+--- a/src/base/template-meta-programming/list.h
++++ b/src/base/template-meta-programming/list.h
+@@ -133,8 +133,8 @@ struct fold_right_impl;
+ template <template <typename, typename> typename F, typename T, typename Head,
+           typename... Tail>
+ struct fold_right_impl<F, T, list<Head, Tail...>> {
+-  using type =
+-      F<Head, typename fold_right_impl<F, T, list<Tail...>>::type>::type;
++  using type = typename F<
++      Head, typename fold_right_impl<F, T, list<Tail...>>::type>::type;
+ };
+ template <template <typename, typename> typename F, typename T>
+ struct fold_right_impl<F, T, list<>> {
+@@ -146,8 +146,8 @@ struct fold_right1_impl;
+ template <template <TYPENAME1, typename> typename F, typename T, TYPENAME1 Head,
+           TYPENAME1... Tail>
+ struct fold_right1_impl<F, T, list1<Head, Tail...>> {
+-  using type =
+-      F<Head, typename fold_right1_impl<F, T, list1<Tail...>>::type>::type;
++  using type = typename F<
++      Head, typename fold_right1_impl<F, T, list1<Tail...>>::type>::type;
+ };
+ template <template <TYPENAME1, typename> typename F, typename T>
+ struct fold_right1_impl<F, T, list1<>> {
+@@ -217,11 +217,11 @@ constexpr bool all_equal_v = all_equal<List, Cmp>::value;
+ template <typename List, size_t I, typename T>
+ struct insert_at : public detail::insert_at_impl<I, T, list<>, List> {};
+ template <typename List, size_t I, typename T>
+-using insert_at_t = insert_at<List, I, T>::type;
++using insert_at_t = typename insert_at<List, I, T>::type;
+ template <typename List1, size_t I, TYPENAME1 T>
+ struct insert_at1 : public detail::insert_at1_impl<I, T, list1<>, List1> {};
+ template <typename List1, size_t I, TYPENAME1 T>
+-using insert_at1_t = insert_at1<List1, I, T>::type;
++using insert_at1_t = typename insert_at1<List1, I, T>::type;
+ 
+ // fold_right recursively applies binary function {F} to elements of the {List}
+ // and the previous result, starting from the right. The initial value is {T}.
+@@ -232,11 +232,11 @@ using insert_at1_t = insert_at1<List1, I, T>::type;
+ template <template <typename, typename> typename F, typename List, typename T>
+ struct fold_right : public detail::fold_right_impl<F, T, List> {};
+ template <template <typename, typename> typename F, typename List, typename T>
+-using fold_right_t = fold_right<F, List, T>::type;
++using fold_right_t = typename fold_right<F, List, T>::type;
+ template <template <TYPENAME1, typename> typename F, typename List1, typename T>
+ struct fold_right1 : public detail::fold_right1_impl<F, T, List1> {};
+ template <template <TYPENAME1, typename> typename F, typename List1, typename T>
+-using fold_right1_t = fold_right1<F, List1, T>::type;
++using fold_right1_t = typename fold_right1<F, List1, T>::type;
+ 
+ }  // namespace v8::base::tmp
+ 
+diff --git a/src/base/vector.h b/src/base/vector.h
+index fa2583efb5c..a04a61a39cd 100644
+--- a/src/base/vector.h
++++ b/src/base/vector.h
+@@ -293,7 +293,13 @@ class OwnedVector {
+   // Elements in the new vector are default-initialized.
+   static OwnedVector<T> NewForOverwrite(size_t size) {
+     if (size == 0) return {};
++#if defined(__cpp_lib_make_unique) && __cpp_lib_make_unique >= 201811L
+     return OwnedVector<T>(std::make_unique_for_overwrite<T[]>(size), size);
++#else
++    // Fallback for standard libraries that don't yet provide
++    // std::make_unique_for_overwrite (C++20).
++    return OwnedVector<T>(std::make_unique<T[]>(size), size);
++#endif
+   }
+ 
+   // Allocates a new vector containing the specified collection of values.
+diff --git a/src/builtins/builtins-typed-array.cc b/src/builtins/builtins-typed-array.cc
+index f1a46d5b2c4..1a6f8658baf 100644
+--- a/src/builtins/builtins-typed-array.cc
++++ b/src/builtins/builtins-typed-array.cc
+@@ -674,7 +674,8 @@ BUILTIN(Uint8ArrayPrototypeToBase64) {
+     // TODO(rezvan): Make sure to add a path for SharedArrayBuffers when
+     // simdutf library got updated. Also, add a test for it.
+     size_t simd_result_size = simdutf::binary_to_base64(
+-        std::bit_cast<const char*>(uint8array->GetBuffer()->backing_store()),
++        reinterpret_cast<const char*>(
++            uint8array->GetBuffer()->backing_store()),
+         length, reinterpret_cast<char*>(output->GetChars(no_gc)), alphabet);
+     DCHECK_EQ(simd_result_size, output_length);
+     USE(simd_result_size);
+@@ -794,8 +795,8 @@ BUILTIN(Uint8ArrayPrototypeToHex) {
+     return *isolate->factory()->empty_string();
+   }
+ 
+-  const char* bytes =
+-      std::bit_cast<const char*>(uint8array->GetBuffer()->backing_store());
++  const char* bytes = reinterpret_cast<const char*>(
++      uint8array->GetBuffer()->backing_store());
+ 
+   //   4. Let out be the empty String.
+   DirectHandle<SeqOneByteString> output;
+diff --git a/src/codegen/external-reference.cc b/src/codegen/external-reference.cc
+index fc16f7bc8d5..b7a5fab879a 100644
+--- a/src/codegen/external-reference.cc
++++ b/src/codegen/external-reference.cc
+@@ -473,14 +473,14 @@ uint32_t fp64_to_fp16_raw_bits(double input) { return DoubleToFloat16(input); }
+ uint32_t fp64_raw_bits_to_fp16_raw_bits_for_32bit_arch(uint32_t hi,
+                                                        uint32_t lo) {
+   uint64_t input = static_cast<uint64_t>(hi) << 32 | lo;
+-  return DoubleToFloat16(std::bit_cast<double, uint64_t>(input));
++  return DoubleToFloat16(v8::base::bit_cast<double>(input));
+ }
+ 
+ // Since floating point parameters and return value are not supported
+ // for C-linkage functions on 32bit architectures, we should use raw bits.
+ uint32_t fp16_raw_bits_ieee_to_fp32_raw_bits(uint32_t input) {
+   float value = fp16_ieee_to_fp32_value(input);
+-  return std::bit_cast<uint32_t, float>(value);
++  return v8::base::bit_cast<uint32_t>(value);
+ }
+ 
+ FUNCTION_REFERENCE(ieee754_fp64_raw_bits_to_fp16_raw_bits_for_32bit_arch,
+diff --git a/src/compiler/turboshaft/assembler.h b/src/compiler/turboshaft/assembler.h
+index 1491c6e6703..e55f7d33b52 100644
+--- a/src/compiler/turboshaft/assembler.h
++++ b/src/compiler/turboshaft/assembler.h
+@@ -194,8 +194,8 @@ template <typename T>
+ class IndexRange : public Range<T> {
+  public:
+   using base = Range<T>;
+-  using value_type = base::value_type;
+-  using iterator_type = base::iterator_type;
++  using value_type = typename base::value_type;
++  using iterator_type = typename base::iterator_type;
+ 
+   explicit IndexRange(ConstOrV<T> count) : Range<T>(0, count, 1) {}
+ };
+@@ -223,8 +223,8 @@ class Sequence : private Range<T> {
+   using base = Range<T>;
+ 
+  public:
+-  using value_type = base::value_type;
+-  using iterator_type = base::iterator_type;
++  using value_type = typename base::value_type;
++  using iterator_type = typename base::iterator_type;
+ 
+   explicit Sequence(ConstOrV<T> begin, ConstOrV<T> stride = 1)
+       : base(begin, 0, stride) {}
+@@ -729,7 +729,7 @@ struct LoopLabelForHelper<std::tuple<V<Ts>...>> {
+ }  // namespace detail
+ 
+ template <typename T>
+-using LoopLabelFor = detail::LoopLabelForHelper<T>::type;
++using LoopLabelFor = typename detail::LoopLabelForHelper<T>::type;
+ 
+ Handle<Code> BuiltinCodeHandle(Builtin builtin, Isolate* isolate);
+ 
+@@ -787,20 +787,21 @@ struct ReducerStack {
+       reducer_list_index_of<ReducerList, TSReducerBase>::value;
+   static_assert(base_index == length - 1);
+   // Insert a GenericReducerBase before that.
+-  using WithGeneric =
+-      reducer_list_insert_at<ReducerList, base_index, GenericReducerBase>::type;
++  using WithGeneric = typename reducer_list_insert_at<ReducerList, base_index,
++                                                      GenericReducerBase>::type;
+   // If we have a ValueNumberingReducer in the list, we insert at that index,
+   // otherwise before the reducer_base.
+   static constexpr size_t ep_index =
+       reducer_list_index_of<WithGeneric, ValueNumberingReducer,
+                             base_index>::value;
+   using WithGenericAndEmitProjection =
+-      reducer_list_insert_at<WithGeneric, ep_index,
+-                             EmitProjectionReducer>::type;
++      typename reducer_list_insert_at<WithGeneric, ep_index,
++                                      EmitProjectionReducer>::type;
+   static_assert(reducer_list_length<WithGenericAndEmitProjection>::value ==
+                 length + 2);
+ 
+-  using type = reducer_list_to_stack<WithGenericAndEmitProjection,
++  using type =
++      typename reducer_list_to_stack<WithGenericAndEmitProjection,
+                                      StackBottom<ReducerList>>::type;
+ };
+ 
+diff --git a/src/compiler/turboshaft/string-escape-analysis-reducer.h b/src/compiler/turboshaft/string-escape-analysis-reducer.h
+index 5cea31a1c9f..de133ad58f5 100644
+--- a/src/compiler/turboshaft/string-escape-analysis-reducer.h
++++ b/src/compiler/turboshaft/string-escape-analysis-reducer.h
+@@ -111,11 +111,8 @@ class StringEscapeAnalysisReducer : public Next {
+   // (kNotElided), or another StringConcat that got elided as well (kElided).
+   struct ElidedStringPart {
+     enum class Kind : uint8_t { kNotElided, kElided };
+-    union {
+-      V<String> og_index;
+-      V<String> ig_index;
+-    } data;
+ 
++    V<String> index;
+     Kind kind;
+ 
+     static ElidedStringPart Elided(V<String> ig_index) {
+@@ -129,21 +126,16 @@ class StringEscapeAnalysisReducer : public Next {
+ 
+     V<String> og_index() const {
+       DCHECK_EQ(kind, Kind::kNotElided);
+-      return data.og_index;
++      return index;
+     }
+     V<String> ig_index() const {
+       DCHECK_EQ(kind, Kind::kElided);
+-      return data.ig_index;
++      return index;
+     }
+ 
+     bool operator==(const ElidedStringPart& other) const {
+       if (kind != other.kind) return false;
+-      switch (kind) {
+-        case Kind::kElided:
+-          return ig_index() == other.ig_index();
+-        case Kind::kNotElided:
+-          return og_index() == other.og_index();
+-      }
++      return index == other.index;
+     }
+ 
+     static ElidedStringPart Invalid() {
+@@ -151,7 +143,7 @@ class StringEscapeAnalysisReducer : public Next {
+     }
+ 
+    private:
+-    ElidedStringPart(Kind kind, V<String> index) : data(index), kind(kind) {}
++    ElidedStringPart(Kind kind, V<String> index) : index(index), kind(kind) {}
+   };
+ 
+   void Analyze() {
+diff --git a/src/heap/concurrent-marking.cc b/src/heap/concurrent-marking.cc
+index 0a50da1202c..a17632caec0 100644
+--- a/src/heap/concurrent-marking.cc
++++ b/src/heap/concurrent-marking.cc
+@@ -437,7 +437,7 @@ void ConcurrentMarking::RunMajor(JobDelegate* delegate,
+               local_marking_worklists.SwitchToContext(context);
+             }
+           }
+-          const auto visited_size = visitor.Visit(map, object);
++          const auto visited_size = visitor.Visit(object);
+           visitor.IncrementLiveBytesCached(
+               MutablePageMetadata::cast(
+                   MemoryChunkMetadata::FromHeapObject(object)),
+@@ -525,7 +525,6 @@ V8_INLINE size_t ConcurrentMarking::RunMinorImpl(JobDelegate* delegate,
+   YoungGenerationRememberedSetsMarkingWorklist::Local remembered_sets(
+       heap_->minor_mark_sweep_collector()->remembered_sets_marking_handler());
+   auto& marking_worklists_local = visitor.marking_worklists_local();
+-  Isolate* isolate = heap_->isolate();
+   minor_marking_state_->MarkerStarted();
+   MainAllocator* const new_space_allocator =
+       heap_->allocator()->new_space_allocator();
+@@ -543,8 +542,7 @@ V8_INLINE size_t ConcurrentMarking::RunMinorImpl(JobDelegate* delegate,
+       if (IsYoungObjectInLab(new_space_allocator, new_lo_space, heap_object)) {
+         visitor.marking_worklists_local().PushOnHold(heap_object);
+       } else {
+-        Tagged<Map> map = heap_object->map(isolate);
+-        const auto visited_size = visitor.Visit(map, heap_object);
++        const auto visited_size = visitor.Visit(heap_object);
+         if (visited_size) {
+           current_marked_bytes += visited_size;
+           visitor.IncrementLiveBytesCached(
+diff --git a/src/heap/factory-base.cc b/src/heap/factory-base.cc
+index dc43757deda..164c77ce604 100644
+--- a/src/heap/factory-base.cc
++++ b/src/heap/factory-base.cc
+@@ -866,7 +866,7 @@ MaybeHandle<SeqTwoByteString> FactoryBase<Impl>::NewRawSharedTwoByteString(
+ template <typename Impl>
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<String>, DirectHandle<String>>)
+-HandleType<String>::MaybeType FactoryBase<Impl>::NewConsString(
++typename HandleType<String>::MaybeType FactoryBase<Impl>::NewConsString(
+     HandleType<String> left, HandleType<String> right,
+     AllocationType allocation) {
+   if (IsThinString(*left)) {
+diff --git a/src/heap/factory-base.h b/src/heap/factory-base.h
+index 0edc4189a6e..8b728021ca9 100644
+--- a/src/heap/factory-base.h
++++ b/src/heap/factory-base.h
+@@ -345,7 +345,7 @@ class FactoryBase : public TorqueGeneratedFactory<Impl> {
+   // Create a new cons string object which consists of a pair of strings.
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<String>, DirectHandle<String>>)
+-  V8_WARN_UNUSED_RESULT HandleType<String>::MaybeType NewConsString(
++  V8_WARN_UNUSED_RESULT typename HandleType<String>::MaybeType NewConsString(
+       HandleType<String> left, HandleType<String> right,
+       AllocationType allocation = AllocationType::kYoung);
+ 
+diff --git a/src/heap/heap-visitor-inl.h b/src/heap/heap-visitor-inl.h
+index 3e902f918ed..28a95983bfa 100644
+--- a/src/heap/heap-visitor-inl.h
++++ b/src/heap/heap-visitor-inl.h
+@@ -95,26 +95,33 @@ Tagged<T> HeapVisitor<ConcreteVisitor>::Cast(Tagged<HeapObject> object,
+ }
+ 
+ template <typename ConcreteVisitor>
+-size_t HeapVisitor<ConcreteVisitor>::Visit(Tagged<HeapObject> object)
+-  requires(!ConcreteVisitor::UsePrecomputedObjectSize())
+-{
+-  return Visit(object->map(cage_base()), object);
++V8_INLINE size_t HeapVisitor<ConcreteVisitor>::Visit(Tagged<HeapObject> object) {
++  // Dispatch based on whether the concrete visitor provides precomputed sizes.
++  // This avoids C++20 constrained overload matching issues on clang15.
++  if constexpr (HeapVisitor<ConcreteVisitor>::UsePrecomputedObjectSize()) {
++    // If precomputed sizes are expected, callers should route through the
++    // 3-argument overload. Keep a safe fallback for correctness.
++    return Visit(object->map(cage_base()), object, MaybeObjectSize());
++  } else {
++    return Visit(object->map(cage_base()), object);
++  }
+ }
+ 
+ template <typename ConcreteVisitor>
+-size_t HeapVisitor<ConcreteVisitor>::Visit(Tagged<Map> map,
+-                                           Tagged<HeapObject> object)
+-  requires(!ConcreteVisitor::UsePrecomputedObjectSize())
+-{
+-  return Visit(map, object, MaybeObjectSize());
++V8_INLINE size_t HeapVisitor<ConcreteVisitor>::Visit(Tagged<Map> map,
++                                                    Tagged<HeapObject> object) {
++  if constexpr (HeapVisitor<ConcreteVisitor>::UsePrecomputedObjectSize()) {
++    // Same rationale as above.
++    return Visit(map, object, MaybeObjectSize());
++  } else {
++    return Visit(map, object, MaybeObjectSize());
++  }
+ }
+ 
+ template <typename ConcreteVisitor>
+-size_t HeapVisitor<ConcreteVisitor>::Visit(Tagged<Map> map,
+-                                           Tagged<HeapObject> object,
+-                                           int object_size)
+-  requires(ConcreteVisitor::UsePrecomputedObjectSize())
+-{
++V8_INLINE size_t HeapVisitor<ConcreteVisitor>::Visit(Tagged<Map> map,
++                                                    Tagged<HeapObject> object,
++                                                    int object_size) {
+   return Visit(map, object, MaybeObjectSize(object_size));
+ }
+ 
+diff --git a/src/heap/heap-visitor.h b/src/heap/heap-visitor.h
+index 2ee724764f6..2629c10b635 100644
+--- a/src/heap/heap-visitor.h
++++ b/src/heap/heap-visitor.h
+@@ -196,15 +196,19 @@ class HeapVisitor : public ObjectVisitorWithCageBases {
+   inline explicit HeapVisitor(Isolate* isolate);
+   inline explicit HeapVisitor(Heap* heap);
+ 
+-  V8_INLINE size_t Visit(Tagged<HeapObject> object)
+-    requires(!ConcreteVisitor::UsePrecomputedObjectSize());
++  // Used in requires-clauses; keep it public so the constraint check can see it.
++  V8_INLINE static constexpr bool UsePrecomputedObjectSize() { return false; }
++
++  // clang15: Avoid constrained overloads for member function declarations,
++  // as they are very strict about matching with out-of-line definitions.
++  // We keep a single declaration per signature and dispatch in the inline
++  // definition via if constexpr.
++  V8_INLINE size_t Visit(Tagged<HeapObject> object);
+ 
+-  V8_INLINE size_t Visit(Tagged<Map> map, Tagged<HeapObject> object)
+-    requires(!ConcreteVisitor::UsePrecomputedObjectSize());
++  V8_INLINE size_t Visit(Tagged<Map> map, Tagged<HeapObject> object);
+ 
+   V8_INLINE size_t Visit(Tagged<Map> map, Tagged<HeapObject> object,
+-                         int object_size)
+-    requires(ConcreteVisitor::UsePrecomputedObjectSize());
++                         int object_size);
+ 
+  protected:
+   V8_INLINE size_t Visit(Tagged<Map> map, Tagged<HeapObject> object,
+@@ -232,7 +236,7 @@ class HeapVisitor : public ObjectVisitorWithCageBases {
+   V8_INLINE static constexpr bool EnableConcurrentVisitation() { return false; }
+ 
+   // Avoids size computation in visitors and uses the input argument instead.
+-  V8_INLINE static constexpr bool UsePrecomputedObjectSize() { return false; }
++  // Override this in the concrete visitor if it wants to pass precomputed sizes.
+ 
+   // Only visits the Map pointer if `ShouldVisitMapPointer()` returns true.
+   template <VisitorId visitor_id>
+diff --git a/src/heap/mark-compact.cc b/src/heap/mark-compact.cc
+index 0da876053ce..f1b9ea45976 100644
+--- a/src/heap/mark-compact.cc
++++ b/src/heap/mark-compact.cc
+@@ -3831,7 +3831,7 @@ void MarkCompactCollector::ClearWeakCollections() {
+ 
+ template <typename TObjectAndSlot, typename TMaybeSlot>
+ void MarkCompactCollector::ClearWeakReferences(
+-    WeakObjects::WeakObjectWorklist<TObjectAndSlot>::Local& worklist,
++    typename WeakObjects::WeakObjectWorklist<TObjectAndSlot>::Local& worklist,
+     Tagged<HeapObjectReference> cleared_weak_ref) {
+   TObjectAndSlot slot;
+   while (worklist.Pop(&slot)) {
+diff --git a/src/heap/mark-compact.h b/src/heap/mark-compact.h
+index 3c24cf9c9e8..66144e524cc 100644
+--- a/src/heap/mark-compact.h
++++ b/src/heap/mark-compact.h
+@@ -341,7 +341,7 @@ class MarkCompactCollector final {
+   // Common implementation of the above two.
+   template <typename TObjectAndSlot, typename TMaybeSlot>
+   void ClearWeakReferences(
+-      WeakObjects::WeakObjectWorklist<TObjectAndSlot>::Local& worklist,
++      typename WeakObjects::WeakObjectWorklist<TObjectAndSlot>::Local& worklist,
+       Tagged<HeapObjectReference> cleared_weak_ref);
+ 
+   // Goes through the list of encountered non-trivial weak references and
+diff --git a/src/heap/safepoint.h b/src/heap/safepoint.h
+index 6f121ec3225..c7d4d08cdfd 100644
+--- a/src/heap/safepoint.h
++++ b/src/heap/safepoint.h
+@@ -48,6 +48,12 @@ class IsolateSafepoint final {
+ 
+  private:
+   struct RunningLocalHeap {
++    explicit RunningLocalHeap(LocalHeap* local_heap) : local_heap(local_heap) {}
++#if V8_OS_DARWIN
++    RunningLocalHeap(LocalHeap* local_heap, pthread_override_t qos_override)
++        : local_heap(local_heap), qos_override(qos_override) {}
++#endif
++
+     LocalHeap* local_heap;
+ #if V8_OS_DARWIN
+     pthread_override_t qos_override;
+diff --git a/src/heap/young-generation-marking-visitor-inl.h b/src/heap/young-generation-marking-visitor-inl.h
+index 48726413a23..d4a14a78449 100644
+--- a/src/heap/young-generation-marking-visitor-inl.h
++++ b/src/heap/young-generation-marking-visitor-inl.h
+@@ -208,7 +208,7 @@ V8_INLINE bool YoungGenerationMarkingVisitor<marking_mode>::VisitObjectViaSlot(
+   // atomics.
+   if constexpr (visitation_mode == ObjectVisitationMode::kVisitDirectly) {
+     Tagged<Map> map = heap_object->map(isolate_);
+-    const size_t visited_size = Base::Visit(map, heap_object);
++    const size_t visited_size = Base::Visit(map, heap_object, MaybeObjectSize());
+     if (visited_size) {
+       IncrementLiveBytesCached(
+           MutablePageMetadata::cast(
+diff --git a/src/json/json-stringifier.cc b/src/json/json-stringifier.cc
+index 3e967b78a09..ea9154d1684 100644
+--- a/src/json/json-stringifier.cc
++++ b/src/json/json-stringifier.cc
+@@ -2444,7 +2444,7 @@ template <typename StringT, bool no_escaping>
+ FastJsonStringifierObjectKeyResult
+ FastJsonStringifier<Char>::SerializeObjectKey(
+     Tagged<String> obj, bool comma, const DisallowGarbageCollection& no_gc) {
+-  using StringChar = StringT::Char;
++  using StringChar = typename StringT::Char;
+   if constexpr (is_one_byte && sizeof(StringChar) == 2) {
+     // no_escaping is only possible if we have already seen all the keys in a
+     // map. But it is not possible we have seen a two-byte string and are still
+@@ -2493,7 +2493,7 @@ template <typename Char>
+ template <typename StringT>
+ FastJsonStringifierResult FastJsonStringifier<Char>::SerializeString(
+     Tagged<HeapObject> obj, const DisallowGarbageCollection& no_gc) {
+-  using StringChar = StringT::Char;
++  using StringChar = typename StringT::Char;
+   if constexpr (is_one_byte && sizeof(StringChar) == 2) {
+     return CHANGE_ENCODING;
+   } else {
+diff --git a/src/maglev/maglev-graph-builder.h b/src/maglev/maglev-graph-builder.h
+index 8da2b8e8667..2266df4d1ab 100644
+--- a/src/maglev/maglev-graph-builder.h
++++ b/src/maglev/maglev-graph-builder.h
+@@ -192,6 +192,24 @@ struct MaglevCallerDetails {
+   bool is_inside_loop;
+   bool is_eager_inline;
+   float call_frequency;
++
++  MaglevCallerDetails(base::Vector<ValueNode*> arguments, DeoptFrame* deopt_frame,
++                     KnownNodeAspects* known_node_aspects,
++                     LoopEffects* loop_effects,
++                     ZoneUnorderedMap<KnownNodeAspects::LoadedContextSlotsKey,
++                                      Node*>
++                         unobserved_context_slot_stores,
++                     CatchBlockDetails catch_block, bool is_inside_loop,
++                     bool is_eager_inline, float call_frequency)
++      : arguments(arguments),
++        deopt_frame(deopt_frame),
++        known_node_aspects(known_node_aspects),
++        loop_effects(loop_effects),
++        unobserved_context_slot_stores(unobserved_context_slot_stores),
++        catch_block(catch_block),
++        is_inside_loop(is_inside_loop),
++        is_eager_inline(is_eager_inline),
++        call_frequency(call_frequency) {}
+ };
+ 
+ struct MaglevCallSiteInfo {
+@@ -199,6 +217,14 @@ struct MaglevCallSiteInfo {
+   CallKnownJSFunction* generic_call_node;
+   compiler::FeedbackCellRef feedback_cell;
+   float score;
++
++  MaglevCallSiteInfo(MaglevCallerDetails caller_details,
++                     CallKnownJSFunction* generic_call_node,
++                     compiler::FeedbackCellRef feedback_cell, float score)
++      : caller_details(caller_details),
++        generic_call_node(generic_call_node),
++        feedback_cell(feedback_cell),
++        score(score) {}
+ };
+ 
+ class MaglevGraphBuilder {
+diff --git a/src/maglev/maglev-inlining.h b/src/maglev/maglev-inlining.h
+index e2fef951804..c52d13d3e1e 100644
+--- a/src/maglev/maglev-inlining.h
++++ b/src/maglev/maglev-inlining.h
+@@ -65,12 +65,13 @@ class MaglevInliner {
+   Zone* zone() const { return compilation_info_->zone(); }
+ 
+   MaglevCallSiteInfo* ChooseNextCallSite() {
++    auto& inlineable_calls = graph_->inlineable_calls();
+     auto it =
+         v8_flags.maglev_inlining_following_eager_order
+-            ? std::ranges::find_if(graph_->inlineable_calls(),
+-                                   [](auto* site) { return site != nullptr; })
+-            : std::ranges::max_element(
+-                  graph_->inlineable_calls(),
++            ? std::find_if(inlineable_calls.begin(), inlineable_calls.end(),
++                          [](auto* site) { return site != nullptr; })
++            : std::max_element(
++                  inlineable_calls.begin(), inlineable_calls.end(),
+                   [](const MaglevCallSiteInfo* info1,
+                      const MaglevCallSiteInfo* info2) {
+                     if (info1 == nullptr || info2 == nullptr) {
+@@ -78,7 +79,7 @@ class MaglevInliner {
+                     }
+                     return info1->score < info2->score;
+                   });
+-    if (it == graph_->inlineable_calls().end()) return nullptr;
++    if (it == inlineable_calls.end()) return nullptr;
+     MaglevCallSiteInfo* call_site = *it;
+     *it = nullptr;  // Erase call site.
+     return call_site;
+diff --git a/src/maglev/maglev-ir.h b/src/maglev/maglev-ir.h
+index ba1313dabd7..655325943bd 100644
+--- a/src/maglev/maglev-ir.h
++++ b/src/maglev/maglev-ir.h
+@@ -4399,7 +4399,7 @@ class CheckedNumberOrOddballToFloat64OrHoleyFloat64
+ 
+  private:
+   using TaggedToFloat64ConversionTypeOffset =
+-      Base::template NextBitField<TaggedToFloat64ConversionType, 2>;
++      typename Base::template NextBitField<TaggedToFloat64ConversionType, 2>;
+ };
+ 
+ class CheckedNumberOrOddballToFloat64
+diff --git a/src/numbers/conversions.cc b/src/numbers/conversions.cc
+index 3a9a1efbea9..d2603df793f 100644
+--- a/src/numbers/conversions.cc
++++ b/src/numbers/conversions.cc
+@@ -1260,7 +1260,7 @@ std::string_view DoubleToRadixStringView(double value, int radix,
+       // make progress. Skip it instead.
+       delta_is_positive = false;
+     } else {
+-      static_assert(base::Double(0.0).NextDouble() > 0);
++      DCHECK_GT(base::Double(0.0).NextDouble(), 0);
+       delta = base::Double(0.0).NextDouble();
+     }
+   }
+diff --git a/src/objects/descriptor-array-inl.h b/src/objects/descriptor-array-inl.h
+index a241c1a0a75..efee781f996 100644
+--- a/src/objects/descriptor-array-inl.h
++++ b/src/objects/descriptor-array-inl.h
+@@ -81,11 +81,25 @@ InternalIndex DescriptorArray::BinarySearch(Tagged<Name> name,
+ 
+   // Find the first descriptor whose key's hash is greater-than-or-equal-to the
+   // search hash.
+-  int number = *std::ranges::lower_bound(std::views::iota(0, end), hash,
+-                                         std::less<>(), [&](int i) {
+-                                           Tagged<Name> entry = GetSortedKey(i);
+-                                           return entry->hash();
+-                                         });
++  //
++  // Note: Some older libstdc++ implementations (e.g. GCC 10) have incomplete
++  // support for calling std::ranges::lower_bound with an iota_view range.
++  // Use a small hand-rolled lower_bound to keep host builds working.
++  int number = 0;
++  {
++    int first = 0;
++    int last = end;
++    while (first < last) {
++      int mid = first + (last - first) / 2;
++      Tagged<Name> entry = GetSortedKey(mid);
++      if (entry->hash() < hash) {
++        first = mid + 1;
++      } else {
++        last = mid;
++      }
++    }
++    number = first;
++  }
+ 
+   // There may have been hash collisions, so search for the name from the first
+   // index until the first non-matching hash.
+diff --git a/src/objects/feedback-vector.h b/src/objects/feedback-vector.h
+index b4a65ea6d4b..7d7fd4db283 100644
+--- a/src/objects/feedback-vector.h
++++ b/src/objects/feedback-vector.h
+@@ -127,11 +127,11 @@ class MapsAndHandlers {
+    public:
+     constexpr Iterator() = default;
+ 
+-    constexpr bool operator==(const Iterator& other) {
++    constexpr bool operator==(const Iterator& other) const {
+       return index_ == other.index_;
+     }
+-    constexpr bool operator!=(const Iterator& other) {
+-      return index_ != other.index_;
++    constexpr bool operator!=(const Iterator& other) const {
++      return !(*this == other);
+     }
+ 
+     constexpr Iterator& operator++() {
+diff --git a/src/objects/objects.h b/src/objects/objects.h
+index 13beef5283b..defe2c7ed61 100644
+--- a/src/objects/objects.h
++++ b/src/objects/objects.h
+@@ -614,11 +614,11 @@ class Object : public AllStatic {
+       ConvertToInteger(Isolate* isolate, HandleType<Object> input);
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<Object>, DirectHandle<Object>>)
+-  V8_WARN_UNUSED_RESULT static HandleType<Number>::MaybeType ConvertToInt32(
++  V8_WARN_UNUSED_RESULT static typename HandleType<Number>::MaybeType ConvertToInt32(
+       Isolate* isolate, HandleType<Object> input);
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<Object>, DirectHandle<Object>>)
+-  V8_WARN_UNUSED_RESULT static HandleType<Number>::MaybeType ConvertToUint32(
++  V8_WARN_UNUSED_RESULT static typename HandleType<Number>::MaybeType ConvertToUint32(
+       Isolate* isolate, HandleType<Object> input);
+   V8_EXPORT_PRIVATE V8_WARN_UNUSED_RESULT static MaybeHandle<Number>
+   ConvertToLength(Isolate* isolate, DirectHandle<Object> input);
+diff --git a/src/objects/ordered-hash-table.cc b/src/objects/ordered-hash-table.cc
+index 3a0a83ab79a..a584c47861b 100644
+--- a/src/objects/ordered-hash-table.cc
++++ b/src/objects/ordered-hash-table.cc
+@@ -73,7 +73,7 @@ MaybeHandle<Derived> OrderedHashTable<Derived, entrysize>::AllocateEmpty(
+ template <class Derived, int entrysize>
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+-HandleType<Derived>::MaybeType
++typename HandleType<Derived>::MaybeType
+ OrderedHashTable<Derived, entrysize>::EnsureCapacityForAdding(
+     Isolate* isolate, HandleType<Derived> table) {
+   DCHECK(!table->IsObsolete());
+@@ -181,7 +181,7 @@ InternalIndex OrderedHashTable<Derived, entrysize>::FindEntry(
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<OrderedHashSet>,
+                                  DirectHandle<OrderedHashSet>>)
+-HandleType<OrderedHashSet>::MaybeType OrderedHashSet::Add(
++typename HandleType<OrderedHashSet>::MaybeType OrderedHashSet::Add(
+     Isolate* isolate, HandleType<OrderedHashSet> table,
+     DirectHandle<Object> key) {
+   int hash;
+@@ -274,7 +274,7 @@ Tagged<HeapObject> OrderedHashMap::GetEmpty(ReadOnlyRoots ro_roots) {
+ template <class Derived, int entrysize>
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+-HandleType<Derived>::MaybeType OrderedHashTable<Derived, entrysize>::Rehash(
++typename HandleType<Derived>::MaybeType OrderedHashTable<Derived, entrysize>::Rehash(
+     Isolate* isolate, HandleType<Derived> table) {
+   return OrderedHashTable<Derived, entrysize>::Rehash(isolate, table,
+                                                       table->Capacity());
+@@ -283,7 +283,7 @@ HandleType<Derived>::MaybeType OrderedHashTable<Derived, entrysize>::Rehash(
+ template <class Derived, int entrysize>
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+-HandleType<Derived>::MaybeType OrderedHashTable<Derived, entrysize>::Rehash(
++typename HandleType<Derived>::MaybeType OrderedHashTable<Derived, entrysize>::Rehash(
+     Isolate* isolate, HandleType<Derived> table, int new_capacity) {
+   DCHECK(!table->IsObsolete());
+ 
+@@ -338,7 +338,7 @@ HandleType<Derived>::MaybeType OrderedHashTable<Derived, entrysize>::Rehash(
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<OrderedHashSet>,
+                                  DirectHandle<OrderedHashSet>>)
+-HandleType<OrderedHashSet>::MaybeType OrderedHashSet::Rehash(
++typename HandleType<OrderedHashSet>::MaybeType OrderedHashSet::Rehash(
+     Isolate* isolate, HandleType<OrderedHashSet> table) {
+   return Base::Rehash(isolate, table);
+ }
+@@ -346,7 +346,7 @@ HandleType<OrderedHashSet>::MaybeType OrderedHashSet::Rehash(
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<OrderedHashSet>,
+                                  DirectHandle<OrderedHashSet>>)
+-HandleType<OrderedHashSet>::MaybeType OrderedHashSet::Rehash(
++typename HandleType<OrderedHashSet>::MaybeType OrderedHashSet::Rehash(
+     Isolate* isolate, HandleType<OrderedHashSet> table, int new_capacity) {
+   return Base::Rehash(isolate, table, new_capacity);
+ }
+@@ -365,14 +365,14 @@ OrderedHashSet::Rehash(Isolate* isolate, DirectHandle<OrderedHashSet> table,
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<OrderedHashMap>,
+                                  DirectHandle<OrderedHashMap>>)
+-HandleType<OrderedHashMap>::MaybeType OrderedHashMap::Rehash(
++typename HandleType<OrderedHashMap>::MaybeType OrderedHashMap::Rehash(
+     Isolate* isolate, HandleType<OrderedHashMap> table) {
+   return Base::Rehash(isolate, table);
+ }
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<OrderedHashMap>,
+                                  DirectHandle<OrderedHashMap>>)
+-HandleType<OrderedHashMap>::MaybeType OrderedHashMap::Rehash(
++typename HandleType<OrderedHashMap>::MaybeType OrderedHashMap::Rehash(
+     Isolate* isolate, HandleType<OrderedHashMap> table, int new_capacity) {
+   return Base::Rehash(isolate, table, new_capacity);
+ }
+@@ -391,7 +391,7 @@ OrderedHashMap::Rehash(Isolate* isolate, DirectHandle<OrderedHashMap> table,
+ template <template <typename> typename HandleType>
+   requires(std::is_convertible_v<HandleType<OrderedNameDictionary>,
+                                  DirectHandle<OrderedNameDictionary>>)
+-HandleType<OrderedNameDictionary>::MaybeType OrderedNameDictionary::Rehash(
++typename HandleType<OrderedNameDictionary>::MaybeType OrderedNameDictionary::Rehash(
+     Isolate* isolate, HandleType<OrderedNameDictionary> table,
+     int new_capacity) {
+   typename HandleType<OrderedNameDictionary>::MaybeType new_table_candidate =
+diff --git a/src/objects/ordered-hash-table.h b/src/objects/ordered-hash-table.h
+index 0e1605d566f..28dde61fd57 100644
+--- a/src/objects/ordered-hash-table.h
++++ b/src/objects/ordered-hash-table.h
+@@ -70,7 +70,7 @@ class OrderedHashTable : public FixedArray {
+   // to add at least one new element.
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+-  static HandleType<Derived>::MaybeType EnsureCapacityForAdding(
++  static typename HandleType<Derived>::MaybeType EnsureCapacityForAdding(
+       Isolate* isolate, HandleType<Derived> table);
+ 
+   // Returns an OrderedHashTable (possibly |table|) that's shrunken
+@@ -218,13 +218,13 @@ class OrderedHashTable : public FixedArray {
+ 
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+-  static HandleType<Derived>::MaybeType Rehash(Isolate* isolate,
+-                                               HandleType<Derived> table);
++  static typename HandleType<Derived>::MaybeType Rehash(Isolate* isolate,
++                                                        HandleType<Derived> table);
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+-  static HandleType<Derived>::MaybeType Rehash(Isolate* isolate,
+-                                               HandleType<Derived> table,
+-                                               int new_capacity);
++  static typename HandleType<Derived>::MaybeType Rehash(Isolate* isolate,
++                                                        HandleType<Derived> table,
++                                                        int new_capacity);
+ 
+   int HashToEntryRaw(int hash) {
+     int bucket = HashToBucket(hash);
+@@ -287,7 +287,7 @@ class V8_EXPORT_PRIVATE OrderedHashSet
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<OrderedHashSet>,
+                                    DirectHandle<OrderedHashSet>>)
+-  static HandleType<OrderedHashSet>::MaybeType Add(
++  static typename HandleType<OrderedHashSet>::MaybeType Add(
+       Isolate* isolate, HandleType<OrderedHashSet> table,
+       DirectHandle<Object> value);
+   static Handle<FixedArray> ConvertToKeysArray(Isolate* isolate,
+@@ -296,12 +296,12 @@ class V8_EXPORT_PRIVATE OrderedHashSet
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<OrderedHashSet>,
+                                    DirectHandle<OrderedHashSet>>)
+-  static HandleType<OrderedHashSet>::MaybeType Rehash(
++  static typename HandleType<OrderedHashSet>::MaybeType Rehash(
+       Isolate* isolate, HandleType<OrderedHashSet> table);
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<OrderedHashSet>,
+                                    DirectHandle<OrderedHashSet>>)
+-  static HandleType<OrderedHashSet>::MaybeType Rehash(
++  static typename HandleType<OrderedHashSet>::MaybeType Rehash(
+       Isolate* isolate, HandleType<OrderedHashSet> table, int new_capacity);
+ 
+   template <typename IsolateT>
+@@ -343,12 +343,12 @@ class V8_EXPORT_PRIVATE OrderedHashMap
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<OrderedHashMap>,
+                                    DirectHandle<OrderedHashMap>>)
+-  static HandleType<OrderedHashMap>::MaybeType Rehash(
++  static typename HandleType<OrderedHashMap>::MaybeType Rehash(
+       Isolate* isolate, HandleType<OrderedHashMap> table);
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<OrderedHashMap>,
+                                    DirectHandle<OrderedHashMap>>)
+-  static HandleType<OrderedHashMap>::MaybeType Rehash(
++  static typename HandleType<OrderedHashMap>::MaybeType Rehash(
+       Isolate* isolate, HandleType<OrderedHashMap> table, int new_capacity);
+ 
+   void SetEntry(InternalIndex entry, Tagged<Object> key, Tagged<Object> value);
+@@ -816,7 +816,7 @@ class V8_EXPORT_PRIVATE OrderedNameDictionary
+   template <template <typename> typename HandleType>
+     requires(std::is_convertible_v<HandleType<OrderedNameDictionary>,
+                                    DirectHandle<OrderedNameDictionary>>)
+-  static HandleType<OrderedNameDictionary>::MaybeType Rehash(
++  static typename HandleType<OrderedNameDictionary>::MaybeType Rehash(
+       Isolate* isolate, HandleType<OrderedNameDictionary> table,
+       int new_capacity);
+ 
+diff --git a/src/objects/transitions-inl.h b/src/objects/transitions-inl.h
+index 026089a6771..13e901016d8 100644
+--- a/src/objects/transitions-inl.h
++++ b/src/objects/transitions-inl.h
+@@ -288,11 +288,25 @@ int TransitionArray::BinarySearchName(Tagged<Name> name,
+ 
+   // Find the first index whose key's hash is greater-than-or-equal-to the
+   // search hash.
+-  int i = *std::ranges::lower_bound(std::views::iota(0, end), hash,
+-                                    std::less<>(), [&](int i) {
+-                                      Tagged<Name> entry = GetKey(i);
+-                                      return entry->hash();
+-                                    });
++  //
++  // Note: Some older libstdc++ implementations (e.g. GCC 10) have incomplete
++  // support for calling std::ranges::lower_bound with an iota_view range.
++  // Use a small hand-rolled lower_bound to keep host builds working.
++  int i = 0;
++  {
++    int first = 0;
++    int last = end;
++    while (first < last) {
++      int mid = first + (last - first) / 2;
++      Tagged<Name> entry = GetKey(mid);
++      if (entry->hash() < hash) {
++        first = mid + 1;
++      } else {
++        last = mid;
++      }
++    }
++    i = first;
++  }
+ 
+   // There may have been hash collisions, so search for the name from the first
+   // index until the first non-matching hash.
+diff --git a/src/sandbox/external-entity-table.h b/src/sandbox/external-entity-table.h
+index 1cc82b0393d..50dde14f8d9 100644
+--- a/src/sandbox/external-entity-table.h
++++ b/src/sandbox/external-entity-table.h
+@@ -48,9 +48,9 @@ class V8_EXPORT_PRIVATE ExternalEntityTable
+     : public SegmentedTable<Entry, size> {
+  protected:
+   using Base = SegmentedTable<Entry, size>;
+-  using FreelistHead = Base::FreelistHead;
+-  using Segment = Base::Segment;
+-  using WriteIterator = Base::WriteIterator;
++  using FreelistHead = typename Base::FreelistHead;
++  using Segment = typename Base::Segment;
++  using WriteIterator = typename Base::WriteIterator;
+   static constexpr size_t kSegmentSize = Base::kSegmentSize;
+   static constexpr size_t kEntriesPerSegment = Base::kEntriesPerSegment;
+   static constexpr size_t kEntrySize = Base::kEntrySize;

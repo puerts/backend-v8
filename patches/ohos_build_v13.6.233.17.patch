@@ -61,7 +61,7 @@ index d32152894..5b463d09e 100644
      if (is_castos || is_cast_android) {
        configs += [ "//build/config/chromecast:executable_config" ]
 diff --git a/config/BUILDCONFIG.gn b/config/BUILDCONFIG.gn
-index a9d2caeb1..1f72dd1de 100644
+index a9d2caeb1..90ab9d9fa 100644
 --- a/config/BUILDCONFIG.gn
 +++ b/config/BUILDCONFIG.gn
 @@ -51,8 +51,8 @@ if (target_os == "") {
@@ -86,19 +86,22 @@ index a9d2caeb1..1f72dd1de 100644
  } else if (target_os == "chromeos" || target_os == "linux") {
    # See comments in build/toolchain/cros/BUILD.gn about board compiles.
    if (is_clang) {
-@@ -319,6 +323,11 @@ is_nacl = current_os == "nacl"
+@@ -319,6 +323,14 @@ is_nacl = current_os == "nacl"
  is_wasm = current_os == "emscripten"
  is_watchos = current_os == "watchos"
  is_win = current_os == "win" || current_os == "winuwp"
 +is_ohos = current_os == "ohos"
 +
 +declare_args() {
++  # For cross-compiles to OHOS, current_os is the host OS (e.g. linux), so
++  # args declared only under is_ohos would not be recognized. Declare it here
++  # so `--args use_musl=...` takes effect when target_os == "ohos".
 +  use_musl = false
 +}
  
  is_apple = is_ios || is_mac || is_watchos
  is_posix = !is_win && !is_fuchsia
-@@ -395,7 +404,7 @@ if (is_fuchsia) {
+@@ -395,7 +407,7 @@ if (is_fuchsia) {
    default_compiler_configs += [ "//build/config/gcc:symbol_visibility_hidden" ]
  }
  
@@ -107,7 +110,7 @@ index a9d2caeb1..1f72dd1de 100644
    default_compiler_configs +=
        [ "//build/config/android:default_orderfile_instrumentation" ]
  }
-@@ -687,7 +696,7 @@ foreach(_target_type,
+@@ -687,7 +699,7 @@ foreach(_target_type,
        # On Android, write shared library output file to metadata. We will use
        # this information to, for instance, collect all shared libraries that
        # should be packaged into an APK.
@@ -191,10 +194,20 @@ index f72ed80f5..cbc4fe4e3 100644
        # target_cpu == "arm64" filters out some cases (e.g. the ChromeOS x64
        # MSAN build) where the target platform is x64, but V8 is configured to
 diff --git a/config/c++/c++.gni b/config/c++/c++.gni
-index 7d29a7f65..17c8f1aa4 100644
+index 7d29a7f65..2bd725413 100644
 --- a/config/c++/c++.gni
 +++ b/config/c++/c++.gni
-@@ -109,7 +109,7 @@ export_libcxxabi_from_executables =
+@@ -66,7 +66,8 @@ assert(!use_implicit_libcxx_modules || !use_remoteexec,
+        "Implicit Clang header modules don't work with remote execution.")
+ 
+ use_custom_libcxx =
+-    use_custom_libcxx || (use_custom_libcxx_for_host && !is_a_target_toolchain)
++    use_custom_libcxx ||
++    (use_custom_libcxx_for_host && !is_a_target_toolchain && target_os != "ohos")
+ use_custom_libcxx = use_custom_libcxx && !is_nacl
+ 
+ declare_args() {
+@@ -109,7 +110,7 @@ export_libcxxabi_from_executables =
  # the Bionic dynamic loader doesn't even look at RPATH; instead, LD_LIBRARY_PATH
  # is set for tests. Because of this, we make libc++ a shared library on android
  # since it should get loaded properly.
@@ -204,10 +217,29 @@ index 7d29a7f65..17c8f1aa4 100644
    libcxx_is_shared = true
  }
 diff --git a/config/clang/BUILD.gn b/config/clang/BUILD.gn
-index ec77c17dc..93f8eb5c6 100644
+index ec77c17dc..6ce7d3337 100644
 --- a/config/clang/BUILD.gn
 +++ b/config/clang/BUILD.gn
-@@ -169,6 +169,12 @@ template("clang_lib") {
+@@ -55,7 +55,8 @@ template("clang_plugin") {
+ }
+ 
+ clang_plugin("raw_ptr_check") {
+-  if (clang_use_chrome_plugins || clang_use_raw_ptr_plugin) {
++  if ((clang_use_chrome_plugins || clang_use_raw_ptr_plugin) &&
++      target_os != "ohos") {
+     # The plugin is built directly into clang, so there's no need to load it
+     # dynamically.
+     plugin = "raw-ptr-plugin"
+@@ -83,7 +84,7 @@ clang_plugin("raw_ptr_check") {
+ }
+ 
+ clang_plugin("find_bad_constructs") {
+-  if (clang_use_chrome_plugins) {
++  if (clang_use_chrome_plugins && target_os != "ohos") {
+     # The plugin is built directly into clang, so there's no need to load it
+     # dynamically.
+     plugin = "find-bad-constructs"
+@@ -169,6 +170,12 @@ template("clang_lib") {
        _ext = "a"
  
        _clang_lib_dir = "$clang_base_path/lib/clang/$clang_version/lib"
@@ -220,7 +252,7 @@ index ec77c17dc..93f8eb5c6 100644
        if (is_win) {
          _dir = "windows"
          _prefix = ""
-@@ -233,6 +239,22 @@ template("clang_lib") {
+@@ -233,6 +240,22 @@ template("clang_lib") {
          } else {
            assert(false)  # Unhandled cpu type
          }
@@ -265,7 +297,7 @@ index 2ad331d38..d5c89714e 100644
    # Indicates if the build should use the Chrome-specific plugins for enforcing
    # coding guidelines, etc. Only used when compiling with Chrome's Clang, not
 diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
-index 3ce4ab420..a1c538ffd 100644
+index 3ce4ab420..d70adc09e 100644
 --- a/config/compiler/BUILD.gn
 +++ b/config/compiler/BUILD.gn
 @@ -207,7 +207,7 @@ declare_args() {
@@ -304,6 +336,15 @@ index 3ce4ab420..a1c538ffd 100644
      asmflags += [ "-fPIC" ]
      cflags += [ "-fPIC" ]
      ldflags += [ "-fPIC" ]
+@@ -605,7 +607,7 @@ config("compiler") {
+     # other problems.
+     # TODO(crbug.com/40284925): This isn't supported by Cronet's mainline llvm version.
+     if (default_toolchain != "//build/toolchain/cros:target" &&
+-        !llvm_android_mainline) {
++        !llvm_android_mainline && !(is_ohos || target_os == "ohos")) {
+       cflags += [
+         "-mllvm",
+         "-split-threshold-for-reg-with-hint=0",
 @@ -810,7 +812,7 @@ config("compiler") {
          # FIXME(inglorion): maybe tune these?
          # TODO(b/271459198): Revert limit on amd64 to 30 when fixed.
@@ -357,7 +398,64 @@ index 3ce4ab420..a1c538ffd 100644
    }
  
    if (is_component_build) {
-@@ -2610,7 +2616,7 @@ config("optimize") {
+@@ -1993,13 +1999,17 @@ config("default_warnings") {
+       cflags += [
+         # TODO(crbug.com/330524456): -Wcast-function-type is under -Wextra now.
+         "-Wno-cast-function-type",
++      ]
+ 
+-        # TODO(crbug.com/40284799): Fix and re-enable.
+-        "-Wno-thread-safety-reference-return",
++      if (!(is_ohos || target_os == "ohos")) {
++        cflags += [
++          # TODO(crbug.com/40284799): Fix and re-enable.
++          "-Wno-thread-safety-reference-return",
+ 
+-        # TODO(crbug.com/376641662): Fix and re-enable.
+-        "-Wno-nontrivial-memcall",
+-      ]
++          # TODO(crbug.com/376641662): Fix and re-enable.
++          "-Wno-nontrivial-memcall",
++        ]
++      }
+ 
+       cflags_cc += [
+         # TODO(crbug.com/328490295): Fix and re-enable for C flags.
+@@ -2016,10 +2026,12 @@ config("default_warnings") {
+       ]
+ 
+       if (!is_nacl) {
+-        cflags_cc += [
+-          # TODO(crbug.com/41486292): Fix and re-enable.
+-          "-Wno-c++11-narrowing-const-reference",
+-        ]
++        if (!(is_ohos || target_os == "ohos")) {
++          cflags_cc += [
++            # TODO(crbug.com/41486292): Fix and re-enable.
++            "-Wno-c++11-narrowing-const-reference",
++          ]
++        }
+       }
+     }
+ 
+@@ -2104,6 +2116,16 @@ config("prevent_unsafe_narrowing") {
+       "-Wsign-compare",
+       "-Wsign-conversion",
+     ]
++
++    # OHOS ships a customized libc++/musl headers that can trigger
++    # -Wsign-conversion in system headers (and we build with -Werror).
++    # Keep the rest of the safety warnings, but avoid breaking the build.
++    if (is_ohos) {
++      cflags -= [
++        "-Wsign-conversion",
++      ]
++    }
++
+     if (!is_fuchsia) {
+       # TODO(crbug.com/402154971): Fix fuchsia/ui/composition/cpp/fidl.h
+       cflags += [ "-Wimplicit-int-conversion" ]
+@@ -2610,7 +2632,7 @@ config("optimize") {
      }
  
      if (is_clang && use_ml_inliner && is_a_target_toolchain && !is_chromeos &&
@@ -366,7 +464,7 @@ index 3ce4ab420..a1c538ffd 100644
        cflags += [
          "-mllvm",
          "-enable-ml-inliner=release",
-@@ -2647,7 +2653,7 @@ config("no_optimize") {
+@@ -2647,7 +2669,7 @@ config("no_optimize") {
        # traces on Windows ARM64 rely on it.
        cflags += [ "/Oy-" ]
      }
@@ -375,7 +473,7 @@ index 3ce4ab420..a1c538ffd 100644
      # On Android we kind of optimize some things that don't affect debugging
      # much even when optimization is disabled to get the binary size down.
      cflags = [ "-Os" ] + common_optimize_on_cflags
-@@ -3134,7 +3140,7 @@ config("default_symbols") {
+@@ -3134,7 +3156,7 @@ config("default_symbols") {
    }
  
    # This config is removed by base unittests apk.
@@ -384,7 +482,7 @@ index 3ce4ab420..a1c538ffd 100644
      configs += [ ":strip_debug" ]
    }
  }
-@@ -3168,7 +3174,7 @@ if (is_apple) {
+@@ -3168,7 +3190,7 @@ if (is_apple) {
    }
  }
  
@@ -480,10 +578,10 @@ index 5b98b4aed..51f90cdb2 100644
  
 diff --git a/config/ohos/BUILD.gn b/config/ohos/BUILD.gn
 new file mode 100644
-index 000000000..d92230a93
+index 000000000..ceae31eb4
 --- /dev/null
 +++ b/config/ohos/BUILD.gn
-@@ -0,0 +1,306 @@
+@@ -0,0 +1,311 @@
 +# Copyright 2022 The Huawei Authors. All rights reserved.
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -579,7 +677,12 @@ index 000000000..d92230a93
 +    if (use_custom_libcxx) {
 +      include_dirs = [ "$ohos_sysroot/usr/include/$abi_target" ]
 +    } else {
-+      include_dirs = [ "$ohos_toolchain_root/include/libcxx-ohos/include/c++/v1", "$ohos_sysroot/usr/include" ]
++      include_dirs = [
++        "$ohos_toolchain_root/include/libcxx-ohos/include/c++/v1",
++        "$ohos_sysroot/usr/include",
++        # musl libc headers (e.g. bits/alltypes.h) live under the target include dir.
++        "$ohos_sysroot/usr/include/$abi_target",
++      ]
 +    }
 +    if (current_cpu == "x64") {
 +      include_dirs += [ "$ohos_sysroot/usr/include/x86_64-linux-ohos/asm-x86" ]
@@ -846,10 +949,10 @@ index 000000000..34271e9e9
 +}
 diff --git a/config/ohos/config.gni b/config/ohos/config.gni
 new file mode 100644
-index 000000000..715543606
+index 000000000..6ac9f6aa6
 --- /dev/null
 +++ b/config/ohos/config.gni
-@@ -0,0 +1,139 @@
+@@ -0,0 +1,97 @@
 +# Copyright 2022 The Huawei Authors. All rights reserved.
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -903,35 +1006,32 @@ index 000000000..715543606
 +
 +  # config dependent paths
 +  if (build_chromium_with_ohos_src) {
-+    ohos_ndk_root = "//../../../prebuilts"
-+    ohos_build_root = "//../../.."
-+    if (use_musl) {
-+      if (current_cpu == "x64") {
-+        ohos_toolchain_root = "$ohos_ndk_root/clang/ohos/windows-x86_64/llvm"
-+        ohos_sysroot = "$ohos_build_root/out/arm64/obj/third_party/musl"
-+        ohos_libs_root = "$ohos_build_root/out/arm64/packages/phone/system/lib64"
-+      } else {
-+        ohos_toolchain_root = "$ohos_ndk_root/clang/ohos/linux-x86_64/llvm"
-+        if (product_name == "rk3568") {
-+          ohos_sysroot = "$ohos_build_root/out/rk3568/obj/third_party/musl"
-+          if (current_cpu == "arm") {
-+            ohos_libs_root = "$ohos_build_root/out/rk3568/packages/phone/system/lib"
-+          } else {
-+            ohos_libs_root = "$ohos_build_root/out/rk3568/packages/phone/system/lib64"
-+          }
-+        } else {
-+          ohos_sysroot = "$ohos_build_root/out/generic_generic_arm_64only/hisi_newbaltimore_newphone_standard/obj/third_party/musl"
-+          ohos_libs_root = "$ohos_build_root/out/generic_generic_arm_64only/hisi_newbaltimore_newphone_standard/packages/phone/system/lib64"
-+        }
-+      }
-+      ohos_ndk_root = "${OHOS_NDK_HOME}"
-+      ohos_toolchain_root = "$ohos_ndk_root/llvm"
-+      ohos_sysroot = "$ohos_ndk_root/sysroot"
++    # When building V8 with the external OHOS SDK (OHOS_NDK_HOME), always use
++    # the toolchain and sysroot provided by the SDK. The SDK sysroot contains
++    # musl headers (e.g. bits/alltypes.h) required by <math.h>.
++    ohos_ndk_root = "${OHOS_NDK_HOME}"
++    ohos_toolchain_root = "$ohos_ndk_root/llvm"
++    ohos_sysroot = "$ohos_ndk_root/sysroot"
 +
-+      print("build config ohos config ohos_toolchain_root",ohos_toolchain_root)
-+    } else {
-+      assert(false, "Unsupport Non-musl target!")
-+    }
++    print("build config ohos config ohos_toolchain_root", ohos_toolchain_root)
++
++    # Keep these paths for OHOS source-tree builds only (not used with SDK).
++    ohos_build_root = "//../../.."
++
++    # ohos include and libs dependencies
++    ohos_src_includes = [
++      "$ohos_build_root/base/hiviewdfx/hilog/interfaces/native/innerkits/include",
++      "$ohos_build_root/base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include/",
++      "$ohos_build_root/base/hiviewdfx/hitrace/interfaces/native/innerkits/include/hitrace_meter",
++      "$ohos_build_root/base/web/webview/ohos_adapter/interfaces",
++      "$ohos_build_root/commonlibrary/c_utils/base/include",
++      "$ohos_build_root/foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
++    ]
++
++    # The following lib paths are only meaningful when building with OHOS src.
++    ohos_libs_root = ""
++    ohos_libs_dir = []
++  } else {
 +
 +    # ohos include and libs dependencies
 +    ohos_src_includes = [
@@ -948,45 +1048,6 @@ index 000000000..715543606
 +      "$ohos_libs_root/chipset-pub-sdk",
 +      "$ohos_libs_root/platformsdk",
 +    ]
-+  } else {
-+    if (use_musl) {
-+      if (current_cpu == "x64") {
-+        ohos_build_root = "${OHOS_NDK_HOME}"
-+        ohos_ndk_root = "${OHOS_NDK_HOME}"
-+      } else {
-+        ohos_build_root = "${OHOS_NDK_HOME}"
-+        ohos_ndk_root = "${OHOS_NDK_HOME}"
-+      }
-+      ohos_toolchain_root = "$ohos_ndk_root/toolchains/llvm"
-+      print("build config ohos config ohos_toolchain_root 2",ohos_toolchain_root)
-+      ohos_sysroot = "$ohos_ndk_root/sysroot"
-+    } else {
-+      assert(false, "Unsupport Non-musl target!")
-+    }
-+
-+    if (use_ohos_sdk_sysroot) {
-+      import("//ohos_sdk/ohos_sdk.gni")
-+      ohos_sdk_root = "//ohos_sdk"
-+      ohos_sysroot = "$ohos_sdk_root/native/$ohos_sdk_version/sysroot/"
-+    }
-+
-+    # ohos include and libs dependencies, corresponding to gen_ohos_ndk.sh
-+    ohos_src_includes = [
-+      "$ohos_build_root/includes",
-+      "$ohos_build_root/includes/hisysevent",
-+      "$ohos_build_root/includes/hitrace_meter",
-+      "$ohos_build_root/includes/multimodalinput",
-+      "$ohos_build_root/includes/ohos_adapter",
-+      "$ohos_build_root/includes/utils",
-+    ]
-+
-+    if (current_cpu == "arm") {
-+      ohos_libs_dir = [ "$ohos_build_root/libs" ]
-+    } else if (current_cpu == "arm64") {
-+      ohos_libs_dir = [ "$ohos_build_root/libs64" ]
-+    } else if (current_cpu == "x64") {
-+      ohos_libs_dir = [ "$ohos_build_root/libs64" ]
-+    }
 +  }
 +}
 diff --git a/config/sysroot.gni b/config/sysroot.gni
