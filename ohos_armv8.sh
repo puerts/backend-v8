@@ -76,6 +76,12 @@ if [ "$VERSION" == "12.9.202.27" -o "$VERSION" == "13.6.233.17" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v$VERSION.patch
 fi
 
+if [ "$VERSION" == "13.6.233.17" ]; then 
+  cd build
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/turn_off_crel_v13.6.233.17.patch
+  cd ..
+fi
+
 if [ "$VERSION" == "9.4.146.24" ]; then
   echo "=====[ patch jinja for python3.10+ ]====="
   cd third_party/jinja2
@@ -114,7 +120,7 @@ elif [ "$VERSION" == "10.6.194" ]; then
 elif [ "$VERSION" == "11.8.172" ]; then
   gn gen --args="target_os=\"ohos\" target_cpu=\"arm64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false" out.gn/arm64.release
 else
-  gn gen --args="target_os=\"ohos\" target_cpu=\"arm64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false" out.gn/arm64.release
+  gn gen --args="target_os=\"ohos\" target_cpu=\"arm64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"arm64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false enable_rust=false" out.gn/arm64.release
 fi
 ninja -C out.gn/arm64.release -t clean
 ninja -v -C out.gn/arm64.release wee8
