@@ -297,7 +297,7 @@ index 2ad331d38..d5c89714e 100644
    # Indicates if the build should use the Chrome-specific plugins for enforcing
    # coding guidelines, etc. Only used when compiling with Chrome's Clang, not
 diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
-index 3ce4ab420..d70adc09e 100644
+index 3ce4ab420..818820614 100644
 --- a/config/compiler/BUILD.gn
 +++ b/config/compiler/BUILD.gn
 @@ -207,7 +207,7 @@ declare_args() {
@@ -363,7 +363,20 @@ index 3ce4ab420..d70adc09e 100644
      ldflags += [ "-Wl,--no-rosegment" ]
    }
  
-@@ -1518,7 +1520,7 @@ config("compiler_codegen") {
+@@ -1223,7 +1225,11 @@ config("compiler_cpu_abi") {
+         ]
+       }
+     } else if (current_cpu == "arm") {
+-      if (is_clang && !is_android && !is_nacl && !is_chromeos_device) {
++      # For non-Android ARM builds, Chromium's default toolchain injects the
++      # gnueabihf target triple. When cross-compiling to OSOHOS (musl) we must
++      # not add a second, conflicting --target.
++      if (is_clang && !is_android && !is_nacl && !is_chromeos_device &&
++          !is_ohos) {
+         cflags += [ "--target=arm-linux-gnueabihf" ]
+         ldflags += [ "--target=arm-linux-gnueabihf" ]
+       }
+@@ -1518,7 +1524,7 @@ config("compiler_codegen") {
      configs += [ "//build/config/nacl:compiler_codegen" ]
    }
  
@@ -372,7 +385,7 @@ index 3ce4ab420..d70adc09e 100644
      # Disable outlining everywhere on arm64 except Win. For more information see
      # crbug.com/931297 for Android and crbug.com/1410297 for iOS.
      # TODO(crbug.com/40890229): Enable this on Windows if possible.
-@@ -1632,10 +1634,12 @@ config("compiler_deterministic") {
+@@ -1632,10 +1638,12 @@ config("compiler_deterministic") {
  config("clang_revision") {
    if (is_clang && clang_base_path == default_clang_base_path &&
        current_os != "zos") {
@@ -389,7 +402,7 @@ index 3ce4ab420..d70adc09e 100644
      if (llvm_force_head_revision) {
        update_args += [ "--llvm-force-head-revision" ]
      }
-@@ -1817,6 +1821,8 @@ config("runtime_library") {
+@@ -1817,6 +1825,8 @@ config("runtime_library") {
      configs += [ "//build/config/mac:runtime_library" ]
    } else if (is_android) {
      configs += [ "//build/config/android:runtime_library" ]
@@ -398,7 +411,7 @@ index 3ce4ab420..d70adc09e 100644
    }
  
    if (is_component_build) {
-@@ -1993,13 +1999,17 @@ config("default_warnings") {
+@@ -1993,13 +2003,17 @@ config("default_warnings") {
        cflags += [
          # TODO(crbug.com/330524456): -Wcast-function-type is under -Wextra now.
          "-Wno-cast-function-type",
@@ -421,7 +434,7 @@ index 3ce4ab420..d70adc09e 100644
  
        cflags_cc += [
          # TODO(crbug.com/328490295): Fix and re-enable for C flags.
-@@ -2016,10 +2026,12 @@ config("default_warnings") {
+@@ -2016,10 +2030,12 @@ config("default_warnings") {
        ]
  
        if (!is_nacl) {
@@ -438,7 +451,7 @@ index 3ce4ab420..d70adc09e 100644
        }
      }
  
-@@ -2104,6 +2116,16 @@ config("prevent_unsafe_narrowing") {
+@@ -2104,6 +2120,16 @@ config("prevent_unsafe_narrowing") {
        "-Wsign-compare",
        "-Wsign-conversion",
      ]
@@ -455,7 +468,7 @@ index 3ce4ab420..d70adc09e 100644
      if (!is_fuchsia) {
        # TODO(crbug.com/402154971): Fix fuchsia/ui/composition/cpp/fidl.h
        cflags += [ "-Wimplicit-int-conversion" ]
-@@ -2610,7 +2632,7 @@ config("optimize") {
+@@ -2610,7 +2636,7 @@ config("optimize") {
      }
  
      if (is_clang && use_ml_inliner && is_a_target_toolchain && !is_chromeos &&
@@ -464,7 +477,7 @@ index 3ce4ab420..d70adc09e 100644
        cflags += [
          "-mllvm",
          "-enable-ml-inliner=release",
-@@ -2647,7 +2669,7 @@ config("no_optimize") {
+@@ -2647,7 +2673,7 @@ config("no_optimize") {
        # traces on Windows ARM64 rely on it.
        cflags += [ "/Oy-" ]
      }
@@ -473,7 +486,7 @@ index 3ce4ab420..d70adc09e 100644
      # On Android we kind of optimize some things that don't affect debugging
      # much even when optimization is disabled to get the binary size down.
      cflags = [ "-Os" ] + common_optimize_on_cflags
-@@ -3134,7 +3156,7 @@ config("default_symbols") {
+@@ -3134,7 +3160,7 @@ config("default_symbols") {
    }
  
    # This config is removed by base unittests apk.
@@ -482,7 +495,7 @@ index 3ce4ab420..d70adc09e 100644
      configs += [ ":strip_debug" ]
    }
  }
-@@ -3168,7 +3190,7 @@ if (is_apple) {
+@@ -3168,7 +3194,7 @@ if (is_apple) {
    }
  }
  

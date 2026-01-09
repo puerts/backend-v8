@@ -31,6 +31,9 @@ else
         zip
 fi
 
+sudo dpkg --add-architecture i386
+sudo apt install lib32atomic1
+
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
