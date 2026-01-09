@@ -112,7 +112,7 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 rm -rf third_party/android_ndk
-#find third_party/icu -mindepth 1 -type d -exec rm -rf {} +
+find third_party/icu -mindepth 1 -type d -exec rm -rf {} +
 
 echo "=====[ Building V8 ]====="
 if [ "$VERSION" == "9.4.146.24" ]; then
@@ -122,7 +122,7 @@ elif [ "$VERSION" == "10.6.194" ]; then
 elif [ "$VERSION" == "11.8.172" ]; then
   gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false" out.gn/x64.release
 else
-  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false enable_rust=false" out.gn/x64.release
+  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false enable_rust=false icu_use_data_file=false" out.gn/x64.release
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
