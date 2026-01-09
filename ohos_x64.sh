@@ -78,6 +78,7 @@ fi
 
 if [ "$VERSION" == "13.6.233.17" ]; then 
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/clang15_compatible_v13.6.233.17.patch
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/KernelHasPkruFix_unused_v13.6.233.17.patch
   cd build
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/turn_off_crel_v13.6.233.17.patch
   cd ..
