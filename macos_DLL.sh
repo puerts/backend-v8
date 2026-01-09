@@ -45,6 +45,8 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   CXX_SETTING="use_custom_libcxx=true libcxx_is_shared=false"
 elif [ "$VERSION" == "9.4.146.24" ]; then
   CXX_SETTING=""
+elif [ "$VERSION" == "13.6.233.17" ]; then
+  CXX_SETTING="use_custom_libcxx=true libcxx_is_shared=false"
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
