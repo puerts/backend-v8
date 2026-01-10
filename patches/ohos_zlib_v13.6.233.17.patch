@@ -1,7 +1,25 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index 378bd0d..8b5aff7 100644
+index 378bd0d..399cfcb 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
+@@ -69,7 +69,7 @@ source_set("zlib_common_headers") {
+ 
+ use_arm_neon_optimizations = false
+ if ((current_cpu == "arm" || current_cpu == "arm64") &&
+-    !(is_win && !is_clang)) {
++    !(is_win && !is_clang) && !is_ohos) {
+   # TODO(richard.townsend@arm.com): Optimizations temporarily disabled for
+   # Windows on Arm MSVC builds, see http://crbug.com/v8/10012.
+   if (arm_use_neon) {
+@@ -78,7 +78,7 @@ if ((current_cpu == "arm" || current_cpu == "arm64") &&
+ }
+ 
+ use_x86_x64_optimizations =
+-    (current_cpu == "x86" || current_cpu == "x64") && !is_ios
++    (current_cpu == "x86" || current_cpu == "x64") && !is_ios && !is_ohos
+ 
+ config("zlib_adler32_simd_config") {
+   if (use_x86_x64_optimizations) {
 @@ -128,7 +128,7 @@ if (use_arm_neon_optimizations) {
      defines = [ "CRC32_ARMV8_CRC32" ]
      if (is_android) {
@@ -11,20 +29,6 @@ index 378bd0d..8b5aff7 100644
        defines += [ "ARMV8_OS_LINUX" ]
      } else if (is_mac) {
        defines += [ "ARMV8_OS_MACOS" ]
-@@ -327,11 +327,11 @@ component("zlib") {
-   defines = []
-   deps = []
- 
--  if (!use_x86_x64_optimizations && !use_arm_neon_optimizations) {
-+  # if (!use_x86_x64_optimizations && !use_arm_neon_optimizations) {
-     # Apparently android_cronet bot builds with NEON disabled and
-     # we also should disable optimizations for iOS@x86 (a.k.a. simulator).
-     defines += [ "CPU_NO_SIMD" ]
--  }
-+  # }
- 
-   if (use_x86_x64_optimizations || use_arm_neon_optimizations) {
-     deps += [
 diff --git a/crc32_simd.c b/crc32_simd.c
 index 1c60ae9..622905d 100644
 --- a/crc32_simd.c
