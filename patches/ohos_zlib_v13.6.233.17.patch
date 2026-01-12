@@ -29,25 +29,3 @@ index 378bd0d..399cfcb 100644
        defines += [ "ARMV8_OS_LINUX" ]
      } else if (is_mac) {
        defines += [ "ARMV8_OS_MACOS" ]
-diff --git a/crc32_simd.c b/crc32_simd.c
-index 1c60ae9..622905d 100644
---- a/crc32_simd.c
-+++ b/crc32_simd.c
-@@ -6,6 +6,17 @@
-  */
- 
- #include "crc32_simd.h"
-+
-+/* OHOS clang 15 cannot reliably enable AArch64 CRC32 target features for this
-+ * TU, which can lead to backend selection failures like:
-+ *   Cannot select: intrinsic %llvm.aarch64.crc32b
-+ * Disable the ARMv8 CRC32 SIMD variant for this compiler and fall back to the
-+ * generic (non-SIMD) crc32 implementation.
-+ */
-+#if defined(OSOHOS) && defined(__clang__) && (__clang_major__ == 15)
-+#undef CRC32_ARMV8_CRC32
-+#endif
-+
- #if defined(CRC32_SIMD_AVX512_PCLMUL)
- 
- /*
