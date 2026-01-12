@@ -47,7 +47,36 @@ function addV8CC() {
     `;
     if (v8_version == "9.4.146.24") {
         v8cc_target = v8cc_target.replace('":v8_turboshaft",', '');
-    }
+    } else if (v8_version == "13.6.233.17") {
+		v8cc_target = `
+  v8_executable("v8cc") {
+    visibility = [ ":*" ]  # Only targets in this file can depend on this.
+
+    sources = [
+      "src/snapshot/v8cc.cc",
+      "src/snapshot/snapshot-empty.cc",
+      "src/snapshot/embedded/embedded-empty.cc",
+    ]
+
+    configs = [
+      ":internal_config",
+      ":disable_icf",
+    ]
+
+    deps = [
+      ":v8_base_without_compiler",
+      ":v8_compiler_for_mksnapshot",
+      ":v8_init",
+      ":v8_libbase",
+      ":v8_libplatform",
+      ":v8_maybe_icu",
+      ":v8_shared_internal_headers",
+      ":v8_tracing",
+      "//build/win:default_exe_manifest",
+    ]
+  }
+    `;
+	}
     console.log(v8cc_target);
     //context = context.replace('deps = [ ":mksnapshot($v8_snapshot_toolchain)" ]', 'deps = [ ":mksnapshot($v8_snapshot_toolchain)", ":v8cc($v8_snapshot_toolchain)" ]');
     const v8cc_target_insert_pos = context.indexOf('v8_executable("mksnapshot") {');

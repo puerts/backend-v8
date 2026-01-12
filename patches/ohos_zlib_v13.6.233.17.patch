@@ -1,0 +1,53 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index 378bd0d..399cfcb 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -69,7 +69,7 @@ source_set("zlib_common_headers") {
+ 
+ use_arm_neon_optimizations = false
+ if ((current_cpu == "arm" || current_cpu == "arm64") &&
+-    !(is_win && !is_clang)) {
++    !(is_win && !is_clang) && !is_ohos) {
+   # TODO(richard.townsend@arm.com): Optimizations temporarily disabled for
+   # Windows on Arm MSVC builds, see http://crbug.com/v8/10012.
+   if (arm_use_neon) {
+@@ -78,7 +78,7 @@ if ((current_cpu == "arm" || current_cpu == "arm64") &&
+ }
+ 
+ use_x86_x64_optimizations =
+-    (current_cpu == "x86" || current_cpu == "x64") && !is_ios
++    (current_cpu == "x86" || current_cpu == "x64") && !is_ios && !is_ohos
+ 
+ config("zlib_adler32_simd_config") {
+   if (use_x86_x64_optimizations) {
+@@ -128,7 +128,7 @@ if (use_arm_neon_optimizations) {
+     defines = [ "CRC32_ARMV8_CRC32" ]
+     if (is_android) {
+       defines += [ "ARMV8_OS_ANDROID" ]
+-    } else if (is_linux || is_chromeos) {
++    } else if (is_linux || is_chromeos || is_ohos) {
+       defines += [ "ARMV8_OS_LINUX" ]
+     } else if (is_mac) {
+       defines += [ "ARMV8_OS_MACOS" ]
+diff --git a/crc32_simd.c b/crc32_simd.c
+index 1c60ae9..622905d 100644
+--- a/crc32_simd.c
++++ b/crc32_simd.c
+@@ -6,6 +6,17 @@
+  */
+ 
+ #include "crc32_simd.h"
++
++/* OHOS clang 15 cannot reliably enable AArch64 CRC32 target features for this
++ * TU, which can lead to backend selection failures like:
++ *   Cannot select: intrinsic %llvm.aarch64.crc32b
++ * Disable the ARMv8 CRC32 SIMD variant for this compiler and fall back to the
++ * generic (non-SIMD) crc32 implementation.
++ */
++#if defined(OSOHOS) && defined(__clang__) && (__clang_major__ == 15)
++#undef CRC32_ARMV8_CRC32
++#endif
++
+ #if defined(CRC32_SIMD_AVX512_PCLMUL)
+ 
+ /*

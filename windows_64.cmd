@@ -10,7 +10,7 @@ set GYP_MSVS_VERSION=2019
 set DEPOT_TOOLS_WIN_TOOLCHAIN=0
 call gclient
 
-if not "%VERSION%"=="10.6.194" if not "%VERSION%"=="11.8.172" (
+if "%VERSION%"=="9.4.146.24" (
     cd depot_tools
     call git reset --hard 8d16d4a
     cd ..
@@ -48,6 +48,15 @@ if "%VERSION%"=="11.8.172" (
     node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\enable_wee8_v11.8.172.patch
 )
 
+if "%VERSION%"=="12.9.202.27" (
+    echo =====[ patch 12.9.202.27 ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\enable_wee8_v12.9.202.27.patch
+	node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\win_use_noclang_v12.9.202.27.patch
+) else if "%VERSION%"=="13.6.233.17" (
+    echo =====[ patch 13.6.233.17 ]=====
+    node %~dp0\node-script\do-gitpatch.js -p %GITHUB_WORKSPACE%\patches\enable_wee8_v13.6.233.17.patch
+) 
+
 if "%VERSION%"=="9.4.146.24" (
     echo =====[ patch jinja for python3.10+ ]=====
     cd third_party\jinja2
@@ -72,16 +81,14 @@ node %~dp0\node-script\add_arraybuffer_new_without_stl.js . %VERSION% %NEW_WRAP%
 node %~dp0\node-script\patchs.js . %VERSION% %NEW_WRAP%
 
 echo =====[ Building V8 ]=====
-if "%VERSION%"=="11.8.172" (
-    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false v8_enable_system_instrumentation=false"
-)
-
-if "%VERSION%"=="10.6.194" (
-    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_system_instrumentation=false"
-)
-
 if "%VERSION%"=="9.4.146.24" (
     call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_system_instrumentation=false"
+) else if "%VERSION%"=="10.6.194" (
+    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_system_instrumentation=false"
+) else if "%VERSION%"=="11.8.172" (
+    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false v8_enable_system_instrumentation=false"
+) else (
+    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=true use_custom_libcxx=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false v8_enable_system_instrumentation=false"
 )
 call ninja -C out.gn\x64.release -t clean
 call ninja -v -C out.gn\x64.release wee8

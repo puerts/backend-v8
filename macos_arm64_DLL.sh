@@ -6,7 +6,7 @@ NEW_WRAP=$2
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
-if [ "$VERSION" != "10.6.194" -a "$VERSION" != "11.8.172" ]; then 
+if [ "$VERSION" == "9.4.146.24" ]; then 
     cd depot_tools
     git reset --hard 8d16d4a
     cd ..
@@ -45,6 +45,8 @@ if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   CXX_SETTING="use_custom_libcxx=true libcxx_is_shared=false"
 elif [ "$VERSION" == "9.4.146.24" ]; then
   CXX_SETTING=""
+elif [ "$VERSION" == "13.6.233.17" ]; then
+  CXX_SETTING="use_custom_libcxx=true libcxx_is_shared=false"
 fi
 
 echo "=====[ add ArrayBuffer_New_Without_Stl ]====="
@@ -53,12 +55,14 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 echo "=====[ Building V8 ]====="
-if [ "$VERSION" == "11.8.172" ]; then 
-    gn gen out.gn/arm64.release --args="is_debug=false target_cpu=\"arm64\" v8_target_cpu=\"arm64\" v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false is_component_build=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false $CXX_SETTING v8_enable_maglev=false v8_enable_webassembly=false"
+if [ "$VERSION" == "9.4.146.24" ]; then
+    gn gen out.gn/arm64.release --args="is_debug=false target_cpu=\"arm64\" v8_target_cpu=\"arm64\" v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false is_component_build=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false  $CXX_SETTING"
 elif [ "$VERSION" == "10.6.194" ]; then
     gn gen out.gn/arm64.release --args="is_debug=false target_cpu=\"arm64\" v8_target_cpu=\"arm64\" v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false is_component_build=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false $CXX_SETTING"
+elif [ "$VERSION" == "11.8.172" ]; then
+    gn gen out.gn/arm64.release --args="is_debug=false target_cpu=\"arm64\" v8_target_cpu=\"arm64\" v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false is_component_build=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false $CXX_SETTING v8_enable_maglev=false v8_enable_webassembly=false"
 else
-    gn gen out.gn/arm64.release --args="is_debug=false target_cpu=\"arm64\" v8_target_cpu=\"arm64\" v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false is_component_build=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false  $CXX_SETTING"
+    gn gen out.gn/arm64.release --args="is_debug=false target_cpu=\"arm64\" v8_target_cpu=\"arm64\" v8_enable_i18n_support=false v8_use_snapshot=true v8_use_external_startup_data=false is_component_build=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_pointer_compression=false v8_enable_sandbox=false $CXX_SETTING v8_enable_maglev=false v8_enable_webassembly=false"
 fi
 ninja -C out.gn/arm64.release -t clean
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 

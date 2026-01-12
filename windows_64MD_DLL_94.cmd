@@ -10,7 +10,7 @@ set GYP_MSVS_VERSION=2019
 set DEPOT_TOOLS_WIN_TOOLCHAIN=0
 call gclient
 
-if not "%VERSION%"=="10.6.194" if not "%VERSION%"=="11.8.172" (
+if "%VERSION%"=="9.4.146.24" (
     cd depot_tools
     call git reset --hard 8d16d4a
     cd ..
@@ -77,16 +77,14 @@ node %~dp0\node-script\add_arraybuffer_new_without_stl.js . %VERSION% %NEW_WRAP%
 node %~dp0\node-script\patchs.js . %VERSION% %NEW_WRAP%
 
 echo =====[ Building V8 ]=====
-if "%VERSION%"=="11.8.172" (
-    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false"
-)
-
-if "%VERSION%"=="10.6.194" (
-    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true v8_enable_sandbox=false"
-)
-
 if "%VERSION%"=="9.4.146.24" (
     call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true"
+) else if "%VERSION%"=="10.6.194" (
+    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true v8_enable_sandbox=false"
+) else if "%VERSION%"=="11.8.172" (
+    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false %CXX_SETTING% strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false"
+) else (
+    call gn gen out.gn\x64.release -args="target_os=""win"" target_cpu=""x64"" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false is_clang=true use_custom_libcxx=true strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false is_component_build=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false"
 )
 
 call ninja -C out.gn\x64.release -t clean
@@ -110,6 +108,24 @@ if "%VERSION%"=="11.8.172" (
   copy /Y out.gn\x64.release\third_party_zlib.dll output\v8\Lib\Win64DLL\
   copy /Y out.gn\x64.release\third_party_zlib.dll.pdb output\v8\Lib\Win64DLL\
   copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.pdb output\v8\Lib\Win64DLL\
+) else if "%VERSION%"=="12.9.202.27" (
+  copy /Y out.gn\x64.release\third_party_zlib.dll output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_zlib.dll.pdb output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll" output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll.lib" output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll.pdb" output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.lib output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.pdb output\v8\Lib\Win64DLL\
+) else if "%VERSION%"=="13.6.233.17" (
+  copy /Y out.gn\x64.release\third_party_zlib.dll output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_zlib.dll.pdb output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll" output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll.lib" output\v8\Lib\Win64DLL\
+  copy /Y "out.gn\x64.release\libc++.dll.pdb" output\v8\Lib\Win64DLL\
+  copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.lib output\v8\Lib\Win64DLL\
   copy /Y out.gn\x64.release\third_party_abseil-cpp_absl.dll.pdb output\v8\Lib\Win64DLL\
 ) else (
   copy /Y out.gn\x64.release\zlib.dll output\v8\Lib\Win64DLL\

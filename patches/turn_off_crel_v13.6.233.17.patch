@@ -1,0 +1,13 @@
+diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
+index 3ce4ab420..ef81b7028 100644
+--- a/config/compiler/BUILD.gn
++++ b/config/compiler/BUILD.gn
+@@ -630,7 +630,7 @@ config("compiler") {
+     # (excluding toolchains that use an older version of LLVM).
+     if (is_linux && !llvm_android_mainline &&
+         default_toolchain != "//build/toolchain/cros:target") {
+-      cflags += [ "-Wa,--crel,--allow-experimental-crel" ]
++      # cflags += [ "-Wa,--crel,--allow-experimental-crel" ]
+     }
+   }
+ 

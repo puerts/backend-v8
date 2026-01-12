@@ -1,0 +1,13 @@
+diff --git a/config/compiler/BUILD.gn b/config/compiler/BUILD.gn
+index 3b809a3c0..fa78c69d8 100644
+--- a/config/compiler/BUILD.gn
++++ b/config/compiler/BUILD.gn
+@@ -2201,7 +2201,7 @@ config("noshadowing") {
+   # This flag has to be disabled for nacl because the nacl compiler is too
+   # strict about shadowing.
+   if (is_clang && (!is_nacl || is_nacl_saigo)) {
+-    cflags = [ "-Wshadow" ]
++    # cflags = [ "-Wshadow" ]
+   }
+ }
+ 

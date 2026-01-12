@@ -11,7 +11,7 @@ $env:GYP_MSVS_VERSION = "2019"
 $env:DEPOT_TOOLS_WIN_TOOLCHAIN = "0"
 & gclient
 
-if ($VERSION -ne "10.6.194" -and $VERSION -ne "11.8.172") {
+if ($VERSION -eq "9.4.146.24") {
     cd depot_tools
     & git reset --hard 8d16d4a
     cd ..
@@ -63,10 +63,12 @@ node "$PSScriptRoot\node-script\add_arraybuffer_new_without_stl.js" "."
 node "$PSScriptRoot\node-script\patchs.js" "." "$VERSION"
 
 Write-Output "=====[ Building V8 ]====="
-if ($VERSION -eq "10.6.194" -or $VERSION -eq "11.8.172") {
+if ($VERSION -eq "9.4.146.24") {
+    $args = 'target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'
+} elseif ($VERSION -eq "10.6.194") {
     $args = 'target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false'
 } else {
-    $args = 'target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false'
+    $args = 'target_os=\"win\" target_cpu=\"x64\" v8_use_external_startup_data=false v8_enable_i18n_support=false is_debug=false v8_static_library=true is_clang=false strip_debug_info=true symbol_level=0 v8_enable_pointer_compression=false v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false'
 }
 & gn gen out.gn\x64.release "--args=$args"
 & ninja -C "out.gn\x64.release" -t clean

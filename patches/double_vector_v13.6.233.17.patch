@@ -1,0 +1,102 @@
+diff --git a/src/base/numbers/double.h b/src/base/numbers/double.h
+index 0de0aad0847..1301c70606c 100644
+--- a/src/base/numbers/double.h
++++ b/src/base/numbers/double.h
+@@ -14,11 +14,11 @@ namespace v8 {
+ namespace base {
+ 
+ // We assume that doubles and uint64_t have the same endianness.
+-inline constexpr uint64_t double_to_uint64(double d) {
+-  return std::bit_cast<uint64_t>(d);
++inline uint64_t double_to_uint64(double d) {
++  return v8::base::bit_cast<uint64_t>(d);
+ }
+-inline constexpr double uint64_to_double(uint64_t d64) {
+-  return std::bit_cast<double>(d64);
++inline double uint64_to_double(uint64_t d64) {
++  return v8::base::bit_cast<double>(d64);
+ }
+ 
+ // Helper functions for doubles.
+@@ -33,7 +33,7 @@ class Double {
+   static constexpr int kSignificandSize = 53;
+ 
+   constexpr Double() : d64_(0) {}
+-  constexpr explicit Double(double d) : d64_(double_to_uint64(d)) {}
++  explicit Double(double d) : d64_(double_to_uint64(d)) {}
+   constexpr explicit Double(uint64_t d64) : d64_(d64) {}
+   constexpr explicit Double(DiyFp diy_fp) : d64_(DiyFpToUint64(diy_fp)) {}
+ 
+@@ -155,7 +155,7 @@ class Double {
+     *out_m_minus = m_minus;
+   }
+ 
+-  constexpr double value() const { return uint64_to_double(d64_); }
++  double value() const { return uint64_to_double(d64_); }
+ 
+   // Returns the significand size for a given order of magnitude.
+   // If v = f*2^e with 2^p-1 <= f <= 2^p then p+e is v's order of magnitude.
+diff --git a/src/base/vector.h b/src/base/vector.h
+index fa2583efb5c..7ac0fd41df0 100644
+--- a/src/base/vector.h
++++ b/src/base/vector.h
+@@ -293,7 +293,7 @@ class OwnedVector {
+   // Elements in the new vector are default-initialized.
+   static OwnedVector<T> NewForOverwrite(size_t size) {
+     if (size == 0) return {};
+-    return OwnedVector<T>(std::make_unique_for_overwrite<T[]>(size), size);
++    return OwnedVector<T>(std::make_unique<T[]>(size), size);
+   }
+ 
+   // Allocates a new vector containing the specified collection of values.
+diff --git a/src/builtins/builtins-typed-array.cc b/src/builtins/builtins-typed-array.cc
+index f1a46d5b2c4..bacb4f4aa81 100644
+--- a/src/builtins/builtins-typed-array.cc
++++ b/src/builtins/builtins-typed-array.cc
+@@ -674,7 +674,7 @@ BUILTIN(Uint8ArrayPrototypeToBase64) {
+     // TODO(rezvan): Make sure to add a path for SharedArrayBuffers when
+     // simdutf library got updated. Also, add a test for it.
+     size_t simd_result_size = simdutf::binary_to_base64(
+-        std::bit_cast<const char*>(uint8array->GetBuffer()->backing_store()),
++        reinterpret_cast<const char*>(uint8array->GetBuffer()->backing_store()),
+         length, reinterpret_cast<char*>(output->GetChars(no_gc)), alphabet);
+     DCHECK_EQ(simd_result_size, output_length);
+     USE(simd_result_size);
+@@ -795,7 +795,7 @@ BUILTIN(Uint8ArrayPrototypeToHex) {
+   }
+ 
+   const char* bytes =
+-      std::bit_cast<const char*>(uint8array->GetBuffer()->backing_store());
++      reinterpret_cast<const char*>(uint8array->GetBuffer()->backing_store());
+ 
+   //   4. Let out be the empty String.
+   DirectHandle<SeqOneByteString> output;
+diff --git a/src/codegen/external-reference.cc b/src/codegen/external-reference.cc
+index fc16f7bc8d5..ebfbc5ff564 100644
+--- a/src/codegen/external-reference.cc
++++ b/src/codegen/external-reference.cc
+@@ -11,6 +11,7 @@
+ #include "src/api/api-inl.h"
+ #include "src/base/bits.h"
+ #include "src/base/ieee754.h"
++#include "src/base/macros.h"
+ #include "src/codegen/cpu-features.h"
+ #include "src/common/globals.h"
+ #include "src/date/date.h"
+@@ -473,14 +474,14 @@ uint32_t fp64_to_fp16_raw_bits(double input) { return DoubleToFloat16(input); }
+ uint32_t fp64_raw_bits_to_fp16_raw_bits_for_32bit_arch(uint32_t hi,
+                                                        uint32_t lo) {
+   uint64_t input = static_cast<uint64_t>(hi) << 32 | lo;
+-  return DoubleToFloat16(std::bit_cast<double, uint64_t>(input));
++  return DoubleToFloat16(v8::base::bit_cast<double>(input));
+ }
+ 
+ // Since floating point parameters and return value are not supported
+ // for C-linkage functions on 32bit architectures, we should use raw bits.
+ uint32_t fp16_raw_bits_ieee_to_fp32_raw_bits(uint32_t input) {
+   float value = fp16_ieee_to_fp32_value(input);
+-  return std::bit_cast<uint32_t, float>(value);
++  return v8::base::bit_cast<uint32_t>(value);
+ }
+ 
+ FUNCTION_REFERENCE(ieee754_fp64_raw_bits_to_fp16_raw_bits_for_32bit_arch,

@@ -85,8 +85,15 @@ V8_EXPORT Local<Module> Module_CreateSyntheticModule_Without_Stl(
     Isolate* v8_isolate, Local<String> module_name,
     Local<String>* export_names, size_t export_names_length,
     v8::Module::SyntheticModuleEvaluationSteps evaluation_steps) {
+#if V8_MAJOR_VERSION >= 12
+  // V8 12.x and above: CreateSyntheticModule accepts std::span or MemorySpan
+  return v8::Module::CreateSyntheticModule(v8_isolate, module_name, 
+      {export_names, export_names_length}, evaluation_steps);
+#else
+  // V8 11.x and below: CreateSyntheticModule accepts std::vector
   std::vector<Local<String>> vec(export_names, export_names + export_names_length);
   return v8::Module::CreateSyntheticModule(v8_isolate, module_name, vec, evaluation_steps);
+#endif
 }
 }
 

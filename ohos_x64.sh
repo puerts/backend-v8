@@ -4,7 +4,7 @@ VERSION=$1
 NEW_WRAP=$2
 [ -z "$GITHUB_WORKSPACE" ] && GITHUB_WORKSPACE="$( cd "$( dirname "$0" )"/.. && pwd )"
 
-if [ "$VERSION" == "10.6.194" -o "$VERSION" == "11.8.172" ]; then 
+if [ "$VERSION" != "9.4.146.24" ]; then 
     sudo apt-get install -y \
         pkg-config \
         git \
@@ -34,7 +34,7 @@ fi
 cd ~
 echo "=====[ Getting Depot Tools ]====="	
 git clone -q https://chromium.googlesource.com/chromium/tools/depot_tools.git
-if [ "$VERSION" != "10.6.194" -a "$VERSION" != "11.8.172" ]; then 
+if [ "$VERSION" == "9.4.146.24" ]; then 
     cd depot_tools
     git reset --hard 8d16d4a
     cd ..
@@ -72,7 +72,20 @@ if [ "$VERSION" == "11.8.172" ]; then
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v11.8.172.patch
 fi
 
-if [ "$VERSION" == "9.4.146.24" ]; then 
+if [ "$VERSION" == "12.9.202.27" -o "$VERSION" == "13.6.233.17" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/enable_wee8_v$VERSION.patch
+fi
+
+if [ "$VERSION" == "13.6.233.17" ]; then 
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/clang15_compatible_v13.6.233.17.patch
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/KernelHasPkruFix_unused_v13.6.233.17.patch
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/v8_monolithic_for_shared_library_flags_v13.6.233.17.patch
+  cd build
+  node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/turn_off_crel_v13.6.233.17.patch
+  cd ..
+fi
+
+if [ "$VERSION" == "9.4.146.24" ]; then
   echo "=====[ patch jinja for python3.10+ ]====="
   cd third_party/jinja2
   node $GITHUB_WORKSPACE/node-script/do-gitpatch.js -p $GITHUB_WORKSPACE/patches/jinja_v9.4.146.24.patch
@@ -100,15 +113,21 @@ node $GITHUB_WORKSPACE/node-script/add_arraybuffer_new_without_stl.js . $VERSION
 node $GITHUB_WORKSPACE/node-script/patchs.js . $VERSION $NEW_WRAP
 
 rm -rf third_party/android_ndk
-rm -rf third_party/icu
+find third_party/icu -mindepth 1 -type d -exec rm -rf {} +
+[ -d third_party/rust ] && rm -rf third_party/rust
+[ -d third_party/rust-toolchain ] && rm -rf third_party/rust-toolchain
 
 echo "=====[ Building V8 ]====="
-if [ "$VERSION" == "11.8.172" ]; then 
-  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false" out.gn/x64.release
+if [ "$VERSION" == "9.4.146.24" ]; then
+  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true" out.gn/x64.release
 elif [ "$VERSION" == "10.6.194" ]; then
   gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false" out.gn/x64.release
+elif [ "$VERSION" == "11.8.172" ]; then
+  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false" out.gn/x64.release
+elif [ "$VERSION" == "12.9.202.27" ]; then
+  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false enable_rust=false icu_use_data_file=false" out.gn/x64.release
 else
-  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true" out.gn/x64.release
+  gn gen --args="target_os=\"ohos\" target_cpu=\"x64\" is_debug = false v8_enable_i18n_support= false v8_target_cpu = \"x64\" use_goma = false v8_use_external_startup_data = false v8_static_library = true strip_debug_info=true symbol_level=0 $CXX_SETTING use_custom_libcxx_for_host=true v8_enable_pointer_compression=false use_musl=true v8_enable_sandbox=false v8_enable_maglev=false v8_enable_webassembly=false enable_rust=false icu_use_data_file=false v8_monolithic=true v8_monolithic_for_shared_library=true" out.gn/x64.release
 fi
 ninja -C out.gn/x64.release -t clean
 ninja -v -C out.gn/x64.release wee8
