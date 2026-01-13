@@ -58,7 +58,7 @@ elif [ "$VERSION" == "10.6.194" ]; then
 elif [ "$VERSION" == "11.8.172" ]; then
     gn gen out.gn/arm64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"arm64\" v8_enable_pointer_compression=false use_xcode_clang=true enable_ios_bitcode=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false v8_enable_webassembly=false v8_enable_maglev=false v8_enable_webassembly=false"
 else
-    gn gen out.gn/arm64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"arm64\" v8_enable_pointer_compression=false use_xcode_clang=true enable_ios_bitcode=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false v8_enable_webassembly=false v8_enable_maglev=false v8_enable_webassembly=false"
+    gn gen out.gn/arm64.release --args="v8_use_external_startup_data=false v8_use_snapshot=true v8_enable_i18n_support=false is_debug=false v8_static_library=true ios_enable_code_signing=false target_os=\"ios\" target_cpu=\"arm64\" v8_enable_pointer_compression=false use_xcode_clang=true enable_ios_bitcode=true strip_debug_info=true symbol_level=0 libcxx_abi_unstable=false v8_enable_sandbox=false use_custom_libcxx=false v8_enable_webassembly=false v8_enable_maglev=false v8_enable_webassembly=false cppgc_enable_caged_heap=false"
 fi
 ninja -C out.gn/arm64.release -t clean
 mkdir -p output/v8/Lib/iOS/bitcode
