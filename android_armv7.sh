@@ -112,7 +112,7 @@ ninja -v -C out.gn/arm.release wee8
 mkdir -p output/v8/Lib/Android/armeabi-v7a
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then 
   export PATH="$(pwd)/third_party/llvm-build/Release+Asserts/bin:$PATH"
-  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh arm output/v8/Lib/Android/armeabi-v7a/
+  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh arm output/v8/Lib/Android/armeabi-v7a/ || exit 1
 fi
 cp out.gn/arm.release/obj/libwee8.a output/v8/Lib/Android/armeabi-v7a/
 mkdir -p output/v8/Bin/Android/armeabi-v7a

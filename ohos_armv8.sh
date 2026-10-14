@@ -135,7 +135,7 @@ ninja -v -C out.gn/arm64.release wee8
 mkdir -p output/v8/Lib/OHOS/arm64-v8a
 if [ "$NEW_WRAP" == "with_new_wrap" ]; then
   export PATH="$OHOS_NDK_HOME/llvm/bin:$PATH"
-  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh arm64 output/v8/Lib/OHOS/arm64-v8a
+  bash $GITHUB_WORKSPACE/rename_symbols_posix.sh arm64 output/v8/Lib/OHOS/arm64-v8a || exit 1
 fi
 cp out.gn/arm64.release/obj/libwee8.a output/v8/Lib/OHOS/arm64-v8a/
 mkdir -p output/v8/Bin/OHOS/arm64-v8a
